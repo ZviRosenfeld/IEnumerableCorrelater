@@ -1,4 +1,5 @@
 using FakeItEasy;
+using IEnumerableCompare.Exceptions;
 using IEnumerableCompare.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -20,12 +21,23 @@ namespace IEnumerableCompare.UnitTests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(EnumerableCompareException))]
+        public void CompareNonNullibleTypes_ThrowException() =>
+            new LevenshteinEnumerableComparer<int>(null, removalCost, insertionCost);
+
+        [TestMethod]
+        public void CompareNullibleTypes_DontThrowException() =>
+            new LevenshteinEnumerableComparer<int?>(null, removalCost, insertionCost);
+
+
+        [TestMethod]
         public void CompareEmptyArrayToFullArray()
         {
             var array1 = new string[0];
             var array2 = new []{ "A", "B", "C"};
 
-            comparer.AssertComparision(array1, array2, insertionCost * array2.Length);
+            var expectedResult = new CompareResult<string>(insertionCost * array2.Length, new string[3], array2);
+            comparer.AssertComparision(array1, array2, expectedResult);
         }
 
         [TestMethod]
@@ -34,7 +46,8 @@ namespace IEnumerableCompare.UnitTests
             var array1 = new[] { "A", "B", "C" };
             var array2 = new string[0];
 
-            comparer.AssertComparision(array1, array2, removalCost * array1.Length);
+            var expectedResult = new CompareResult<string>(removalCost * array1.Length, array1, new string[3]);
+            comparer.AssertComparision(array1, array2, expectedResult);
         }
 
         [TestMethod]
@@ -43,7 +56,8 @@ namespace IEnumerableCompare.UnitTests
             var array1 = new[] { "A", "C" };
             var array2 = new[] { "A", "B", "C" };
 
-            comparer.AssertComparision(array1, array2, insertionCost);
+            var expectedResult = new CompareResult<string>(insertionCost, new []{"A", null, "C"}, array2);
+            comparer.AssertComparision(array1, array2, expectedResult);
         }
 
         [TestMethod]
@@ -52,7 +66,8 @@ namespace IEnumerableCompare.UnitTests
             var array1 = new[] { "A", "B", "C" };
             var array2 = new[] { "A", "C" };
 
-            comparer.AssertComparision(array1, array2, removalCost);
+            var expectedResult = new CompareResult<string>(removalCost, array1, new[] { "A", null, "C" });
+            comparer.AssertComparision(array1, array2, expectedResult);
         }
 
         [TestMethod]
@@ -61,7 +76,8 @@ namespace IEnumerableCompare.UnitTests
             var array1 = new[] { "A", "D", "C" };
             var array2 = new[] { "A", "B", "C" };
 
-            comparer.AssertComparision(array1, array2, missmatchCost);
+            var expectedResult = new CompareResult<string>(missmatchCost, array1, array2);
+            comparer.AssertComparision(array1, array2, expectedResult);
         }
     }
 }

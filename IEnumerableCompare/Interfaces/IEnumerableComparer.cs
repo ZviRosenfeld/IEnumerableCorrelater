@@ -4,8 +4,8 @@ namespace IEnumerableCompare.Interfaces
 {
     public interface IEnumerableComparer<T>
     {
-        CompareResult Compare(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2);
+        CompareResult<T> Compare(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2);
 
-        CompareResult Compare(T[] array1, T[] array2);
+        CompareResult<T> Compare(T[] array1, T[] array2);
     }
 }
