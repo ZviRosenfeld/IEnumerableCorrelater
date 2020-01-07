@@ -13,7 +13,7 @@ namespace IEnumerableCorrelater.UnitTests.LevenshteinComparer
         private const int insertionCost = 10;
         private const int missmatchCost = 11;
         private static readonly IDistanceCalculator<string> distanceCalculator = A.Fake<IDistanceCalculator<string>>();
-        private static readonly IEnumerableCorrelater<string> comparer = new LevenshteinEnumerableCorrelater<string>(distanceCalculator, removalCost, insertionCost);
+        private static readonly IEnumerableCorrelater<string> correlater = new LevenshteinEnumerableCorrelater<string>(distanceCalculator, removalCost, insertionCost);
 
         public LevenshteinEnumerableCorrelaterTests()
         {
@@ -22,23 +22,23 @@ namespace IEnumerableCorrelater.UnitTests.LevenshteinComparer
         }
         
         [TestMethod]
-        public void Compare_Substitution()
+        public void Correlate_Substitution()
         {
             var array1 = new[] { "A", "D", "C" };
             var array2 = new[] { "A", "B", "C" };
 
             var expectedResult = new CorrelaterResult<string>(missmatchCost, array1, array2);
-            comparer.AssertComparision(array1, array2, expectedResult);
+            correlater.AssertComparision(array1, array2, expectedResult);
         }
 
         [TestMethod]
-        public void CompareIList_Substitution()
+        public void CorrelateIList_Substitution()
         {
             var list1 = new List<string> { "A", "D", "C" };
             var list2 = new List<string> { "A", "B", "C" };
 
             var expectedResult = new CorrelaterResult<string>(missmatchCost, list1.ToArray(), list2.ToArray());
-            comparer.AssertComparision(list1, list2, expectedResult);
+            correlater.AssertComparision(list1, list2, expectedResult);
         }
     }
 }

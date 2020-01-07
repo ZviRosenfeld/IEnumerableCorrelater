@@ -7,17 +7,17 @@ namespace Samples
 {
     class BasicSamples
     {
-        public CorrelaterResult<string> IEnumerableComparerExsample()
+        public CorrelaterResult<string> IEnumerableCorrelaterExsample()
         {
             int removalCost = 1, insertionCost = 1;
             IDistanceCalculator<string> distanceCalculator = new MyDistanceCalculator<string>();
-            IEnumerableCorrelater<string> comparer =
+            IEnumerableCorrelater<string> correlater =
                 new LevenshteinEnumerableCorrelater<string>(distanceCalculator, removalCost, insertionCost);
 
             string[] array1 = { "A", "D", "C" };
             string[] array2 = { "A", "B", "C" };
 
-            CorrelaterResult<string> result = comparer.Compare(array1, array2);
+            CorrelaterResult<string> result = correlater.Correlate(array1, array2);
 
             // Print some of the results
             Console.WriteLine(result.Distance);
@@ -27,17 +27,17 @@ namespace Samples
             return result;
         }
 
-        public CorrelaterResult<char> StringComparerExsample()
+        public CorrelaterResult<char> StringCorrelaterExsample()
         {
             int removalCost = 1, insertionCost = 1;
             IDistanceCalculator<char> distanceCalculator = new MyDistanceCalculator<char>();
-            IStringCorrelater comparer =
+            IStringCorrelater correlater =
                 new LevenshteinStringCorrelater(distanceCalculator, removalCost, insertionCost);
 
             string string1 = "ABC";
             string string2 = "ADC";
 
-            CorrelaterResult<char> result = comparer.Compare(string1, string2);
+            CorrelaterResult<char> result = correlater.Correlate(string1, string2);
 
             // Print some of the results
             Console.WriteLine(result.Distance);

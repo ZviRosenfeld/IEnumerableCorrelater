@@ -15,7 +15,7 @@ namespace IEnumerableCorrelater.LevenshteinCorrelater
             baseLevenshteinComparer = new BaseLevenshteinCorrelater<char>(distanceCalculator, removalCost, insertionCost);
         }
 
-        public CorrelaterResult<char> Compare(string string1, string string2) =>
+        public CorrelaterResult<char> Correlate(string string1, string string2) =>
             baseLevenshteinComparer.Compare(new StringCollectionWrapper(string1), new StringCollectionWrapper(string2));
     }
 }

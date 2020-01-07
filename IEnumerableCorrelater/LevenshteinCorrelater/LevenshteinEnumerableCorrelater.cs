@@ -20,10 +20,10 @@ namespace IEnumerableCorrelater.LevenshteinCorrelater
             baseLevenshteinComparer = new BaseLevenshteinCorrelater<T>(distanceCalculator, removalCost, insertionCost);
         }
 
-        public CorrelaterResult<T> Compare(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2) =>
+        public CorrelaterResult<T> Correlate(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2) =>
             baseLevenshteinComparer.Compare(new ArrayCollectionWrapper<T>(enumerable1.ToArray()), new ArrayCollectionWrapper<T>(enumerable2.ToArray()));
 
-        public CorrelaterResult<T> Compare(T[] array1, T[] array2) =>
+        public CorrelaterResult<T> Correlate(T[] array1, T[] array2) =>
             baseLevenshteinComparer.Compare(new ArrayCollectionWrapper<T>(array1), new ArrayCollectionWrapper<T>(array2));
     }
 }

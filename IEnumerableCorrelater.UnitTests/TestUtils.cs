@@ -9,21 +9,21 @@ namespace IEnumerableCorrelater.UnitTests
 {
     static class TestUtils
     {
-        public static void AssertComparision<T>(this BaseLevenshteinCorrelater<T> comparer, T[] collection1, T[] collection2, CorrelaterResult<T> expectedResult)
+        public static void AssertComparision<T>(this BaseLevenshteinCorrelater<T> correlater, T[] collection1, T[] collection2, CorrelaterResult<T> expectedResult)
         {
-            var result = comparer.Compare(new ArrayCollectionWrapper<T>(collection1), new ArrayCollectionWrapper<T>(collection2));
+            var result = correlater.Compare(new ArrayCollectionWrapper<T>(collection1), new ArrayCollectionWrapper<T>(collection2));
             AssertResultIsAsExpected(expectedResult, result);
         }
         
-        public static void AssertComparision<T>(this IEnumerableCorrelater<T> comparer, IEnumerable<T> collection1, IEnumerable<T> collection2, CorrelaterResult<T> expectedResult)
+        public static void AssertComparision<T>(this IEnumerableCorrelater<T> correlater, IEnumerable<T> collection1, IEnumerable<T> collection2, CorrelaterResult<T> expectedResult)
         {
-            var result = comparer.Compare(collection1, collection2);
+            var result = correlater.Correlate(collection1, collection2);
             AssertResultIsAsExpected(expectedResult, result);
         }
 
         public static void AssertComparision(this IStringCorrelater correlater, string string1, string string2, CorrelaterResult<char> expectedResult)
         {
-            var result = correlater.Compare(string1, string2);
+            var result = correlater.Correlate(string1, string2);
             AssertResultIsAsExpected(expectedResult, result);
         }
 

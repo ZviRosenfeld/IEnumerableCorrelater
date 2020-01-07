@@ -12,7 +12,7 @@ namespace IEnumerableCorrelater.UnitTests.LevenshteinComparer
         private const int insertionCost = 10;
         private const int missmatchCost = 11;
         private static readonly IDistanceCalculator<char> distanceCalculator = A.Fake<IDistanceCalculator<char>>();
-        private static readonly IStringCorrelater Correlater = new LevenshteinStringCorrelater(distanceCalculator, removalCost, insertionCost);
+        private static readonly IStringCorrelater correlater = new LevenshteinStringCorrelater(distanceCalculator, removalCost, insertionCost);
 
         public LevenshteinStringCorrelaterTests()
         {
@@ -21,23 +21,23 @@ namespace IEnumerableCorrelater.UnitTests.LevenshteinComparer
         }
 
         [TestMethod]
-        public void Compare_Substitution()
+        public void Correlate_Substitution()
         {
             var string1 = "abc";
             var string2 = "aic";
 
             var expectedResult = new CorrelaterResult<char>(missmatchCost, string1.ToCharArray(), string2.ToCharArray());
-            Correlater.AssertComparision(string1, string2, expectedResult);
+            correlater.AssertComparision(string1, string2, expectedResult);
         }
 
         [TestMethod]
-        public void Compare_Insertion()
+        public void Correlate_Insertion()
         {
             var string1 = "ac";
             var string2 = "abc";
 
             var expectedResult = new CorrelaterResult<char>(insertionCost, new [] {'a', '\0', 'c'}, string2.ToCharArray());
-            Correlater.AssertComparision(string1, string2, expectedResult);
+            correlater.AssertComparision(string1, string2, expectedResult);
         }
     }
 }

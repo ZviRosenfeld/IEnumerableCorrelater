@@ -4,8 +4,8 @@ namespace IEnumerableCorrelater.Interfaces
 {
     public interface IEnumerableCorrelater<T>
     {
-        CorrelaterResult<T> Compare(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2);
+        CorrelaterResult<T> Correlate(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2);
 
-        CorrelaterResult<T> Compare(T[] array1, T[] array2);
+        CorrelaterResult<T> Correlate(T[] array1, T[] array2);
     }
 }

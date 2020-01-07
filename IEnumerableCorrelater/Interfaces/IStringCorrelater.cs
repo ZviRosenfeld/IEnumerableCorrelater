@@ -2,6 +2,6 @@
 {
     public interface IStringCorrelater
     {
-        CorrelaterResult<char> Compare(string string1, string string2);
+        CorrelaterResult<char> Correlate(string string1, string string2);
     }
 }
