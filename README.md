@@ -21,7 +21,7 @@ BestMatch2 = { "A", "B", "I", "D"}
 
 ## Usage
 
-Exsample1: Comparing two collection. The example compares strings, but you can really compare collections of any type that's nullable or char.
+Exsample1: Comparing two collections. The example compares arrays of strings, but you can really compare collections of any type as longs as the type is nullable or a char.
 
 ```CSharp
 int removalCost = 1, insertionCost = 1;
@@ -40,7 +40,7 @@ Console.WriteLine(result.BestMatch1);
 Console.WriteLine(result.BestMatch2);
 ```
 
-Exsample2: Comparing 2 strings. IStringCorrelater treats the string as an array of chars, and therfore uses an IDistanceCalculator<char>.
+Exsample2: Comparing 2 strings. IStringCorrelater treats the string as an array of chars, and therefore uses an IDistanceCalculator<char>.
 
 ```CSharp
 int removalCost = 1, insertionCost = 1;

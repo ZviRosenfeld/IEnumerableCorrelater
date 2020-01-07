@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Interfaces;
 
@@ -20,10 +19,10 @@ namespace IEnumerableCorrelater.LevenshteinCorrelater
             baseLevenshteinComparer = new BaseLevenshteinCorrelater<T>(distanceCalculator, removalCost, insertionCost);
         }
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2) =>
-            baseLevenshteinComparer.Compare(new ArrayCollectionWrapper<T>(enumerable1.ToArray()), new ArrayCollectionWrapper<T>(enumerable2.ToArray()));
-
-        public CorrelaterResult<T> Correlate(T[] array1, T[] array2) =>
-            baseLevenshteinComparer.Compare(new ArrayCollectionWrapper<T>(array1), new ArrayCollectionWrapper<T>(array2));
+        public CorrelaterResult<T> Correlate(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2)
+        {
+            var factory = new CollectionWrapperFactory();
+            return baseLevenshteinComparer.Compare(factory.GetCollectionWrapper(enumerable1), factory.GetCollectionWrapper(enumerable2));
+        }
     }
 }
