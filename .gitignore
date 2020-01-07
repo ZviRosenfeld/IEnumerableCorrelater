@@ -1,0 +1,6 @@
+**/[Oo]bj
+**/[Bb]in
+
+**.nupkg
+nuget.exe
+.vs/**
