@@ -1,11 +1,11 @@
 ﻿using System;
-using IEnumerableCompare.Interfaces;
+using IEnumerableCorrelater.Interfaces;
 
 namespace Samples
 {
-    class MyDistanceCalculator : IDistanceCalculator<string>
+    class MyDistanceCalculator<T> : IDistanceCalculator<T>
     {
-        public int Distance(string element1, string element2)
+        public int Distance(T element1, T element2)
         {
             throw new NotImplementedException();
         }

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IEnumerableCompare\IEnumerableCompare.csproj" />
+    <ProjectReference Include="..\IEnumerableCorrelater\IEnumerableCorrelater.csproj" />
   </ItemGroup>
 
 </Project>

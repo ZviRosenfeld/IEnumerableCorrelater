@@ -1,4 +1,4 @@
-﻿namespace IEnumerableCompare.Interfaces
+﻿namespace IEnumerableCorrelater.Interfaces
 {
     public interface IDistanceCalculator<T>
     {
