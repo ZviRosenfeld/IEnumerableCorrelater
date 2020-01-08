@@ -1,21 +1,21 @@
 ﻿using FakeItEasy;
+using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
-using IEnumerableCorrelater.LevenshteinCorrelater;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IEnumerableCorrelater.UnitTests.LevenshteinCorrelater
+namespace IEnumerableCorrelater.UnitTests
 {
     [TestClass]
-    public class BaseLevenshteinCorrelaterTests
+    public class LevenshteinCorrelaterTests
     {
         private const int removalCost = 9;
         private const int insertionCost = 10;
         private const int missmatchCost = 11;
         private static readonly IDistanceCalculator<string> distanceCalculator = A.Fake<IDistanceCalculator<string>>();
-        private static readonly BaseLevenshteinCorrelater<string> correlater = new BaseLevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
+        private static readonly LevenshteinCorrelater<string> correlater = new LevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
 
-        public BaseLevenshteinCorrelaterTests()
+        public LevenshteinCorrelaterTests()
         {
             A.CallTo(() => distanceCalculator.Distance(A<string>._, A<string>._))
                 .ReturnsLazily((string s1, string s2) => s1.Equals(s2) ? 0 : missmatchCost);
@@ -24,15 +24,15 @@ namespace IEnumerableCorrelater.UnitTests.LevenshteinCorrelater
         [TestMethod]
         [ExpectedException(typeof(EnumerableCorrelaterException))]
         public void CorrelateNonNullibleTypes_ThrowException() =>
-            new BaseLevenshteinCorrelater<int>(null, removalCost, insertionCost);
+            new LevenshteinCorrelater<int>(null, removalCost, insertionCost);
 
         [TestMethod]
         public void CorrelateNullibleTypes_DontThrowException() =>
-            new BaseLevenshteinCorrelater<int?>(null, removalCost, insertionCost);
+            new LevenshteinCorrelater<int?>(null, removalCost, insertionCost);
 
         [TestMethod]
         public void CorrelateChar_DontThrowException() =>
-            new BaseLevenshteinCorrelater<char>(null, removalCost, insertionCost);
+            new LevenshteinCorrelater<char>(null, removalCost, insertionCost);
 
         [TestMethod]
         public void CorrelateEmptyArrayToFullArray()

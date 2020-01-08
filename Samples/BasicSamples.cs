@@ -1,7 +1,7 @@
 ﻿using IEnumerableCorrelater;
 using System;
+using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.Interfaces;
-using IEnumerableCorrelater.LevenshteinCorrelater;
 
 namespace Samples
 {
@@ -11,13 +11,14 @@ namespace Samples
         {
             int removalCost = 1, insertionCost = 1;
             IDistanceCalculator<string> distanceCalculator = new MyDistanceCalculator<string>();
-            IEnumerableCorrelater<string> correlater =
-                new LevenshteinEnumerableCorrelater<string>(distanceCalculator, removalCost, insertionCost);
+            ICorrelater<string> correlater = 
+                new LevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
+            EnumerableCorrelater<string> enumerableCorrelater = new EnumerableCorrelater<string>(correlater);
 
             string[] array1 = { "A", "D", "C" };
             string[] array2 = { "A", "B", "C" };
 
-            CorrelaterResult<string> result = correlater.Correlate(array1, array2);
+            CorrelaterResult<string> result = enumerableCorrelater.Correlate(array1, array2);
 
             // Print some of the results
             Console.WriteLine(result.Distance);
@@ -31,13 +32,14 @@ namespace Samples
         {
             int removalCost = 1, insertionCost = 1;
             IDistanceCalculator<char> distanceCalculator = new MyDistanceCalculator<char>();
-            IStringCorrelater correlater =
-                new LevenshteinStringCorrelater(distanceCalculator, removalCost, insertionCost);
+            ICorrelater<char> correlater = 
+                new LevenshteinCorrelater<char>(distanceCalculator, removalCost, insertionCost);
+            StringCorrelater stringCorrelater = new StringCorrelater(correlater);
 
             string string1 = "ABC";
             string string2 = "ADC";
 
-            CorrelaterResult<char> result = correlater.Correlate(string1, string2);
+            CorrelaterResult<char> result = stringCorrelater.Correlate(string1, string2);
 
             // Print some of the results
             Console.WriteLine(result.Distance);

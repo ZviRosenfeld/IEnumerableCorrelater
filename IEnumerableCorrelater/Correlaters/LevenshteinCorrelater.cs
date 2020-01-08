@@ -3,12 +3,12 @@ using System.Linq;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 
-namespace IEnumerableCorrelater.LevenshteinCorrelater
+namespace IEnumerableCorrelater.Correlaters
 {
     /// <summary>
     /// A base class used to calculate the Levenshtein distance between two collections or strings.
     /// </summary>
-    public class BaseLevenshteinCorrelater<T>
+    public class LevenshteinCorrelater<T> : ICorrelater<T>
     {
         private readonly IDistanceCalculator<T> distanceCalculator;
         private readonly int removalCost;
@@ -17,7 +17,7 @@ namespace IEnumerableCorrelater.LevenshteinCorrelater
         /// <summary>
         /// This class used dynamic programming to calculate the Levenshtein distance between two collections.
         /// </summary>
-        public BaseLevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, int removalCost, int insertionCost)
+        public LevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, int removalCost, int insertionCost)
         {
             if (default(T) != null  && typeof(T) != typeof(char))
                 throw new EnumerableCorrelaterException($"{nameof(T)} must be nullable");

@@ -2,27 +2,27 @@
 using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Interfaces;
 
-namespace IEnumerableCorrelater.LevenshteinCorrelater
+namespace IEnumerableCorrelater
 {
     /// <summary>
     /// This class used dynamic programming to calculate the Levenshtein distance between two collections.
     /// </summary>
-    public class LevenshteinEnumerableCorrelater<T> : IEnumerableCorrelater<T>
+    public class EnumerableCorrelater<T>
     {
-        private readonly BaseLevenshteinCorrelater<T> baseLevenshteinComparer;
+        private readonly ICorrelater<T> correlater;
 
         /// <summary>
         /// This class used dynamic programming to calculate the Levenshtein distance between two collections.
         /// </summary>
-        public LevenshteinEnumerableCorrelater(IDistanceCalculator<T> distanceCalculator, int removalCost, int insertionCost)
+        public EnumerableCorrelater(ICorrelater<T> correlater)
         {
-            baseLevenshteinComparer = new BaseLevenshteinCorrelater<T>(distanceCalculator, removalCost, insertionCost);
+            this.correlater = correlater;
         }
 
         public CorrelaterResult<T> Correlate(IEnumerable<T> enumerable1, IEnumerable<T> enumerable2)
         {
             var factory = new CollectionWrapperFactory();
-            return baseLevenshteinComparer.Compare(factory.GetCollectionWrapper(enumerable1), factory.GetCollectionWrapper(enumerable2));
+            return correlater.Compare(factory.GetCollectionWrapper(enumerable1), factory.GetCollectionWrapper(enumerable2));
         }
     }
 }
