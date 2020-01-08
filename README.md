@@ -99,7 +99,7 @@ class CharDistanceCalculator : IDistanceCalculator<char>
         {new Tuple<char, char>('c', 'e'), 2 },
         {new Tuple<char, char>('c', 's'), 2 },
         {new Tuple<char, char>('c', 'i'), 3 },
-		...
+	...
     }; 
 
     public int Distance(char element1, char element2)
