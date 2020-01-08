@@ -5,14 +5,14 @@ using IEnumerableCorrelater.Interfaces;
 namespace IEnumerableCorrelater
 {
     /// <summary>
-    /// This class used dynamic programming to calculate the Levenshtein distance between two collections.
+    /// Use an EnumerableCorrelater&lt;T&gt; to compare collections 
     /// </summary>
     public class EnumerableCorrelater<T>
     {
         private readonly ICorrelater<T> correlater;
 
         /// <summary>
-        /// This class used dynamic programming to calculate the Levenshtein distance between two collections.
+        /// Use an EnumerableCorrelater&lt;T&gt; to compare collections 
         /// </summary>
         public EnumerableCorrelater(ICorrelater<T> correlater)
         {

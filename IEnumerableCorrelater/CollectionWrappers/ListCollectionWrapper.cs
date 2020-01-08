@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater.CollectionWrappers
@@ -15,5 +16,14 @@ namespace IEnumerableCorrelater.CollectionWrappers
         public T this[int index] => list[index];
 
         public int Length => list.Count;
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            foreach (var element in list)
+                stringBuilder.Append(element + ", ");
+
+            return stringBuilder.ToString();
+        }
     }
 }

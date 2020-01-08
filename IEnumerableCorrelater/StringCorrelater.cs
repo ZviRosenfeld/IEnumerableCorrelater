@@ -1,15 +1,17 @@
-﻿using System.Threading;
-using IEnumerableCorrelater.CollectionWrappers;
+﻿using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater
 {
+    /// <summary>
+    /// Use a StringCorrelater to compare strings
+    /// </summary>
     public class StringCorrelater
     {
         private readonly ICorrelater<char> correlater;
 
         /// <summary>
-        /// This class used dynamic programming to calculate the Levenshtein distance between two collections.
+        /// Use a StringCorrelater to compare strings
         /// </summary>
         public StringCorrelater(ICorrelater<char> correlater)
         {

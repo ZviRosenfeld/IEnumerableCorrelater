@@ -1,4 +1,5 @@
-﻿using IEnumerableCorrelater.Interfaces;
+﻿using System.Text;
+using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater.CollectionWrappers
 {
@@ -14,5 +15,14 @@ namespace IEnumerableCorrelater.CollectionWrappers
         public T this[int index] => array[index];
 
         public int Length => array.Length;
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            foreach (var element in array)
+                stringBuilder.Append(element + ", ");
+
+            return stringBuilder.ToString();
+        }
     }
 }

@@ -1,26 +1,21 @@
 ﻿using FakeItEasy;
+using IEnumerableCorrelater.Calculators;
 using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace IEnumerableCorrelater.UnitTests
+namespace IEnumerableCorrelater.UnitTests.Correlaters
 {
     [TestClass]
-    public class LevenshteinCorrelaterTests
+    public class DamerauLevenshteinCorrelaterTests
     {
         private const int removalCost = 9;
         private const int insertionCost = 10;
         private const int missmatchCost = 11;
-        private static readonly IDistanceCalculator<string> distanceCalculator = A.Fake<IDistanceCalculator<string>>();
-        private static readonly LevenshteinCorrelater<string> correlater = new LevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
-
-        public LevenshteinCorrelaterTests()
-        {
-            A.CallTo(() => distanceCalculator.Distance(A<string>._, A<string>._))
-                .ReturnsLazily((string s1, string s2) => s1.Equals(s2) ? 0 : missmatchCost);
-        }
-
+        private const int transpositionCost = 15;
+        private static readonly DamerauLevenshteinCorrelater<string> correlater = new DamerauLevenshteinCorrelater<string>(missmatchCost, transpositionCost, removalCost, insertionCost);
+        
         [TestMethod]
         [ExpectedException(typeof(EnumerableCorrelaterException))]
         public void CorrelateNonNullibleTypes_ThrowException() =>
@@ -81,6 +76,53 @@ namespace IEnumerableCorrelater.UnitTests
             var array2 = new[] { "A", "B", "C" };
 
             var expectedResult = new CorrelaterResult<string>(missmatchCost, array1, array2);
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void Correlate_Transposition1()
+        {
+            var array1 = new[] {"A", "B"};
+            var array2 = new[] { "B", "A"};
+
+            var expectedResult = new CorrelaterResult<string>(transpositionCost, array1, array2);
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void Correlate_Transposition2()
+        {
+            var array1 = new[] { "A", "D", "B", "C" };
+            var array2 = new[] { "A", "B", "D", "C" };
+
+            var expectedResult = new CorrelaterResult<string>(transpositionCost, array1, array2);
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void Correlate_RemoveAndReplace3()
+        {
+            var array1 = new[] { "C", "A", "B" };
+            var array2 = new[] { "B", "A" };
+
+            var expectedResult = new CorrelaterResult<string>(missmatchCost + removalCost, array1, new []{"B", "A", null});
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        [DataRow(1)]
+        [DataRow(10)]
+        public void DifrentTranspositionCosts(int transpositionCost)
+        {
+            var transpositionCalculator = A.Fake<ITranspositionCalculator<string>>();
+            var correlater = new DamerauLevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(20),  transpositionCalculator, 20, 20);
+            A.CallTo(() => transpositionCalculator.TranspositionCost(A<string>._, A<string>._)).Returns(transpositionCost);
+
+
+            var array1 = new[] { "V", "E" };
+            var array2 = new[] { "E", "V" };
+
+            var expectedResult = new CorrelaterResult<string>(transpositionCost, array1, array2);
             correlater.AssertComparision(array1, array2, expectedResult);
         }
     }
