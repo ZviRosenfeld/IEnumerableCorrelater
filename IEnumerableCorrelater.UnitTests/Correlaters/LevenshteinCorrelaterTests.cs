@@ -112,7 +112,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
-        public void DifrentRemovalCosts()
+        public void DifrentRemovalCosts1()
         {
             var removalCalculator = A.Fake<IRemovalCalculator<string>>();
             var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(10), removalCalculator, new BasicInsertionCalculator<string>(10));
@@ -127,7 +127,27 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
-        public void DifrentInsertionCosts()
+        public void DifrentRemovalCosts2()
+        {
+            var removalCalculator = A.Fake<IRemovalCalculator<string>>();
+            var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(10), removalCalculator, new BasicInsertionCalculator<string>(10));
+            A.CallTo(() => removalCalculator.RemovalCost(A<string>._)).ReturnsLazily(
+                (string s) =>
+                {
+                    if (s == "A") return 1;
+                    if (s == "B") return 2;
+                    return 3;
+                });
+
+            var array1 = new[] { "A", "B" };
+            var array2 = new string[0] ;
+
+            var expectedResult = new CorrelaterResult<string>(3, array1, new string[] { null, null });
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void DifrentInsertionCosts1()
         {
             var removalCalculator = A.Fake<IInsertionCalculator<string>>();
             var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(10), new BasicRemovalCalculator<string>(10) ,removalCalculator);
@@ -138,6 +158,26 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var array2 = new[] { "A", "E" };
             
             var expectedResult = new CorrelaterResult<string>(11, new[] { null, "C" }, array2);
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void DifrentInsertionCosts2()
+        {
+            var removalCalculator = A.Fake<IInsertionCalculator<string>>();
+            var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(10), new BasicRemovalCalculator<string>(10), removalCalculator);
+            A.CallTo(() => removalCalculator.InsertionCost(A<string>._)).ReturnsLazily(
+                (string s) =>
+                {
+                    if (s == "A") return 1;
+                    if (s == "B") return 2;
+                    return 3;
+                });
+
+            var array1 = new string[0];
+            var array2 = new[] { "A", "B" };
+
+            var expectedResult = new CorrelaterResult<string>(3, new string[] { null, null }, array2);
             correlater.AssertComparision(array1, array2, expectedResult);
         }
     }

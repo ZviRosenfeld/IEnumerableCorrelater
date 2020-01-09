@@ -52,9 +52,9 @@ namespace IEnumerableCorrelater.Correlaters
 
             dynamicTable[0, 0] = 0;
             for (int i = 1; i < collection1.Length + 1; i++)
-                dynamicTable[i, 0] = i * removalCalculator.RemovalCost(collection1[i - 1]);
+                dynamicTable[i, 0] = dynamicTable[i - 1, 0] + removalCalculator.RemovalCost(collection1[i - 1]);
             for (int i = 1; i < collection2.Length + 1; i++)
-                dynamicTable[0, i] = i * insertionCalculator.InsertionCost(collection2[i - 1]);
+                dynamicTable[0, i] = dynamicTable[0, i - 1] + insertionCalculator.InsertionCost(collection2[i - 1]);
 
             for (int i = 1; i < collection1.Length + 1; i++)
                 for (int j = 1; j < collection2.Length + 1; j++)
