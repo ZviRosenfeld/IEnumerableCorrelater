@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.csproj", "{0E024F2E-C141-4CE6-A9A6-642AB0A01DFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples", "Samples\Samples.csproj", "{0E024F2E-C141-4CE6-A9A6-642AB0A01DFE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEnumerableCorrelater", "IEnumerableCorrelater\IEnumerableCorrelater.csproj", "{368D983E-68AD-41C0-A04D-EAB04DA5306F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEnumerableCorrelater.UnitTests", "IEnumerableCorrelater.UnitTests\IEnumerableCorrelater.UnitTests.csproj", "{817ED7B5-89D8-44B0-B123-B0D68C6F2912}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEnumerableCorrelater.Benchmarking", "IEnumerableCorrelater.Benchmarking\IEnumerableCorrelater.Benchmarking.csproj", "{1CA8E235-15C7-480D-BD9F-5BF07A677991}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{817ED7B5-89D8-44B0-B123-B0D68C6F2912}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{817ED7B5-89D8-44B0-B123-B0D68C6F2912}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{817ED7B5-89D8-44B0-B123-B0D68C6F2912}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CA8E235-15C7-480D-BD9F-5BF07A677991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CA8E235-15C7-480D-BD9F-5BF07A677991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CA8E235-15C7-480D-BD9F-5BF07A677991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CA8E235-15C7-480D-BD9F-5BF07A677991}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

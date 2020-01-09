@@ -27,7 +27,7 @@ namespace IEnumerableCorrelater.Correlaters
         public DamerauLevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, ITranspositionCalculator<T> transpositionCalculator, IRemovalCalculator<T> removalCalculator, IInsertionCalculator<T> insertionCalculator)
         {
             if (default(T) != null && typeof(T) != typeof(char))
-                throw new EnumerableCorrelaterException($"{nameof(T)} must be nullable");
+                throw new EnumerableCorrelaterException($"{nameof(T)} must be nullable or a char");
 
             this.distanceCalculator = distanceCalculator;
             this.transpositionCalculator = transpositionCalculator;
