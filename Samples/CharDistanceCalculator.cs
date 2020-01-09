@@ -5,12 +5,12 @@ using IEnumerableCorrelater.Interfaces;
 namespace Samples
 {
     /// <summary>
-    /// An implimantation of an IDistanceCalculator&lt;char&gt;
+    /// An implantation of an IDistanceCalculator&lt;char&gt;
     /// </summary>
     class CharDistanceCalculator : IDistanceCalculator<char>
     {
         private const int DEFAULT_DISTANCE = 20;
-        // We'll use a dictionary that will hold the distances between diffrent pairs
+        // We'll use a dictionary that will hold the distances between different pairs
         private readonly Dictionary<Tuple<char, char>, int> distance = new Dictionary<Tuple<char, char>, int>()
         {
             {new Tuple<char, char>('a', 'e'), 1 },
@@ -25,6 +25,7 @@ namespace Samples
 
         public int Distance(char element1, char element2)
         {
+            // If the elements are equal, they should return a distance of 0
             if (element1.Equals(element2))
                 return 0;
 
@@ -32,7 +33,7 @@ namespace Samples
             if (distance.ContainsKey(tuple))
                 return distance[tuple];
 
-            // For any distances not in the dictinary, we'll return a default distance.
+            // For any distances not in the dictionary, we'll return a default distance.
             return DEFAULT_DISTANCE;
         }
     }
