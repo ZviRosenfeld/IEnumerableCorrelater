@@ -104,8 +104,8 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 
     public int Distance(char element1, char element2)
     {
-		// If the elements are equal, they should return a distance of 0
-		if (element1.Equals(element2))
+	// If the elements are equal, they should return a distance of 0
+	if (element1.Equals(element2))
             return 0;
 	
         var tuple = new Tuple<char, char>(element1, element2);
