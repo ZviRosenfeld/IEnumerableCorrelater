@@ -19,6 +19,15 @@ BestMatch1 = { "A", "B", "C", "D"}
 BestMatch2 = { "A", "B", "I", "D"}
 ```
 
+## Table of Constant
+
+- [Usage](#usage)
+- [Correlaters](#correlaters)
+  - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
+  - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
+- [Optimizations](#optimizations)
+  - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
+
 ## Usage
 
 **Exsample1:** Comparing two collections. The example compares arrays of strings, but you can really compare collections of any type as longs as the type is nullable or a char.
@@ -79,7 +88,7 @@ Console.WriteLine(result.BestMatch1);
 Console.WriteLine(result.BestMatch2);
 ```
 
-### A Sample Implemantation of an IDistanceCalculator\<char>
+### A Sample Implementation of an IDistanceCalculator\<char>
 
 ```CSharp
 /// <summary>
@@ -99,7 +108,7 @@ class CharDistanceCalculator : IDistanceCalculator<char>
         {new Tuple<char, char>('c', 'e'), 2 },
         {new Tuple<char, char>('c', 's'), 2 },
         {new Tuple<char, char>('c', 'i'), 3 },
-	...
+        ...
     }; 
 
     public int Distance(char element1, char element2)
@@ -117,3 +126,43 @@ class CharDistanceCalculator : IDistanceCalculator<char>
     }
 }
 ```
+
+## Correlaters
+
+### LevenshteinCorrelater
+
+[LevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs) Finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) between two collections. 
+
+### DamerauLevenshteinCorrelater
+
+[DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) between two collections. 
+
+## Optimizations
+
+There are a number of ICorrelater\<T> that can be wrapped around the [base correlaters](#correlaters).
+While using these wrappers can reduce the accuracy of the correlation, they can greatly improve their performance.
+
+### SplitToChunksCorrelaterWrapper
+
+This wrapper splits the collection into smaller chunks, and correlates each chunk individually.
+Since the correlates typically have a time complexity of O(n\*m), where n and m are the size of the collection being correlated,
+reducing the collections size can have a big impact on performance.
+
+```CSharp
+int removalCost = 7;
+int insertionCost = 7;
+int missmatchCost = 10;
+int chunkSize = 200; // Bigger chunks will result in a slower, but more acurate correlation
+ICorrelater<char> innerCorrelater = 
+    new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
+
+// The SplitToChunksCorrelaterWrapper wrappes an inner ICorrelater
+ICorrelater<char> optimizedCorrelater =
+    new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
+
+// Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
+EnumerableCorrelater<char> enumerableCorrelater =
+    new EnumerableCorrelater<char>(optimizedCorrelater);
+
+CorrelaterResult<char> result = enumerableCorrelater.Correlate(collection1, collection2);
+``` 

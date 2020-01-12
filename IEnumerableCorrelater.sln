@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEnumerableCorrelater", "IE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEnumerableCorrelater.UnitTests", "IEnumerableCorrelater.UnitTests\IEnumerableCorrelater.UnitTests.csproj", "{817ED7B5-89D8-44B0-B123-B0D68C6F2912}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEnumerableCorrelater.Benchmarking", "IEnumerableCorrelater.Benchmarking\IEnumerableCorrelater.Benchmarking.csproj", "{1CA8E235-15C7-480D-BD9F-5BF07A677991}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IEnumerableCorrelater.Benchmarking", "IEnumerableCorrelater.Benchmarking\IEnumerableCorrelater.Benchmarking.csproj", "{1CA8E235-15C7-480D-BD9F-5BF07A677991}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringCorrelatorGui", "StringCorrelatorGui\StringCorrelatorGui.csproj", "{9A1EF4CC-758F-4A46-910A-3E04CCCCDB75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{1CA8E235-15C7-480D-BD9F-5BF07A677991}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CA8E235-15C7-480D-BD9F-5BF07A677991}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CA8E235-15C7-480D-BD9F-5BF07A677991}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A1EF4CC-758F-4A46-910A-3E04CCCCDB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A1EF4CC-758F-4A46-910A-3E04CCCCDB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A1EF4CC-758F-4A46-910A-3E04CCCCDB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A1EF4CC-758F-4A46-910A-3E04CCCCDB75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,6 +3,7 @@ using IEnumerableCorrelater.Calculators;
 using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
+using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IEnumerableCorrelater.UnitTests.Correlaters
@@ -100,7 +101,19 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
-        public void Correlate_RemoveAndReplace3()
+        public void Correlate_Transposition3()
+        {
+            var correlater = new DamerauLevenshteinCorrelater<string>(20, 10, 15, 15);
+
+            var array1 = new[] { "A", "D", "B" };
+            var array2 = new[] { "B", "D" };
+
+            var expectedResult = new CorrelaterResult<string>(25, array1, new []{null, "B", "D"});
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void Correlate_RemoveAndReplace()
         {
             var array1 = new[] { "C", "A", "B" };
             var array2 = new[] { "B", "A" };

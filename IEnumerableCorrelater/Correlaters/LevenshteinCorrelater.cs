@@ -15,9 +15,9 @@ namespace IEnumerableCorrelater.Correlaters
             correlater = new DamerauLevenshteinCorrelater<T>(distanceCalculator, null, removalCost, insertionCost);
         }
 
-        public LevenshteinCorrelater(int distanceCost, int removalCost, int insertionCost)
+        public LevenshteinCorrelater(int substitutionCost, int removalCost, int insertionCost)
         {
-            correlater = new DamerauLevenshteinCorrelater<T>(new BasicDistanceCalculator<T>(distanceCost), null, removalCost, insertionCost);
+            correlater = new DamerauLevenshteinCorrelater<T>(new BasicDistanceCalculator<T>(substitutionCost), null, removalCost, insertionCost);
         }
 
         public LevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, IRemovalCalculator<T> removalCalculator, IInsertionCalculator<T> insertionCalculator)

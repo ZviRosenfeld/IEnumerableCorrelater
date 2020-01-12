@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using FakeItEasy;
 using IEnumerableCorrelater.Interfaces;
+using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IEnumerableCorrelater.UnitTests

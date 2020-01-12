@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IEnumerableCorrelater.Benchmarking
 {
     [TestClass]
-    [TestCategory("Benchmarking")]
+    [TestCategory("Performance Benchmarking")]
     public class DamerauLevenshteinCorrelaterBenchmarking
     {
         private const int LENGTH = 7500;

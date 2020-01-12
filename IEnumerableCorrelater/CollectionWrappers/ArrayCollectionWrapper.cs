@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater.CollectionWrappers
@@ -16,6 +19,8 @@ namespace IEnumerableCorrelater.CollectionWrappers
 
         public int Length => array.Length;
 
+        public IEnumerator<T> GetEnumerator() => array.Cast<T>().GetEnumerator();
+
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
@@ -24,5 +29,7 @@ namespace IEnumerableCorrelater.CollectionWrappers
 
             return stringBuilder.ToString();
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

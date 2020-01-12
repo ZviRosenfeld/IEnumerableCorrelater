@@ -3,6 +3,7 @@ using IEnumerableCorrelater.Calculators;
 using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
+using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IEnumerableCorrelater.UnitTests.Correlaters
@@ -85,7 +86,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var array2 = new[] { "A", "B", "D", "C" };
 
             var expectedResult = new CorrelaterResult<string>(removalCost + insertionCost,
-                new[] {"A", "D", "B", null, "C"}, new[] {"A", null, "B", "D", "C"});
+                new[] {"A", null, "D", "B", "C"}, new[] {"A", "B", "D", null, "C"});
             correlater.AssertComparision(array1, array2, expectedResult);
         }
 
@@ -107,7 +108,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var array2 = new[] { "T", "A" };
 
             var expectedResult = new CorrelaterResult<string>(5,
-                new[] { "V", null, "E" }, new[] { null, "T", "A" });
+                new[] { null, "V", "E" }, new[] { "T", null, "A" });
             correlater.AssertComparision(array1, array2, expectedResult);
         }
 
@@ -178,6 +179,16 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var array2 = new[] { "A", "B" };
 
             var expectedResult = new CorrelaterResult<string>(3, new string[] { null, null }, array2);
+            correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void SameCollection_AreEquale()
+        {
+            var array1 = new[] { "A", "B", "C" };
+            var array2 = new[] { "A", "B", "C" };
+
+            var expectedResult = new CorrelaterResult<string>(0, array1, array2);
             correlater.AssertComparision(array1, array2, expectedResult);
         }
     }

@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater.CollectionWrappers
 {
-    class CollectionWrapperFactory
+    public class CollectionWrapperFactory
     {
         public ICollectionWrapper<T> GetCollectionWrapper<T>(IEnumerable<T> collection)
         {

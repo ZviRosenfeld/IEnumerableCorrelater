@@ -19,8 +19,8 @@ namespace IEnumerableCorrelater.Correlaters
         {
         }
         
-        public DamerauLevenshteinCorrelater(int distanceCost, int transpositionCost, int removalCost, int insertionCost) :
-            this (new BasicDistanceCalculator<T>(distanceCost), new BasicTranspositionCalculator<T>(transpositionCost), removalCost, insertionCost)
+        public DamerauLevenshteinCorrelater(int substitutionCost, int transpositionCost, int removalCost, int insertionCost) :
+            this (new BasicDistanceCalculator<T>(substitutionCost), new BasicTranspositionCalculator<T>(transpositionCost), removalCost, insertionCost)
         {
         }
 
@@ -59,6 +59,12 @@ namespace IEnumerableCorrelater.Correlaters
             for (int i = 1; i < collection1.Length + 1; i++)
                 for (int j = 1; j < collection2.Length + 1; j++)
                 {
+                    if (collection1[i - 1].Equals(collection2[j - 1]))
+                    {
+                        dynamicTable[i, j] = dynamicTable[i - 1, j - 1];
+                        continue;
+                    }
+
                     var substitution = dynamicTable[i - 1, j - 1] + distanceCalculator.Distance(collection1[i - 1], collection2[j - 1]);
                     var insertion = dynamicTable[i, j - 1] + insertionCalculator.InsertionCost(collection1[i - 1]);
                     var removal = dynamicTable[i - 1, j] + removalCalculator.RemovalCost(collection2[j - 1]);
@@ -77,7 +83,7 @@ namespace IEnumerableCorrelater.Correlaters
         {
             if (transpositionCalculator == null) return false;
             if (i < 2 || j < 2) return false;
-            return (collection1[i - 1].Equals(collection2[i - 2]) && collection1[j - 2].Equals(collection2[j - 1]));
+            return (collection1[i - 1].Equals(collection2[j - 2]) && collection1[i - 2].Equals(collection2[j - 1]));
         }
 
         private (T[], T[]) GetMatchingArrays(int[,] dynamicTable, ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
@@ -88,19 +94,19 @@ namespace IEnumerableCorrelater.Correlaters
             int i = dynamicTable.GetLength(0) - 1, j = dynamicTable.GetLength(1) - 1;
             while (i > 0 && j > 0)
             {
-                // In case we inserted the element
-                if (dynamicTable[i, j] == dynamicTable[i, j - 1] + insertionCalculator.InsertionCost(collection2[j - 1]))
-                {
-                    bestMatchList1.Add(default(T));
-                    bestMatchList2.Add(collection2[j - 1]);
-                    j--;
-                }
                 // In case we removed the element
-                else if (dynamicTable[i, j] == dynamicTable[i - 1, j] + removalCalculator.RemovalCost(collection1[i - 1]))
+                if (dynamicTable[i, j] == dynamicTable[i - 1, j] + removalCalculator.RemovalCost(collection1[i - 1]))
                 {
                     bestMatchList1.Add(collection1[i - 1]);
                     bestMatchList2.Add(default(T));
                     i--;
+                }
+                // In case we inserted the element
+                else if (dynamicTable[i, j] == dynamicTable[i, j - 1] + insertionCalculator.InsertionCost(collection2[j - 1]))
+                {
+                    bestMatchList1.Add(default(T));
+                    bestMatchList2.Add(collection2[j - 1]);
+                    j--;
                 }
                 // In case we transposited the element
                 else if (CanDoTransposition(collection1, collection2, i, j) &&

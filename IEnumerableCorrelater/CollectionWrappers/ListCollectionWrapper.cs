@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using IEnumerableCorrelater.Interfaces;
 
@@ -17,6 +19,10 @@ namespace IEnumerableCorrelater.CollectionWrappers
 
         public int Length => list.Count;
 
+        public T[] ToArray() => list.ToArray();
+
+        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
+
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
@@ -25,5 +31,7 @@ namespace IEnumerableCorrelater.CollectionWrappers
 
             return stringBuilder.ToString();
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
