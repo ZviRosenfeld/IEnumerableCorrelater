@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using IEnumerableCorrelater.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -47,6 +48,28 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
                 else if (collection1[i] != null && !collection1[i].Equals(collection2.ElementAt(i)))
                     Assert.Fail(message);
             }
+        }
+
+        public static void AssertProgressUpdateWasCalledRightNumberOfTimes(this ICorrelater<string> correlater)
+        {
+            var array1 = new[] { "A", "D", "B", "C" };
+            var array2 = new[] { "A", "B", "D", "C" };
+
+            correlater.AssertProgressUpdateWasCalledRightNumberOfTimes(array1, array2, array1.Length + 1);
+        }
+
+        public static void AssertProgressUpdateWasCalledRightNumberOfTimes<T>(this ICorrelater<T> correlater, T[] array1, T[] array2, int expectedProgress)
+        {
+            var progressUpdates = 0;
+
+            correlater.OnProgressUpdate += (progress, outOf) =>
+            {
+                Assert.AreEqual(expectedProgress, outOf);
+                Interlocked.Increment(ref progressUpdates);
+            };
+            correlater.Compare(array1.ToCollectionWrapper(), array2.ToCollectionWrapper());
+
+            Assert.AreEqual(expectedProgress, progressUpdates);
         }
     }
 }

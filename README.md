@@ -27,6 +27,7 @@ BestMatch2 = { "A", "B", "I", "D"}
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
+- [OnProgressUpdate Event](#onprogressupdate-event)
 
 ## Usage
 
@@ -166,3 +167,19 @@ EnumerableCorrelater<char> enumerableCorrelater =
 
 CorrelaterResult<char> result = enumerableCorrelater.Correlate(collection1, collection2);
 ``` 
+
+## OnProgressUpdate Event
+
+The ICorrelater interface contains the OnProgressUpdate event, which is called to update the correlation's progress.
+The OnProgressUpdate event is called with 2 parameters of type int, where the first is the current progress, and the second is the total progress.
+
+```CSharp
+ICorrelater<string> correlater = new LevenshteinCorrelater<string>(10, 7, 7);
+correlater.OnProgressUpdate += (int currentProgress, int totalProgress) =>
+{
+    // Do something with the progress update here
+};
+
+EnumerableCorrelater<string> enumerableCorrelater = new EnumerableCorrelater<string>(correlater);
+CorrelaterResult<string> result = enumerableCorrelater.Correlate(collection1, collection2);
+```

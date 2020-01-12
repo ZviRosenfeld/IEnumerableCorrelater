@@ -1,4 +1,5 @@
-﻿using IEnumerableCorrelater.Calculators;
+﻿using System;
+using IEnumerableCorrelater.Calculators;
 using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater.Correlaters
@@ -13,6 +14,7 @@ namespace IEnumerableCorrelater.Correlaters
         public LevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, int removalCost, int insertionCost)
         {
             correlater = new DamerauLevenshteinCorrelater<T>(distanceCalculator, null, removalCost, insertionCost);
+            correlater.OnProgressUpdate += OnProgressUpdate;
         }
 
         public LevenshteinCorrelater(int substitutionCost, int removalCost, int insertionCost)
@@ -28,5 +30,6 @@ namespace IEnumerableCorrelater.Correlaters
         public CorrelaterResult<T> Compare(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2) =>
             correlater.Compare(collection1, collection2);
 
+        public event Action<int, int> OnProgressUpdate;
     }
 }

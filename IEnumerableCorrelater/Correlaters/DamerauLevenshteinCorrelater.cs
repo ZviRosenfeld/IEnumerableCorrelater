@@ -42,6 +42,8 @@ namespace IEnumerableCorrelater.Correlaters
             return new CorrelaterResult<T>(dynamicTable[collection1.Length, collection2.Length], matchingArrays.Item1, matchingArrays.Item2);
         }
 
+        public event Action<int, int> OnProgressUpdate;
+
         /// <summary>
         /// Creates the dynamic table. 
         /// Cell[i, j] defines the best match in which array1 contains all elements up to i (including), and array2 contains all elements up to j (including)
@@ -56,7 +58,9 @@ namespace IEnumerableCorrelater.Correlaters
             for (int i = 1; i < collection2.Length + 1; i++)
                 dynamicTable[0, i] = dynamicTable[0, i - 1] + insertionCalculator.InsertionCost(collection2[i - 1]);
 
+            OnProgressUpdate?.Invoke(1, collection1.Length + 1);
             for (int i = 1; i < collection1.Length + 1; i++)
+            {
                 for (int j = 1; j < collection2.Length + 1; j++)
                 {
                     if (collection1[i - 1].Equals(collection2[j - 1]))
@@ -76,6 +80,8 @@ namespace IEnumerableCorrelater.Correlaters
                     }
                     dynamicTable[i, j] = min;
                 }
+                OnProgressUpdate?.Invoke(i, collection1.Length + 1);
+            }
             return dynamicTable;
         }
 

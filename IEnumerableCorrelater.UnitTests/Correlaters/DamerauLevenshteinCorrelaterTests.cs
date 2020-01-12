@@ -138,5 +138,12 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var expectedResult = new CorrelaterResult<string>(transpositionCost, array1, array2);
             correlater.AssertComparision(array1, array2, expectedResult);
         }
+
+        [TestMethod]
+        public void OnProgressUpdatesHappensRightNumberOfTimes()
+        {
+            var correlater = new DamerauLevenshteinCorrelater<string>(missmatchCost, transpositionCost, removalCost, insertionCost);
+            correlater.AssertProgressUpdateWasCalledRightNumberOfTimes();
+        }
     }
 }

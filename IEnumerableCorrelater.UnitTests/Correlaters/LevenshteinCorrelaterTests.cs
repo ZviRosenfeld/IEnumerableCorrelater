@@ -191,5 +191,12 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var expectedResult = new CorrelaterResult<string>(0, array1, array2);
             correlater.AssertComparision(array1, array2, expectedResult);
         }
+
+        [TestMethod]
+        public void OnProgressUpdatesHappensRightNumberOfTimes()
+        {
+            var correlater = new LevenshteinCorrelater<string>(missmatchCost, removalCost, insertionCost);
+            correlater.AssertProgressUpdateWasCalledRightNumberOfTimes();
+        }
     }
 }

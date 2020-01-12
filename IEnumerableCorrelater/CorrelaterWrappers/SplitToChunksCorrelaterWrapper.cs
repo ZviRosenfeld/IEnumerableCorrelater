@@ -32,6 +32,8 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             return Reduce(results);
         }
 
+        public event Action<int, int> OnProgressUpdate;
+
         private List<Task<CorrelaterResult<T>>> Map(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
         {
             var resultTasks = new List<Task<CorrelaterResult<T>>>();
@@ -66,6 +68,8 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
                 distance += result.Distance;
                 AddRange(result.BestMatch1, list1, startEdgeIndex, endEdgeIndex);
                 AddRange(result.BestMatch2, list2, startEdgeIndex, endEdgeIndex);
+
+                OnProgressUpdate?.Invoke(i, resultTasks.Count);
             }
 
             return new CorrelaterResult<T>(distance, list1.ToArray(), list2.ToArray());

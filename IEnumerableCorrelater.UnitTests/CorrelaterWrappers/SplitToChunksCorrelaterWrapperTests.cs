@@ -132,6 +132,13 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             levenshteinCorrelater.AssertComparision(LONG_STRING, missingString, expectedResult);
         }
 
+        [TestMethod]
+        public void OnProgressUpdatesHappensRightNumberOfTimes()
+        {
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, CHUNK_SIZE);
+            correlater.AssertProgressUpdateWasCalledRightNumberOfTimes(LONG_STRING.ToCharArray(), LONG_STRING.ToCharArray(), LONG_STRING.Length / CHUNK_SIZE + 1);
+        }
+
         private string RemoveAtIndex(string s, int index)
         {
             var stringBuilder = new StringBuilder();
