@@ -47,9 +47,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             return resultTasks;
         }
         
-        /// <summary>
-        /// When connecting section A with section B, the Reduce method tries to better connect the "edges" of A and B.
-        /// </summary>
+        // When connecting section A with section B, the Reduce method tries to better connect the "edges" of A and B.
         private CorrelaterResult<T> Reduce(List<Task<CorrelaterResult<T>>> resultTasks)
         {
             var list1 = new List<T>();
@@ -98,13 +96,17 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
 
 
         /// <summary>
-        /// Finds the first first index, i, so that for any index j where j > i T[j] == null
+        /// Finds the first index, i, so that either 
+        /// (for any index j where j > i result.BestMatch1[j] == null) or 
+        /// (for any index j where j > i result.BestMatch2[j] == null)
         /// </summary>
         private int GetEndEdgeIndex(CorrelaterResult<T> result) =>
             Math.Min(GetEndEdgeIndex(result.BestMatch1), GetEndEdgeIndex(result.BestMatch2));
 
         /// <summary>
-        /// Finds the first first index, i, so that for any index j where j > i T[j] == null
+        /// Finds the first index, i, so that either 
+        /// (for any index j where j > i result.BestMatch1[j] == null) or 
+        /// (for any index j where j > i result.BestMatch2[j] == null)
         /// </summary>
         private int GetEndEdgeIndex(T[] array)
         {
@@ -117,14 +119,18 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         }
 
         /// <summary>
-        /// Finds the last index, i, so that for any index j where i > j T[j] == null
+        /// Finds the last index, i, so that either 
+        /// (for any index j where i > j result.BestMatch1[j] == null) or 
+        /// (for any index j where i > j result.BestMatch2[j] == null)
         /// </summary>
         private int GetStartEdgeIndex(CorrelaterResult<T> result) =>
             Math.Max(GetStartEdgeIndex(result.BestMatch1), GetStartEdgeIndex(result.BestMatch2));
 
 
         /// <summary>
-        /// Finds the last index, i, so that for any index j where i > j T[j] == null
+        /// Finds the last index, i, so that either 
+        /// (for any index j where i > j result.BestMatch1[j] == null) or 
+        /// (for any index j where i > j result.BestMatch2[j] == null)
         /// </summary>
         private int GetStartEdgeIndex(T[] array)
         {

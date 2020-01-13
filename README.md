@@ -22,10 +22,11 @@ BestMatch2 = { "A", "B", "I", "D"}
 ## Table of Constant
 
 - [Usage](#usage)
+  - [Impotent Notes](#impotent-notes)
 - [Correlaters](#correlaters)
   - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
-- [Optimizations](#optimizations)
+- [CorrelaterWrapper](#correlaterwrapper)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
 - [OnProgressUpdate Event](#onprogressupdate-event)
 
@@ -89,6 +90,11 @@ Console.WriteLine(result.BestMatch1);
 Console.WriteLine(result.BestMatch2);
 ```
 
+### Impotent Notes
+
+- Correlaters are not thread safe.
+- All costs must be positive. This won't be enforced by the library, but negative costs can results in odd and unexpected behavior.
+
 ### A Sample Implementation of an IDistanceCalculator\<char>
 
 ```CSharp
@@ -132,22 +138,24 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 
 ### LevenshteinCorrelater
 
-[LevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs) Finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) between two collections. 
+[LevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs) Finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) and best correlation between two collections. 
 
 ### DamerauLevenshteinCorrelater
 
-[DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) between two collections. 
+[DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections. 
 
-## Optimizations
+## CorrelaterWrappers
 
 There are a number of ICorrelater\<T> that can be wrapped around the [base correlaters](#correlaters).
-While using these wrappers can reduce the accuracy of the correlation, they can greatly improve their performance.
+These wrappers can increase the base correlater's performance, or add other abilities.
 
 ### SplitToChunksCorrelaterWrapper
 
-This wrapper splits the collection into smaller chunks, and correlates each chunk individually.
-Since the correlates typically have a time complexity of O(n\*m), where n and m are the size of the collection being correlated,
+This wrapper splits the collection into smaller chunks, and correlates each chunk individually, thus reducing correlation time and memory consumption.
+Since the correlates typically have a time and memory complexity of O(n\*m), where n and m are the size of the collection being correlated,
 reducing the collections size can have a big impact on performance.
+
+Please note that SplitToChunksCorrelaterWrapper will reduce your correlation's accuracy. 
 
 ```CSharp
 int removalCost = 7;
