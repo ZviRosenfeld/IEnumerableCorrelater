@@ -80,7 +80,7 @@ namespace IEnumerableCorrelater.Correlaters
                     }
                     dynamicTable[i, j] = min;
                 }
-                OnProgressUpdate?.Invoke(i, collection1.Length + 1);
+                OnProgressUpdate?.Invoke(i + 1, collection1.Length + 1);
             }
             return dynamicTable;
         }

@@ -14,7 +14,7 @@ namespace IEnumerableCorrelater.Benchmarking
         private readonly ICorrelater<char> correlater = new SplitToChunksCorrelaterWrapper<char>(new LevenshteinCorrelater<char>(10, 7, 7), CHUNK_SIZE);
 
         [TestMethod]
-        public void LevenshteinCorrelater_BenchmarkTwoVeryLongStrings()
+        public void SplitToChunksCorrelater_BenchmarkTwoVeryLongStrings()
         {
             var string1 = Utils.GetLongString(LENGTH);
             var string2 = Utils.GetLongString(LENGTH);

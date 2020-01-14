@@ -169,7 +169,7 @@ namespace StringCorrelatorGui
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 1;
-            this.label4.Text = "Optimizations";
+            this.label4.Text = "Wrappers";
             // 
             // splitToChunksCheckBox
             // 

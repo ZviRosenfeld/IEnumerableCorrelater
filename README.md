@@ -28,6 +28,7 @@ BestMatch2 = { "A", "B", "I", "D"}
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
 - [CorrelaterWrapper](#correlaterwrapper)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
+- [IContinuousCorrelaters](#icontinuouscorrelaters)
 - [OnProgressUpdate Event](#onprogressupdate-event)
 
 ## Usage
@@ -155,7 +156,7 @@ This wrapper splits the collection into smaller chunks, and correlates each chun
 Since the correlates typically have a time and memory complexity of O(n\*m), where n and m are the size of the collection being correlated,
 reducing the collections size can have a big impact on performance.
 
-Please note that SplitToChunksCorrelaterWrapper will reduce your correlation's accuracy. 
+Please note that using SplitToChunksCorrelaterWrapper will reduce your correlation's accuracy. 
 
 ```CSharp
 int removalCost = 7;
@@ -175,6 +176,40 @@ EnumerableCorrelater<char> enumerableCorrelater =
 
 CorrelaterResult<char> result = enumerableCorrelater.Correlate(collection1, collection2);
 ``` 
+
+SplitToChunksCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
+This means that the OnResultUpdate event will be triggered for each new chunk that is correlated, 
+so you can start displaying the results before the full calculation is completed.
+
+## IContinuousCorrelaters
+
+Correlation of big collections can take a considerable amount of time.
+
+ContinuousCorrelaters solve this problem by providing the caller with updates
+on the correlation of the earlier segments of the collection while they continue working out the correlation of the later ones. 
+
+The ContinuousCorrelaters will raise the OnResultUpdate for every segment it finishes correlating.
+Please note that the OnResultUpdate will only contain the new segment (and not previously sent segments).
+
+```CSharp
+IContinuousCorrelater<char> continuousCorrelater =
+    new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
+continuousCorrelater.OnResultUpdate += (CorrelaterResult<char> partialResult) =>
+{
+    // Do something with the  here.
+    // Please note that the OnResultUpdate will only contain the new segment (and not previously sent segments).
+
+    myUi.Distance += partialResult.Distance; // Note that the accumulated distance may differ from the actual distance.
+    myUi.BestMatch1.AddRange(partialResult.BestMatch1);
+    myUi.BestMatch2.AddRange(partialResult.BestMatch2);
+};
+
+// Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
+EnumerableCorrelater<char> enumerableCorrelater = new EnumerableCorrelater<char>(continuousCorrelater);
+
+// Run the correlate in a new thread so that our UI don't freeze
+Task.Run(() => enumerableCorrelater.Correlate(collection1, collection2));
+```
 
 ## OnProgressUpdate Event
 

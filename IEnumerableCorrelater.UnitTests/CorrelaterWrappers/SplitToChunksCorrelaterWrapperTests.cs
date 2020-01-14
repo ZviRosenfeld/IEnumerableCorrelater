@@ -51,7 +51,7 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             innerCorrelater.SetToRetrun(AddOffset, AddNullToEnd);
 
             var result = correlater.Compare(LONG_STRING.ToCollectionWrapper(), LONG_STRING.ToCollectionWrapper());
-            result.BestMatch1.RemoveNull().ToCollectionWrapper().AssertAreSame(result.BestMatch2.RemoveNull(), "Collection is missing elements");
+            result.BestMatch1.RemoveNull().AssertAreSame(result.BestMatch2.RemoveNull(), "Collection is missing elements");
         }
 
         [TestMethod]
@@ -60,7 +60,7 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             innerCorrelater.SetToRetrun(AddNullToEnd, AddOffset);
 
             var result = correlater.Compare(LONG_STRING.ToCollectionWrapper(), LONG_STRING.ToCollectionWrapper());
-            result.BestMatch1.RemoveNull().ToCollectionWrapper().AssertAreSame(result.BestMatch2.RemoveNull(), "Collection is missing elements");
+            result.BestMatch1.RemoveNull().AssertAreSame(result.BestMatch2.RemoveNull(), "Collection is missing elements");
         }
 
         [TestMethod]
@@ -137,6 +137,44 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         {
             var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, CHUNK_SIZE);
             correlater.AssertProgressUpdateWasCalledRightNumberOfTimes(LONG_STRING.ToCharArray(), LONG_STRING.ToCharArray(), LONG_STRING.Length / CHUNK_SIZE + 1);
+        }
+
+        [TestMethod]
+        public void OnResultUpdate_NoOffset_DontMissPartOfMatch()
+        {
+            innerCorrelater.SetToRetrunInputCollection(0);
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, CHUNK_SIZE);
+            correlater.AssertOnResultUpdateWorks(LONG_STRING, LONG_STRING);
+        }
+
+        [TestMethod]
+        public void OnResultUpdate_MatchWithOffsetForFirst_DontMissPartOfMatch()
+        {
+            innerCorrelater.SetToRetrun(AddOffset, AddNullToEnd);
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, CHUNK_SIZE);
+            correlater.AssertOnResultUpdateWorks(LONG_STRING, LONG_STRING);
+        }
+
+        [TestMethod]
+        public void OnResultUpdate_TotalyDiffrentStrings_DontMissPartOfMatch()
+        {
+            innerCorrelater.SetToRetrunInputCollection(0);
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, CHUNK_SIZE);
+            correlater.AssertOnResultUpdateWorks("abcdefghijklmnopqrstuvwxyz", "1234567890");
+        }
+
+        [TestMethod]
+        public void OnResultUpdate_OneCharMissing_DontMissPartOfMatch()
+        {
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(new LevenshteinCorrelater<char>(10, 7, 7), CHUNK_SIZE);
+            correlater.AssertOnResultUpdateWorks(LONG_STRING, LONG_STRING.Remove(8, 1));
+        }
+
+        [TestMethod]
+        public void OnResultUpdate_ManyCharMissing_DontMissPartOfMatch()
+        {
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(new LevenshteinCorrelater<char>(10, 7, 7), CHUNK_SIZE);
+            correlater.AssertOnResultUpdateWorks(LONG_STRING, LONG_STRING.Remove(8, 9));
         }
 
         private string RemoveAtIndex(string s, int index)

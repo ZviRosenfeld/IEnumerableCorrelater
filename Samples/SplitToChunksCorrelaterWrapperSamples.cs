@@ -5,7 +5,7 @@ using IEnumerableCorrelater.Interfaces;
 
 namespace Samples
 {
-    class Optimizations
+    class SplitToChunksCorrelaterWrapperSamples
     {
         char[] collection1 = "ABC".ToCharArray();
         char[] collection2 = "ABB".ToCharArray();
@@ -20,12 +20,12 @@ namespace Samples
                 new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
 
             // The SplitToChunksCorrelaterWrapper wrappes an inner ICorrelater
-            ICorrelater<char> optimizedCorrelater =
+            ICorrelater<char> splitToChunksCorrelaterWrapper =
                 new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
 
             // Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
             EnumerableCorrelater<char> enumerableCorrelater =
-                new EnumerableCorrelater<char>(optimizedCorrelater);
+                new EnumerableCorrelater<char>(splitToChunksCorrelaterWrapper);
 
             CorrelaterResult<char> result = enumerableCorrelater.Correlate(collection1, collection2);
 

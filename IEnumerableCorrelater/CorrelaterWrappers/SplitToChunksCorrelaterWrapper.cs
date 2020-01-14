@@ -12,7 +12,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
     /// It splits the collection or string into chunks, and correlates each chunk individually.
     /// When it's done, it correlates the edges of each chunk to combine them.
     /// </summary>
-    public class SplitToChunksCorrelaterWrapper<T> : ICorrelater<T>
+    public class SplitToChunksCorrelaterWrapper<T> : IContinuousCorrelater<T>
     {
         private readonly CollectionWrapperFactory factory = new CollectionWrapperFactory();
         private readonly ICorrelater<T> innerCorrelater;
@@ -61,16 +61,44 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
                 var startEdgeIndex = i > 0 ? GetStartEdgeIndex(resultTasks[i].Result) : 0;
                 if (i > 0)
                     AddEdge(endEdgeIndex, startEdgeIndex, result, resultTasks[i - 1].Result, list1, list2);
-                endEdgeIndex = i < resultTasks.Count - 1 ? GetEndEdgeIndex(result) : result.BestMatch1.Length;
+                endEdgeIndex = GetEndEdgeIndex(result);
 
                 distance += result.Distance;
                 AddRange(result.BestMatch1, list1, startEdgeIndex, endEdgeIndex);
                 AddRange(result.BestMatch2, list2, startEdgeIndex, endEdgeIndex);
 
-                OnProgressUpdate?.Invoke(i, resultTasks.Count);
-            }
+                OnResultUpdate?.Invoke(GetPartualResult(result, startEdgeIndex, endEdgeIndex));
+                OnProgressUpdate?.Invoke(i + 1, resultTasks.Count);
 
+                if (i == resultTasks.Count - 1)
+                    AddFinalEdge(Math.Max(endEdgeIndex, startEdgeIndex), result, list1, list2);
+            }
+            
             return new CorrelaterResult<T>(distance, list1.ToArray(), list2.ToArray());
+        }
+        
+        private void AddFinalEdge(int addedUpTo, CorrelaterResult<T> result, List<T> list1, List<T> list2)
+        {
+            var length = Math.Max(0, result.BestMatch1.Length - addedUpTo);
+            var array1 = new T[length];
+            var array2 = new T[length];
+
+            for (int i = addedUpTo; i < result.BestMatch1.Length; i++)
+                array1[i - addedUpTo] = result.BestMatch1[i];
+            for (int i = addedUpTo; i < result.BestMatch2.Length; i++)
+                array2[i - addedUpTo] = result.BestMatch2[i];
+
+            list1.AddRange(array1);
+            list2.AddRange(array2);
+
+            OnResultUpdate?.Invoke(new CorrelaterResult<T>(0, array1, array2));
+        }
+
+        private CorrelaterResult<T> GetPartualResult(CorrelaterResult<T> retult, int startIndex, int endIndex)
+        {
+            var array1 = retult.BestMatch1.Skip(startIndex).Take(endIndex - startIndex).ToArray();
+            var array2 = retult.BestMatch2.Skip(startIndex).Take(endIndex - startIndex).ToArray();
+            return new CorrelaterResult<T>(retult.Distance, array1, array2);
         }
 
         /// <summary>
@@ -89,6 +117,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
 
             AddRange(result.BestMatch1, list1, 0, result.BestMatch1.Length);
             AddRange(result.BestMatch2, list2, 0, result.BestMatch2.Length);
+            OnResultUpdate?.Invoke(GetPartualResult(result, 0, result.BestMatch1.Length));
         }
 
         private IEnumerable<T> GetEdgeCollection(T[] firstPart, T[] secondPart, int start, int end) =>
@@ -104,9 +133,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             Math.Min(GetEndEdgeIndex(result.BestMatch1), GetEndEdgeIndex(result.BestMatch2));
 
         /// <summary>
-        /// Finds the first index, i, so that either 
-        /// (for any index j where j > i result.BestMatch1[j] == null) or 
-        /// (for any index j where j > i result.BestMatch2[j] == null)
+        /// Finds the first index, i, so that either for any index j where j > i array[j] == null
         /// </summary>
         private int GetEndEdgeIndex(T[] array)
         {
@@ -128,9 +155,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
 
 
         /// <summary>
-        /// Finds the last index, i, so that either 
-        /// (for any index j where i > j result.BestMatch1[j] == null) or 
-        /// (for any index j where i > j result.BestMatch2[j] == null)
+        /// Finds the last index, i, so that either for any index j where i > j array[j] == null
         /// </summary>
         private int GetStartEdgeIndex(T[] array)
         {
@@ -147,5 +172,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             for (int i = fromIndex; i < toIndex; i++)
                 to.Add(from[i]);
         }
+        
+        public event Action<CorrelaterResult<T>> OnResultUpdate;
     }
 }

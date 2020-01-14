@@ -6,6 +6,7 @@ namespace Samples
 {
     class OnProgressUpdateSamples
     {
+        private MyUi<string> myUi = new MyUi<string>();
         string[] collection1 = { "A", "D", "C" };
         string[] collection2 = { "A", "B", "C" };
 
@@ -15,6 +16,7 @@ namespace Samples
             correlater.OnProgressUpdate += (int currentProgress, int totalProgress) =>
             {
                 // Do something with the progress update here
+                myUi.UpdateProgress(currentProgress, totalProgress);
             };
 
             EnumerableCorrelater<string> enumerableCorrelater = new EnumerableCorrelater<string>(correlater);

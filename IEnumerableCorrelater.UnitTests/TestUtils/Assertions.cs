@@ -14,6 +14,22 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
             AssertResultIsAsExpected(expectedResult, result);
         }
 
+        public static void AssertOnResultUpdateWorks<T>(this IContinuousCorrelater<T> correlater, IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            var matchArray1 = new List<T>();
+            var matchArray2 = new List<T>();
+            correlater.OnResultUpdate += (result) =>
+            {
+                matchArray1.AddRange(result.BestMatch1);
+                matchArray2.AddRange(result.BestMatch2);
+            };
+
+            var actualResult = correlater.Compare(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper());
+            
+            matchArray1.AssertAreSame(actualResult.BestMatch1, "Got wrong updates");
+            matchArray2.AssertAreSame(actualResult.BestMatch2, "Got wrong updates");
+        }
+
         private static void AssertResultIsAsExpected<T>(CorrelaterResult<T> expectedResult, CorrelaterResult<T> result)
         {
             if (expectedResult.Distance >= 0)
@@ -22,19 +38,8 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
             AssertAreSame(expectedResult.BestMatch2, result.BestMatch2, $"Got wrong {nameof(result.BestMatch2)}");
         }
 
-        private static void AssertAreSame<T>(IEnumerable<T> collection1, IEnumerable<T> collection2, string message)
-        {
-            if (collection1.Count() != collection2.Count())
-                Assert.Fail(message);
-
-            for (int i = 0; i < collection1.Count(); i++)
-            {
-                if (collection1.ElementAt(i) == null && collection2.ElementAt(i) != null)
-                    Assert.Fail(message);
-                else if (collection1.ElementAt(i) != null && !collection1.ElementAt(i).Equals(collection2.ElementAt(i)))
-                    Assert.Fail(message);
-            }
-        }
+        public static void AssertAreSame<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2, string message) =>
+            collection1.ToCollectionWrapper().AssertAreSame(collection2, message);
 
         public static void AssertAreSame<T>(this ICollectionWrapper<T> collection1, IEnumerable<T> collection2, string message)
         {
@@ -66,6 +71,7 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
             {
                 Assert.AreEqual(expectedProgress, outOf);
                 Interlocked.Increment(ref progressUpdates);
+                Assert.AreEqual(progressUpdates, progress);
             };
             correlater.Compare(array1.ToCollectionWrapper(), array2.ToCollectionWrapper());
 
