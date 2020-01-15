@@ -30,6 +30,8 @@ namespace StringCorrelatorGui
                     break;
             }
 
+            if (slowCompareCheclCheckBox.Checked)
+                correlator = new SlowCorrelater<char>(correlator, 500);
             if (splitToChunksCheckBox.Checked)
                 correlator = new SplitToChunksCorrelaterWrapper<char>(correlator, 10);
 

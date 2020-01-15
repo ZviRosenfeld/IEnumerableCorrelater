@@ -10,7 +10,11 @@ namespace StringCorrelatorGui
 {
     public partial class StringCorrelatorUserControl : UserControl
     {
+        private ICorrelater<char> correlater;
         private StringCorrelater stringCorrelater;
+        private int distnace = 0;
+        private string string1;
+        private string string2;
 
         public StringCorrelatorUserControl()
         {
@@ -21,7 +25,21 @@ namespace StringCorrelatorGui
 
         public ICorrelater<char> Correlater
         {
-            set => stringCorrelater = new StringCorrelater(value);
+            set
+            {
+                correlater = value;
+                stringCorrelater = new StringCorrelater(value);
+                if (value is IContinuousCorrelater<char> continuousCorrelater)
+                    continuousCorrelater.OnResultUpdate += (partialResult) =>
+                    {
+                        distnace += partialResult.Distance;
+                        string1 += new string(partialResult.BestMatch1);
+                        string2 += new string(partialResult.BestMatch2);
+                        var tempResult = new CorrelaterResult<char>(distnace, string1.ToCharArray(), string2.ToCharArray());
+                        FillResultTextBoxs(tempResult);
+                        Refresh();
+                    };
+                }
         }
 
         public string String1
@@ -39,10 +57,16 @@ namespace StringCorrelatorGui
         private void correlateButton_Click(object sender, System.EventArgs e)
         {
             correlateButton.Enabled = false;
+            distnace = 0;
+            string1 = string.Empty;
+            string2 = string.Empty;
 
             var result = stringCorrelater.Correlate(string1TextBox.Text, string2TextBox.Text);
-            distanceLabel.Text = result.Distance.ToString();
-            FillResultTextBoxs(result);
+            if (!(correlater is IContinuousCorrelater<char>))
+            {
+                distanceLabel.Text = result.Distance.ToString();
+                FillResultTextBoxs(result);
+            }
 
             correlateButton.Enabled = true;
         }
