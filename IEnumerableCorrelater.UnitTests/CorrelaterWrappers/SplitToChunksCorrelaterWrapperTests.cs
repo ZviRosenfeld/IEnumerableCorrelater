@@ -32,7 +32,7 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         {
             innerCorrelater.SetToRetrunInputCollection(distancePerChunk);
 
-            var result = correlater.Compare(LONG_STRING.ToCollectionWrapper(), LONG_STRING.ToCollectionWrapper());
+            var result = correlater.Correlate(LONG_STRING, LONG_STRING);
             Assert.AreEqual(distancePerChunk * CHUNKS, result.Distance);
         }
 
@@ -50,7 +50,7 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         {
             innerCorrelater.SetToRetrun(AddOffset, AddNullToEnd);
 
-            var result = correlater.Compare(LONG_STRING.ToCollectionWrapper(), LONG_STRING.ToCollectionWrapper());
+            var result = correlater.Correlate(LONG_STRING, LONG_STRING);
             result.BestMatch1.RemoveNull().AssertAreSame(result.BestMatch2.RemoveNull(), "Collection is missing elements");
         }
 
@@ -59,7 +59,7 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         {
             innerCorrelater.SetToRetrun(AddNullToEnd, AddOffset);
 
-            var result = correlater.Compare(LONG_STRING.ToCollectionWrapper(), LONG_STRING.ToCollectionWrapper());
+            var result = correlater.Correlate(LONG_STRING, LONG_STRING);
             result.BestMatch1.RemoveNull().AssertAreSame(result.BestMatch2.RemoveNull(), "Collection is missing elements");
         }
 

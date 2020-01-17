@@ -4,12 +4,14 @@
     <id>IEnumerableCorrelater</id>
     <version>1.0.0</version>
 	<title>Compares two IEnumerables or strings.</title>
-    <description>EnumerableCorrelater knows to compare two IEnumerables or strings. It returns the distance between them, and returns two arrays which represent their "best match".</description>
-    <authors>Zvi Rosenfeld</authors>
+    <description>
+		IEnumerableCorrelater knows to compare two IEnumerables or strings. It returns the distance between them, and returns two arrays which represent their "best match". IEnumerableCorrelater can be used to create diff tools.
+	</description>
+	<authors>Zvi Rosenfeld</authors>
 	<license type="expression">MIT</license>
 	<projectUrl>https://github.com/ZviRosenfeld/IEnumerableCorrelater</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <tags>edit-distance levenshtein levenshtein-distance Damerau–Levenshtein distance</tags>
+    <tags>edit-distance levenshtein levenshtein-distance Damerau–Levenshtein-distance diff-tool</tags>
 	<copyright>Zvi Rosenfeld</copyright>
   </metadata>
   <files>

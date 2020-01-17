@@ -16,7 +16,8 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         private const int missmatchCost = 11;
         private const int transpositionCost = 15;
         private static readonly DamerauLevenshteinCorrelater<string> correlater = new DamerauLevenshteinCorrelater<string>(missmatchCost, transpositionCost, removalCost, insertionCost);
-        
+        private static readonly DamerauLevenshteinCorrelater<char> stringCorrelater = new DamerauLevenshteinCorrelater<char>(missmatchCost, transpositionCost, removalCost, insertionCost);
+
         [TestMethod]
         [ExpectedException(typeof(EnumerableCorrelaterException))]
         public void CorrelateNonNullibleTypes_ThrowException() =>
@@ -120,6 +121,17 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
 
             var expectedResult = new CorrelaterResult<string>(missmatchCost + removalCost, array1, new []{"B", "A", null});
             correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+
+        [TestMethod]
+        public void CorrelateString()
+        {
+            var string1 = "abc";
+            var string2 = "ac";
+
+            var expectedResult = new CorrelaterResult<char>(removalCost, string1.ToCharArray(), "a\0c".ToCharArray());
+            stringCorrelater.AssertComparision(string1, string2, expectedResult);
         }
 
         [TestMethod]

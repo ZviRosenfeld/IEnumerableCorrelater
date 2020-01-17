@@ -185,7 +185,7 @@ namespace StringCorrelatorGui
             this.slowCompareCheclCheckBox.Name = "slowCompareCheclCheckBox";
             this.slowCompareCheclCheckBox.Size = new System.Drawing.Size(243, 24);
             this.slowCompareCheclCheckBox.TabIndex = 2;
-            this.slowCompareCheclCheckBox.Text = "Slow Compare";
+            this.slowCompareCheclCheckBox.Text = "Slow Correlate";
             this.slowCompareCheclCheckBox.UseVisualStyleBackColor = true;
             this.slowCompareCheclCheckBox.CheckedChanged += new System.EventHandler(this.SetCorrelator);
             // 

@@ -15,7 +15,8 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         private const int insertionCost = 10;
         private const int missmatchCost = 11;
         private static readonly LevenshteinCorrelater<string> correlater = new LevenshteinCorrelater<string>(missmatchCost, removalCost, insertionCost);
-        
+        private static readonly LevenshteinCorrelater<char> stringCorrelater = new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
+
         [TestMethod]
         [ExpectedException(typeof(EnumerableCorrelaterException))]
         public void CorrelateNonNullibleTypes_ThrowException() =>
@@ -190,6 +191,16 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
 
             var expectedResult = new CorrelaterResult<string>(0, array1, array2);
             correlater.AssertComparision(array1, array2, expectedResult);
+        }
+
+        [TestMethod]
+        public void CorrelateString()
+        {
+            var string1 = "abc";
+            var string2 = "ac";
+
+            var expectedResult = new CorrelaterResult<char>(removalCost, string1.ToCharArray(), "a\0c".ToCharArray());
+            stringCorrelater.AssertComparision(string1, string2, expectedResult);
         }
 
         [TestMethod]

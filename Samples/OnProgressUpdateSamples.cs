@@ -19,8 +19,7 @@ namespace Samples
                 myUi.UpdateProgress(currentProgress, totalProgress);
             };
 
-            EnumerableCorrelater<string> enumerableCorrelater = new EnumerableCorrelater<string>(correlater);
-            CorrelaterResult<string> result = enumerableCorrelater.Correlate(collection1, collection2);
+            CorrelaterResult<string> result = correlater.Correlate(collection1, collection2);
         }
     }
 }

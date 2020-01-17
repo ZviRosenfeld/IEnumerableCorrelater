@@ -14,7 +14,6 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
     /// </summary>
     public class SplitToChunksCorrelaterWrapper<T> : IContinuousCorrelater<T>
     {
-        private readonly CollectionWrapperFactory factory = new CollectionWrapperFactory();
         private readonly ICorrelater<T> innerCorrelater;
         private readonly int chunkSize;
         private readonly int maxEdgeSize;
@@ -26,9 +25,9 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             maxEdgeSize = chunkSize / 2;
         }
 
-        public CorrelaterResult<T> Compare(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
         {
-            var results = Map(collection1, collection2);
+            var results = Map(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper());
             return Reduce(results);
         }
 
@@ -41,7 +40,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             {
                 var wrappedCollection1 = new OffsetCollectionWrapper<T>(collection1, Math.Min(collection1.Length, i), Math.Min(collection1.Length, i + chunkSize));
                 var wrappedCollection2 = new OffsetCollectionWrapper<T>(collection2, Math.Min(collection2.Length, i), Math.Min(collection2.Length, i + chunkSize));
-                resultTasks.Add(Task.Run(() => innerCorrelater.Compare(wrappedCollection1, wrappedCollection2)));
+                resultTasks.Add(Task.Run(() => innerCorrelater.Correlate(wrappedCollection1, wrappedCollection2)));
             }
             
             return resultTasks;
@@ -112,8 +111,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             var collection2 = GetEdgeCollection(previousResult.BestMatch2, currentResult.BestMatch2,
                 startFromIndexOnPreviousResult, goUpToIndexOnCurrentResult);
 
-            var result = innerCorrelater.Compare(factory.GetCollectionWrapper(collection1),
-                factory.GetCollectionWrapper(collection2));
+            var result = innerCorrelater.Correlate(collection1, collection2);
 
             AddRange(result.BestMatch1, list1, 0, result.BestMatch1.Length);
             AddRange(result.BestMatch2, list2, 0, result.BestMatch2.Length);

@@ -27,12 +27,9 @@ namespace Samples
                 myUi.BestMatch1.AddRange(partialResult.BestMatch1);
                 myUi.BestMatch2.AddRange(partialResult.BestMatch2);
             };
-
-            // Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
-            EnumerableCorrelater<char> enumerableCorrelater = new EnumerableCorrelater<char>(continuousCorrelater);
-
+            
             // Run the correlate in a new thread so that our UI don't freeze
-            Task.Run(() => enumerableCorrelater.Correlate(collection1, collection2));
+            Task.Run(() => continuousCorrelater.Correlate(collection1, collection2));
         }
     }
 }

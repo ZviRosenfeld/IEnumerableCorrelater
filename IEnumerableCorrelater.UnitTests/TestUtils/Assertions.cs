@@ -10,7 +10,7 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
     {
         public static void AssertComparision<T>(this ICorrelater<T> correlater, IEnumerable<T> collection1, IEnumerable<T> collection2, CorrelaterResult<T> expectedResult)
         {
-            var result = correlater.Compare(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper());
+            var result = correlater.Correlate(collection1, collection2);
             AssertResultIsAsExpected(expectedResult, result);
         }
 
@@ -24,7 +24,7 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
                 matchArray2.AddRange(result.BestMatch2);
             };
 
-            var actualResult = correlater.Compare(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper());
+            var actualResult = correlater.Correlate(collection1, collection2);
             
             matchArray1.AssertAreSame(actualResult.BestMatch1, "Got wrong updates");
             matchArray2.AssertAreSame(actualResult.BestMatch2, "Got wrong updates");
@@ -37,20 +37,17 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
             AssertAreSame(expectedResult.BestMatch1, result.BestMatch1, $"Got wrong {nameof(result.BestMatch1)}");
             AssertAreSame(expectedResult.BestMatch2, result.BestMatch2, $"Got wrong {nameof(result.BestMatch2)}");
         }
-
-        public static void AssertAreSame<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2, string message) =>
-            collection1.ToCollectionWrapper().AssertAreSame(collection2, message);
-
-        public static void AssertAreSame<T>(this ICollectionWrapper<T> collection1, IEnumerable<T> collection2, string message)
+        
+        public static void AssertAreSame<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2, string message)
         {
-            if (collection1.Length != collection2.Count())
+            if (collection1.Count() != collection2.Count())
                 Assert.Fail(message);
 
-            for (int i = 0; i < collection1.Length; i++)
+            for (int i = 0; i < collection1.Count(); i++)
             {
-                if (collection1[i] == null && collection2.ElementAt(i) != null)
+                if (collection1.ElementAt(i) == null && collection2.ElementAt(i) != null)
                     Assert.Fail(message);
-                else if (collection1[i] != null && !collection1[i].Equals(collection2.ElementAt(i)))
+                else if (collection1.ElementAt(i) != null && !collection1.ElementAt(i).Equals(collection2.ElementAt(i)))
                     Assert.Fail(message);
             }
         }
@@ -73,7 +70,7 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
                 Interlocked.Increment(ref progressUpdates);
                 Assert.AreEqual(progressUpdates, progress);
             };
-            correlater.Compare(array1.ToCollectionWrapper(), array2.ToCollectionWrapper());
+            correlater.Correlate(array1, array2);
 
             Assert.AreEqual(expectedProgress, progressUpdates);
         }

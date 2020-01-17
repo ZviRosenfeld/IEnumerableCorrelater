@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using IEnumerableCorrelater.Calculators;
 using IEnumerableCorrelater.Interfaces;
 
@@ -29,8 +30,8 @@ namespace IEnumerableCorrelater.Correlaters
             correlater.OnProgressUpdate += (p, t) => OnProgressUpdate?.Invoke(p, t);
         }
 
-        public CorrelaterResult<T> Compare(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2) =>
-            correlater.Compare(collection1, collection2);
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2) =>
+            correlater.Correlate(collection1, collection2);
 
         public event Action<int, int> OnProgressUpdate;
     }

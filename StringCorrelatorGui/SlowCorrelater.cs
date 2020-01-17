@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using IEnumerableCorrelater;
 using IEnumerableCorrelater.Interfaces;
@@ -17,10 +18,10 @@ namespace StringCorrelatorGui
             this.sleepTime = sleepTime;
         }
 
-        public CorrelaterResult<T> Compare(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
         {
             Thread.Sleep(sleepTime);
-            return innerCorrelater.Compare(collection1, collection2);
+            return innerCorrelater.Correlate(collection1, collection2);
         }
 
         public event Action<int, int> OnProgressUpdate;

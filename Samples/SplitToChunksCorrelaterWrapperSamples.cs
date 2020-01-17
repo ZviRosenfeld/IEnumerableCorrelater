@@ -22,12 +22,8 @@ namespace Samples
             // The SplitToChunksCorrelaterWrapper wrappes an inner ICorrelater
             ICorrelater<char> splitToChunksCorrelaterWrapper =
                 new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
-
-            // Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
-            EnumerableCorrelater<char> enumerableCorrelater =
-                new EnumerableCorrelater<char>(splitToChunksCorrelaterWrapper);
-
-            CorrelaterResult<char> result = enumerableCorrelater.Correlate(collection1, collection2);
+            
+            CorrelaterResult<char> result = splitToChunksCorrelaterWrapper.Correlate(collection1, collection2);
 
             return result;
         }

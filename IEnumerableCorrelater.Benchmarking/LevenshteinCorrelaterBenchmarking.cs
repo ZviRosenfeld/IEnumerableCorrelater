@@ -18,8 +18,7 @@ namespace IEnumerableCorrelater.Benchmarking
             var string1 = Utils.GetLongString(LENGTH);
             var string2 = Utils.GetLongString(LENGTH);
 
-            var stringCorrelater = new StringCorrelater(correlater);
-            stringCorrelater.Correlate(string1, string2);
+            correlater.Correlate(string1, string2);
         }
 
         [TestMethod]
@@ -27,9 +26,8 @@ namespace IEnumerableCorrelater.Benchmarking
         {
             var collection1 = Utils.GetBigCollection(LENGTH);
             var collection2 = Utils.GetBigCollection(LENGTH);
-            
-            var enumerableCorrelater = new EnumerableCorrelater<char>(correlater);
-            enumerableCorrelater.Correlate(collection1, collection2);
+
+            correlater.Correlate(collection1, collection2);
         }
 
         [TestMethod]
@@ -39,8 +37,7 @@ namespace IEnumerableCorrelater.Benchmarking
             var collection2 = collection1.ToList();
             collection2[500] = collection1.ElementAt(500) == 'a' ? 'b' : 'a';
 
-            var enumerableCorrelater = new EnumerableCorrelater<char>(correlater);
-            enumerableCorrelater.Correlate(collection1, collection2);
+            correlater.Correlate(collection1, collection2);
         }
     }
 }

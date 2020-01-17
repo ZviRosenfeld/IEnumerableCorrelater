@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using IEnumerableCorrelater;
@@ -11,15 +10,13 @@ namespace StringCorrelatorGui
     public partial class StringCorrelatorUserControl : UserControl
     {
         private ICorrelater<char> correlater;
-        private StringCorrelater stringCorrelater;
         private int distnace = 0;
         private string string1;
         private string string2;
 
         public StringCorrelatorUserControl()
         {
-            var correlater = new LevenshteinCorrelater<char>(10, 7 , 7);
-            stringCorrelater = new StringCorrelater(correlater);
+            correlater = new LevenshteinCorrelater<char>(10, 7 , 7);
             InitializeComponent();
         }
 
@@ -28,7 +25,6 @@ namespace StringCorrelatorGui
             set
             {
                 correlater = value;
-                stringCorrelater = new StringCorrelater(value);
                 if (value is IContinuousCorrelater<char> continuousCorrelater)
                     continuousCorrelater.OnResultUpdate += (partialResult) =>
                     {
@@ -61,7 +57,7 @@ namespace StringCorrelatorGui
             string1 = string.Empty;
             string2 = string.Empty;
 
-            var result = stringCorrelater.Correlate(string1TextBox.Text, string2TextBox.Text);
+            var result = correlater.Correlate(string1TextBox.Text, string2TextBox.Text);
             if (!(correlater is IContinuousCorrelater<char>))
             {
                 distanceLabel.Text = result.Distance.ToString();

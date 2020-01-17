@@ -47,14 +47,11 @@ IDistanceCalculator<string> distanceCalculator = new MyDistanceCalculator<string
 ICorrelater<string> correlater = 
     new LevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
 
-// Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
-EnumerableCorrelater<string> enumerableCorrelater = new EnumerableCorrelater<string>(correlater);
-
 string[] array1 = { "A", "D", "C" };
 string[] array2 = { "A", "B", "C" };
 
 // Compare the collections - you can compare any IEnumerable<T>.
-CorrelaterResult<string> result = enumerableCorrelater.Correlate(array1, array2);
+CorrelaterResult<string> result = correlater.Correlate(array1, array2);
 
 // Print some of the result
 Console.WriteLine(result.Distance);
@@ -62,7 +59,7 @@ Console.WriteLine(result.BestMatch1);
 Console.WriteLine(result.BestMatch2);
 ```
 
-**Exsample2:** Comparing 2 strings. StringCorrelater treats the string as an array of chars, and therefore uses an ICalculator\<char>.
+**Exsample2:** Comparing 2 strings. A string is actually an IEnumerable<char>, and therefore we must use an ICorrelater\<char>.
 
 ```CSharp
 int removalCost = 1, insertionCost = 1;
@@ -73,17 +70,15 @@ IDistanceCalculator<char> distanceCalculator = new MyDistanceCalculator<char>();
 
 // The library contains a number of ICorrelaters. 
 // LevenshteinCorrelater uses dynamic programing to find the Levenshtein-distance between the two collections.
+// Since a string is actually an IEnumerable<char>, we need to use an ICorrelater<char>.
 ICorrelater<char> correlater = 
     new LevenshteinCorrelater<char>(distanceCalculator, removalCost, insertionCost);
-	
-// Wrap the ICorrelater with a StringCorrelater to use it to compare strings
-StringCorrelater stringCorrelater = new StringCorrelater(correlater);
 
 string string1 = "ABC";
 string string2 = "ADC";
 
 // Compare the strings.
-CorrelaterResult<char> result = stringCorrelater.Correlate(string1, string2);
+CorrelaterResult<char> result = correlater.Correlate(string1, string2);
 
 // Print some of the result
 Console.WriteLine(result.Distance);
@@ -167,14 +162,10 @@ ICorrelater<char> innerCorrelater =
     new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
 
 // The SplitToChunksCorrelaterWrapper wrappes an inner ICorrelater
-ICorrelater<char> optimizedCorrelater =
+ICorrelater<char> splitToChunksCorrelaterWrapper =
     new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
 
-// Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
-EnumerableCorrelater<char> enumerableCorrelater =
-    new EnumerableCorrelater<char>(optimizedCorrelater);
-
-CorrelaterResult<char> result = enumerableCorrelater.Correlate(collection1, collection2);
+CorrelaterResult<char> result = splitToChunksCorrelaterWrapper.Correlate(collection1, collection2);
 ``` 
 
 SplitToChunksCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
@@ -189,7 +180,7 @@ ContinuousCorrelaters solve this problem by providing the caller with updates
 on the correlation of the earlier segments of the collection while they continue working out the correlation of the later ones. 
 
 The ContinuousCorrelaters will raise the OnResultUpdate for every segment it finishes correlating.
-Please note that the OnResultUpdate will only contain the new segment (and not previously sent segments).
+Please note that the OnResultUpdate will only contain the new segment (and no previously sent segments).
 
 ```CSharp
 IContinuousCorrelater<char> continuousCorrelater =
@@ -204,11 +195,8 @@ continuousCorrelater.OnResultUpdate += (CorrelaterResult<char> partialResult) =>
     myUi.BestMatch2.AddRange(partialResult.BestMatch2);
 };
 
-// Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
-EnumerableCorrelater<char> enumerableCorrelater = new EnumerableCorrelater<char>(continuousCorrelater);
-
 // Run the correlate in a new thread so that our UI don't freeze
-Task.Run(() => enumerableCorrelater.Correlate(collection1, collection2));
+Task.Run(() => continuousCorrelater.Correlate(collection1, collection2));
 ```
 
 ## OnProgressUpdate Event
@@ -223,6 +211,5 @@ correlater.OnProgressUpdate += (int currentProgress, int totalProgress) =>
     // Do something with the progress update here
 };
 
-EnumerableCorrelater<string> enumerableCorrelater = new EnumerableCorrelater<string>(correlater);
-CorrelaterResult<string> result = enumerableCorrelater.Correlate(collection1, collection2);
+CorrelaterResult<string> result = correlater.Correlate(collection1, collection2);
 ```

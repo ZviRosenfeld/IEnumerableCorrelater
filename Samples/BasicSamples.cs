@@ -19,15 +19,12 @@ namespace Samples
             // LevenshteinCorrelater uses dynamic programing to find the Levenshtein-distance between the two collections.
             ICorrelater<string> correlater = 
                 new LevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
-
-            // Wrap the ICorrelater with an EnumerableCorrelater<T> to use it to compare collections
-            EnumerableCorrelater<string> enumerableCorrelater = new EnumerableCorrelater<string>(correlater);
-
+            
             string[] array1 = { "A", "D", "C" };
             string[] array2 = { "A", "B", "C" };
 
-            // Compare the collections - you can compare any IEnumerable<T>.
-            CorrelaterResult<string> result = enumerableCorrelater.Correlate(array1, array2);
+            // Correlate the collections - you can compare any IEnumerable<T>.
+            CorrelaterResult<string> result = correlater.Correlate(array1, array2);
 
             // Print some of the result
             Console.WriteLine(result.Distance);
@@ -47,17 +44,15 @@ namespace Samples
 
             // The library contains a number of ICorrelaters. 
             // LevenshteinCorrelater uses dynamic programing to find the Levenshtein-distance between the two collections.
+            // Since a string is actually an IEnumerable<char>, we need to use an ICorrelater<char>.
             ICorrelater<char> correlater = 
                 new LevenshteinCorrelater<char>(distanceCalculator, removalCost, insertionCost);
-
-            // Wrap the ICorrelater with a StringCorrelater to use it to compare strings
-            StringCorrelater stringCorrelater = new StringCorrelater(correlater);
-
+            
             string string1 = "ABC";
             string string2 = "ADC";
 
-            // Compare the strings.
-            CorrelaterResult<char> result = stringCorrelater.Correlate(string1, string2);
+            // Correlate the strings.
+            CorrelaterResult<char> result = correlater.Correlate(string1, string2);
 
             // Print some of the result
             Console.WriteLine(result.Distance);

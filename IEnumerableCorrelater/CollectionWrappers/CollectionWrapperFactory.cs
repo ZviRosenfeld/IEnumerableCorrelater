@@ -4,9 +4,9 @@ using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater.CollectionWrappers
 {
-    public class CollectionWrapperFactory
+    static class CollectionWrapperFactory
     {
-        public ICollectionWrapper<T> GetCollectionWrapper<T>(IEnumerable<T> collection)
+        public static ICollectionWrapper<T> ToCollectionWrapper<T>(this IEnumerable<T> collection)
         {
             switch (collection)
             {

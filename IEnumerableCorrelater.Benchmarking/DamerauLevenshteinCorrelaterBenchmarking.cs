@@ -17,8 +17,7 @@ namespace IEnumerableCorrelater.Benchmarking
             var string1 = Utils.GetLongString(LENGTH);
             var string2 = Utils.GetLongString(LENGTH);
 
-            var stringCorrelater = new StringCorrelater(correlater);
-            stringCorrelater.Correlate(string1, string2);
+            correlater.Correlate(string1, string2);
         }
     }
 }

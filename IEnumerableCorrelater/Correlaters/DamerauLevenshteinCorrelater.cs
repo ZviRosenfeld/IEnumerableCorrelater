@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IEnumerableCorrelater.Calculators;
+using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 
@@ -35,12 +36,15 @@ namespace IEnumerableCorrelater.Correlaters
             this.insertionCalculator = insertionCalculator;
         }
 
-        public CorrelaterResult<T> Compare(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        private CorrelaterResult<T> Compare(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
         {
             var dynamicTable = CreateDynamicTable(collection1, collection2);
             var matchingArrays = GetMatchingArrays(dynamicTable, collection1, collection2);
             return new CorrelaterResult<T>(dynamicTable[collection1.Length, collection2.Length], matchingArrays.Item1, matchingArrays.Item2);
         }
+
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2) =>
+            Compare(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper());
 
         public event Action<int, int> OnProgressUpdate;
 
