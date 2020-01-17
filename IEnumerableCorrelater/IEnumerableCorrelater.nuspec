@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>IEnumerableCorrelater</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 	<title>Compares two IEnumerables or strings.</title>
     <description>
 		IEnumerableCorrelater knows to compare two IEnumerables or strings. It returns the distance between them, and returns two arrays which represent their "best match". IEnumerableCorrelater can be used to create diff tools.
