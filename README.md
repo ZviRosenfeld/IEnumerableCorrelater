@@ -26,7 +26,7 @@ BestMatch2 = { "A", "B", "I", "D"}
 - [Correlaters](#correlaters)
   - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
-- [CorrelaterWrapper](#correlaterwrapper)
+- [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
 - [IContinuousCorrelaters](#icontinuouscorrelaters)
 - [OnProgressUpdate Event](#onprogressupdate-event)
@@ -140,10 +140,11 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 
 [DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections. 
 
-## CorrelaterWrappers
+## Optimizations
 
-There are a number of ICorrelater\<T> that can be wrapped around the [base correlaters](#correlaters).
-These wrappers can increase the base correlater's performance, or add other abilities.
+Correlation of big collections can take a lot of time.
+To solve this, there are a number of ICorrelater\<T> that can be wrapped around the [base correlaters](#correlaters).
+These wrappers can greatly increase the base correlater's performance.
 
 ### SplitToChunksCorrelaterWrapper
 
