@@ -9,7 +9,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
 {
     /// <summary>
     /// SplitToChunksCorrelaterWrapper wraps a correlater.
-    /// It splits the collection or string into chunks, and correlates each chunk individually.
+    /// It improves the correlation's performance by spliting the collection or string into chunks, and correlates each chunk individually.
     /// When it's done, it correlates the edges of each chunk to combine them.
     /// </summary>
     public class SplitToChunksCorrelaterWrapper<T> : IContinuousCorrelater<T>
@@ -17,12 +17,34 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         private readonly ICorrelater<T> innerCorrelater;
         private readonly int chunkSize;
         private readonly int maxEdgeSize;
+        private readonly long? maxDistance;
 
+        /// <summary>
+        /// SplitToChunksCorrelaterWrapper improves the correlation's performance by spliting the collection or string into chunks, and correlates each chunk individually.
+        /// </summary>
+        /// <param name="chunkSize">Bigger chunks will result in a slower, but more acurate correlation</param>
         public SplitToChunksCorrelaterWrapper(ICorrelater<T> innerCorrelater, int chunkSize)
         {
+            if (chunkSize <= 0)
+                throw new ArgumentException($"{nameof(chunkSize)} must be greater than zero", nameof(chunkSize));
+            
             this.chunkSize = chunkSize;
             this.innerCorrelater = innerCorrelater;
             maxEdgeSize = chunkSize / 2;
+        }
+
+        /// <summary>
+        /// SplitToChunksCorrelaterWrapper improves the correlation's performance by spliting the collection or string into chunks, and correlates each chunk individually.
+        /// </summary>
+        /// <param name="chunkSize">Bigger chunks will result in a slower, but more acurate correlation</param>
+        /// <param name="maxDistance">If at any point during the correlation we find that the distance will be greater than maxDistance, we'll ternimate the correlation and return null</param>
+        public SplitToChunksCorrelaterWrapper(ICorrelater<T> innerCorrelater, int chunkSize, long maxDistance) :
+            this(innerCorrelater, chunkSize)
+        {
+            if (maxDistance <= 0)
+                throw new ArgumentException($"{nameof(maxDistance)} must be greater than zero", nameof(maxDistance));
+            
+            this.maxDistance = maxDistance;
         }
 
         public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
@@ -32,7 +54,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         }
 
         public event Action<int, int> OnProgressUpdate;
-
+        
         private List<Task<CorrelaterResult<T>>> Map(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
         {
             var resultTasks = new List<Task<CorrelaterResult<T>>>();
@@ -63,6 +85,9 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
                 endEdgeIndex = GetEndEdgeIndex(result);
 
                 distance += result.Distance;
+                if (maxDistance.HasValue && distance > maxDistance.Value)
+                    return null;
+
                 AddRange(result.BestMatch1, list1, startEdgeIndex, endEdgeIndex);
                 AddRange(result.BestMatch2, list2, startEdgeIndex, endEdgeIndex);
 

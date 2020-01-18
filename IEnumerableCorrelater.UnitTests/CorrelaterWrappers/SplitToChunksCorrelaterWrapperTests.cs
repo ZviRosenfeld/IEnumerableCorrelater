@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FakeItEasy;
@@ -23,6 +24,20 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, CHUNK_SIZE);
         private static readonly SplitToChunksCorrelaterWrapper<char> levenshteinCorrelater = 
             new SplitToChunksCorrelaterWrapper<char>(new LevenshteinCorrelater<char>(missmatchCost, removalInsertionCost, removalInsertionCost), CHUNK_SIZE);
+
+        [TestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
+        [ExpectedException(typeof(ArgumentException), "chunkSize")]
+        public void Correlate_ChunkSizeSmallerThanOne_ThrowException(int chunkSize) =>
+            new SplitToChunksCorrelaterWrapper<char>(null, chunkSize);
+
+        [TestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
+        [ExpectedException(typeof(ArgumentException), "maxDistance")]
+        public void Correlate_MaxDistanceSmallerThanOne_ThrowException(int maxDistnace) =>
+            new SplitToChunksCorrelaterWrapper<char>(null, 10, maxDistnace);
 
         [TestMethod]
         [DataRow(0)]
@@ -175,6 +190,30 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         {
             var correlater = new SplitToChunksCorrelaterWrapper<char>(new LevenshteinCorrelater<char>(10, 7, 7), CHUNK_SIZE);
             correlater.AssertOnResultUpdateWorks(LONG_STRING, LONG_STRING.Remove(8, 9));
+        }
+        
+        [TestMethod]
+        [DataRow(1)]
+        [DataRow(10)]
+        public void Correlate_StopAtMaxDistance(int maxDistnace)
+        {
+            innerCorrelater.SetToRetrunInputCollection(5);
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, 6, maxDistnace);
+
+            var result = correlater.Correlate(LONG_STRING, LONG_STRING);
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        [DataRow(30)]
+        [DataRow(1000)]
+        public void Correlate_StopAtMaxDistance_MaxDistnaceNotReached(int maxDistnace)
+        {
+            innerCorrelater.SetToRetrunInputCollection(5);
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, 6, maxDistnace);
+
+            var result = correlater.Correlate(LONG_STRING, LONG_STRING);
+            Assert.IsNotNull(result);
         }
 
         private string RemoveAtIndex(string s, int index)

@@ -9,7 +9,7 @@ namespace Samples
             
         }
 
-        public int Distance { get; set; }
+        public long Distance { get; set; }
 
         public List<T> BestMatch1 { get; }
 
