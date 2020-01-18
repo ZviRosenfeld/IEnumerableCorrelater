@@ -52,9 +52,9 @@ namespace IEnumerableCorrelater.Correlaters
         /// Creates the dynamic table. 
         /// Cell[i, j] defines the best match in which array1 contains all elements up to i (including), and array2 contains all elements up to j (including)
         /// </summary>
-        private int[,] CreateDynamicTable(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        private long[,] CreateDynamicTable(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
         {
-            var dynamicTable = new int[collection1.Length + 1, collection2.Length + 1];
+            var dynamicTable = new long[collection1.Length + 1, collection2.Length + 1];
 
             dynamicTable[0, 0] = 0;
             for (int i = 1; i < collection1.Length + 1; i++)
@@ -96,7 +96,7 @@ namespace IEnumerableCorrelater.Correlaters
             return (collection1[i - 1].Equals(collection2[j - 2]) && collection1[i - 2].Equals(collection2[j - 1]));
         }
 
-        private (T[], T[]) GetMatchingArrays(int[,] dynamicTable, ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        private (T[], T[]) GetMatchingArrays(long[,] dynamicTable, ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
         {
             var bestMatchList1 = new List<T>();
             var bestMatchList2 = new List<T>();
@@ -160,6 +160,6 @@ namespace IEnumerableCorrelater.Correlaters
             return (bestMatchList1.ToArray(), bestMatchList2.ToArray());
         }
 
-        private int Min(params int[] args) => args.Min();
+        private long Min(params long[] args) => args.Min();
     }
 }

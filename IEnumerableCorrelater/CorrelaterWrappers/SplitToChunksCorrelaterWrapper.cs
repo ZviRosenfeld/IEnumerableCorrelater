@@ -51,7 +51,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         {
             var list1 = new List<T>();
             var list2 = new List<T>();
-            var distance = 0;
+            var distance = 0L;
             var endEdgeIndex = -1;
 
             for (var i = 0; i < resultTasks.Count; i++)

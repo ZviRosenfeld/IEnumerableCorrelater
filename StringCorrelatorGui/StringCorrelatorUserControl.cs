@@ -10,7 +10,7 @@ namespace StringCorrelatorGui
     public partial class StringCorrelatorUserControl : UserControl
     {
         private ICorrelater<char> correlater;
-        private int distnace = 0;
+        private long distnace = 0;
         private string string1;
         private string string2;
 
