@@ -24,6 +24,49 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             new LevenshteinCorrelater<int>(null, removalCost, insertionCost);
 
         [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void CorrelateStrings_NullElementInCollection_ThrowException(bool nullInCollection1)
+        {
+            var collectionWithNull = new[] {"A", "B", "C", null};
+            var collectionWithoutNull = new[] { "A", "B", "C" };
+
+            if (nullInCollection1)
+                correlater.AssetThrowsNullElementException(collectionWithNull, collectionWithoutNull, "collection1", 3);
+            else
+                correlater.AssetThrowsNullElementException(collectionWithoutNull, collectionWithNull, "collection2", 3);
+        }
+
+        [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void CorrelateChar_NullElementInCollection_ThrowException(bool nullInCollection1)
+        {
+            var collectionWithNull = new[] { 'a', 'b', 'c', '\0' };
+            var collectionWithoutNull = new[] { 'a', 'b', 'c' };
+
+            if (nullInCollection1)
+                stringCorrelater.AssetThrowsNullElementException(collectionWithNull, collectionWithoutNull, "collection1", 3);
+            else
+                stringCorrelater.AssetThrowsNullElementException(collectionWithoutNull, collectionWithNull, "collection2", 3);
+        }
+
+        [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void CorrelateObject_NullElementInCollection_ThrowException(bool nullInCollection1)
+        {
+            var collectionWithNull = new[] { new TestClass(), null };
+            var collectionWithoutNull = new[] { new TestClass() };
+
+            var correlater = new DamerauLevenshteinCorrelater<TestClass>(missmatchCost, transpositionCost, removalCost, insertionCost);
+            if (nullInCollection1)
+                correlater.AssetThrowsNullElementException(collectionWithNull, collectionWithoutNull, "collection1", 1);
+            else
+                correlater.AssetThrowsNullElementException(collectionWithoutNull, collectionWithNull, "collection2", 1);
+        }
+
+        [TestMethod]
         public void CorrelateNullibleTypes_DontThrowException() =>
             new LevenshteinCorrelater<int?>(null, removalCost, insertionCost);
 

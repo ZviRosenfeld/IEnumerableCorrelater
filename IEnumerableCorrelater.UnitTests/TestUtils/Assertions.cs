@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,6 +29,21 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
             
             matchArray1.AssertAreSame(actualResult.BestMatch1, "Got wrong updates");
             matchArray2.AssertAreSame(actualResult.BestMatch2, "Got wrong updates");
+        }
+
+        public static void AssetThrowsNullElementException<T>(this ICorrelater<T> correlater,
+            IEnumerable<T> collection1, IEnumerable<T> collection2, string badCollectionName, int nullIndex)
+        {
+            try
+            {
+                correlater.Correlate(collection1, collection2);
+                Assert.Fail("Exception wasn't thrown");
+            }
+            catch (NullElementException e)
+            {
+                Assert.IsTrue(e.Message.Contains(badCollectionName));
+                Assert.IsTrue(e.Message.Contains($"index {nullIndex}"));
+            }
         }
 
         private static void AssertResultIsAsExpected<T>(CorrelaterResult<T> expectedResult, CorrelaterResult<T> result)

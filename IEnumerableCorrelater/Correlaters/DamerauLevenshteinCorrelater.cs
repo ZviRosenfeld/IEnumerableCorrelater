@@ -43,8 +43,16 @@ namespace IEnumerableCorrelater.Correlaters
             return new CorrelaterResult<T>(dynamicTable[collection1.Length, collection2.Length], matchingArrays.Item1, matchingArrays.Item2);
         }
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2) =>
-            Compare(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper());
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            var collection1Wrapper = collection1.ToCollectionWrapper();
+            var collection2Wrapper = collection2.ToCollectionWrapper();
+
+            collection1Wrapper.CheckFullNulls(nameof(collection1));
+            collection2Wrapper.CheckFullNulls(nameof(collection2));
+
+            return Compare(collection1Wrapper, collection2Wrapper);
+        }
 
         public event Action<int, int> OnProgressUpdate;
 

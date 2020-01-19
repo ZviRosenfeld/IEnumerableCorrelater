@@ -92,6 +92,7 @@ Console.WriteLine(result.BestMatch2);
 - All costs must be positive. This won't be enforced by the library, but negative costs can results in odd and unexpected behavior.
 - The Equal method should be defined in a meaningful way for the elements of the collection you're correlating. If not, you should override the Equal method.
 - The distance between equal elements must be zero.
+- IEnumerableCorrelater doesn't support comparing collections with null elements in them. If you need null elements, consider using the "Null Object Pattern".
 
 ### A Sample Implementation of an IDistanceCalculator\<char>
 
