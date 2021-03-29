@@ -89,7 +89,7 @@ Console.WriteLine(result.BestMatch2);
 ### Impotent Notes
 
 - Correlaters are not thread safe.
-- All costs must be positive. This won't be enforced by the library, but negative costs can results in odd and unexpected behavior.
+- All costs must be positive.
 - The Equal method must be defined in a meaningful way for the elements of the collection you're correlating.
 - The distance between equal elements must be zero.
 - IEnumerableCorrelater doesn't support comparing collections with null elements in them. If you need null elements, consider using the "Null Object Pattern".
