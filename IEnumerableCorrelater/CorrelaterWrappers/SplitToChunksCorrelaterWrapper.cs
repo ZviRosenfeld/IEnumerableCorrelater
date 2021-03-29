@@ -9,7 +9,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
 {
     /// <summary>
     /// SplitToChunksCorrelaterWrapper wraps a correlater.
-    /// It improves the correlation's performance by spliting the collection or string into chunks, and correlates each chunk individually.
+    /// It improves the correlation's performance by splitting the collection or string into chunks, and correlates each chunk individually.
     /// When it's done, it correlates the edges of each chunk to combine them.
     /// </summary>
     public class SplitToChunksCorrelaterWrapper<T> : IContinuousCorrelater<T>
@@ -20,9 +20,9 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         private readonly long? maxDistance;
 
         /// <summary>
-        /// SplitToChunksCorrelaterWrapper improves the correlation's performance by spliting the collection or string into chunks, and correlates each chunk individually.
+        /// SplitToChunksCorrelaterWrapper improves the correlation's performance by splitting the collection or string into chunks, and correlates each chunk individually.
         /// </summary>
-        /// <param name="chunkSize">Bigger chunks will result in a slower, but more acurate correlation</param>
+        /// <param name="chunkSize">Bigger chunks will result in a slower, but more accurate correlation</param>
         public SplitToChunksCorrelaterWrapper(ICorrelater<T> innerCorrelater, int chunkSize)
         {
             if (chunkSize <= 0)
@@ -34,10 +34,10 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         }
 
         /// <summary>
-        /// SplitToChunksCorrelaterWrapper improves the correlation's performance by spliting the collection or string into chunks, and correlates each chunk individually.
+        /// SplitToChunksCorrelaterWrapper improves the correlation's performance by splitting the collection or string into chunks, and correlates each chunk individually.
         /// </summary>
-        /// <param name="chunkSize">Bigger chunks will result in a slower, but more acurate correlation</param>
-        /// <param name="maxDistance">If at any point during the correlation we find that the distance will be greater than maxDistance, we'll ternimate the correlation and return null</param>
+        /// <param name="chunkSize">Bigger chunks will result in a slower, but more accurate correlation</param>
+        /// <param name="maxDistance">If at any point during the correlation we find that the distance will be greater than maxDistance, we'll terminate the correlation and return null</param>
         public SplitToChunksCorrelaterWrapper(ICorrelater<T> innerCorrelater, int chunkSize, long maxDistance) :
             this(innerCorrelater, chunkSize)
         {
@@ -126,7 +126,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         }
 
         /// <summary>
-        /// A certain stratch of the two chunks - which includes the end of the previous chunk, and the begining of the current chunk, is considered the chunks "edge".
+        /// A certain stretch of the two chunks - which includes the end of the previous chunk, and the beginning of the current chunk, is considered the chunks "edge".
         /// We'll correlate this edge separately, to prevent loosing matches between chunks.  
         /// </summary>
         private void AddEdge(int startFromIndexOnPreviousResult , int goUpToIndexOnCurrentResult, CorrelaterResult<T> currentResult, CorrelaterResult<T> previousResult, List<T> list1, List<T> list2)

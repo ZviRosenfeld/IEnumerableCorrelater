@@ -137,7 +137,7 @@ namespace IEnumerableCorrelater.Correlaters
                     bestMatchList2.Add(collection2[j - 1]);
                     j--;
                 }
-                // In case we transposited the element
+                // In case we transposition-ed the element
                 else if (CanDoTransposition(collection1, collection2, i, j) &&
                          dynamicTable[i, j] == transpositionCalculator.TranspositionCost(collection1[i - 1], collection1[i - 2]) + dynamicTable[i - 2, j - 2])
                 {

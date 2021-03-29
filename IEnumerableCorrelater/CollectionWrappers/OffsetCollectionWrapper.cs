@@ -9,8 +9,8 @@ using IEnumerableCorrelater.Interfaces;
 namespace IEnumerableCorrelater.CollectionWrappers
 {
     /// <summary>
-    /// This class is a wrapper for an inner ICollectionWrapper.
-    /// It retuens the aread of the collection between start and end.
+    /// This is a decorator class for an ICollectionWrapper.
+    /// It returns the area of the collection between start and end.
     /// </summary>
     class OffsetCollectionWrapper<T> : ICollectionWrapper<T>
     {
