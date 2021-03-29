@@ -12,6 +12,8 @@ namespace IEnumerableCorrelater.CollectionWrappers
             {
                 case T[] array: return new ArrayCollectionWrapper<T>(array);
                 case IList<T> list: return new ListCollectionWrapper<T>(list);
+                case string s: return new StringCollectionWrapper<T>(s);
+                case OffsetCollectionWrapper<T> offsetCollectionWrapper: return offsetCollectionWrapper;
                 default: return new ArrayCollectionWrapper<T>(collection.ToArray());
             }
         }

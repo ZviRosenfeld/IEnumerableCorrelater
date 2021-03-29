@@ -18,9 +18,7 @@ namespace IEnumerableCorrelater.CollectionWrappers
         public T this[int index] => list[index];
 
         public int Length => list.Count;
-
-        public T[] ToArray() => list.ToArray();
-
+        
         public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
 
         public override string ToString()

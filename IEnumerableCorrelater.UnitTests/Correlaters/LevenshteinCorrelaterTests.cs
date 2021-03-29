@@ -5,6 +5,7 @@ using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace IEnumerableCorrelater.UnitTests.Correlaters
 {
@@ -15,7 +16,6 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         private const int insertionCost = 10;
         private const int missmatchCost = 11;
         private static readonly LevenshteinCorrelater<string> correlater = new LevenshteinCorrelater<string>(missmatchCost, removalCost, insertionCost);
-        private static readonly LevenshteinCorrelater<char> stringCorrelater = new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
 
         [TestMethod]
         [ExpectedException(typeof(EnumerableCorrelaterException))]
@@ -200,7 +200,37 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var string2 = "ac";
 
             var expectedResult = new CorrelaterResult<char>(removalCost, string1.ToCharArray(), "a\0c".ToCharArray());
+            
+            var stringCorrelater = new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
             stringCorrelater.AssertComparision(string1, string2, expectedResult);
+        }
+
+        [TestMethod]
+        public void CorrelateList()
+        {
+            var list1 = new List<string> { "a", "b", "c" };
+            var list2 = new List<string> { "a", "c" };
+
+            var expectedResult = new CorrelaterResult<string>(removalCost, list1.ToArray(), new string[] { "a", null, "c"});
+
+            correlater.AssertComparision(list1, list2, expectedResult);
+        }
+
+        [TestMethod]
+        public void CorrelateQueue()
+        {
+            var queue1 = new Queue<string>();
+            queue1.Enqueue("a");
+            queue1.Enqueue("b");
+            queue1.Enqueue("c");
+
+            var queue2 = new Queue<string>();
+            queue2.Enqueue("a");
+            queue2.Enqueue("c");
+
+            var expectedResult = new CorrelaterResult<string>(removalCost, new string[] { "a", "b", "c" }, new string[] { "a", null, "c" });
+
+            correlater.AssertComparision(queue1, queue2, expectedResult);
         }
 
         [TestMethod]
