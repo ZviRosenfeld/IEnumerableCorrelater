@@ -1,7 +1,7 @@
 # IEnumerableCorrelater
 
 EnumerableCorrelater knows to compare two IEnumerables or strings. It returns the distance between them, and returns two arrays which represent their "best match".
-The following 2 exsamples should deminstrate what I mean by "best match":
+The following 2 examples should demonstrate what I mean by "best match":
 
 ```
 Collection1 = { "A", "B", "C", "D"}
@@ -39,7 +39,7 @@ BestMatch2 = { "A", "B", "I", "D"}
 int removalCost = 1, insertionCost = 1;
 
 // You'll need to implement your own IDistanceCalculator<T>. 
-// IDistanceCalculator defines the "distance" between any to elements.
+// IDistanceCalculator defines the "distance" between any two elements.
 IDistanceCalculator<string> distanceCalculator = new MyDistanceCalculator<string>();
 
 // The library contains a number of ICorrelaters. 
@@ -59,13 +59,13 @@ Console.WriteLine(result.BestMatch1);
 Console.WriteLine(result.BestMatch2);
 ```
 
-**Exsample2:** Comparing 2 strings. A string is actually an IEnumerable<char>, and therefore we must use an ICorrelater\<char>.
+**Exsample2:** Comparing 2 strings. A string is actually an IEnumerable\<char>, and therefore we must use an ICorrelater\<char>.
 
 ```CSharp
 int removalCost = 1, insertionCost = 1;
 
 // You'll need to implement your own IDistanceCalculator<char>. 
-// IDistanceCalculator defines the "distance" between any to elements.
+// IDistanceCalculator defines the "distance" between any two elements.
 IDistanceCalculator<char> distanceCalculator = new MyDistanceCalculator<char>();
 
 // The library contains a number of ICorrelaters. 
@@ -90,7 +90,7 @@ Console.WriteLine(result.BestMatch2);
 
 - Correlaters are not thread safe.
 - All costs must be positive. This won't be enforced by the library, but negative costs can results in odd and unexpected behavior.
-- The Equal method should be defined in a meaningful way for the elements of the collection you're correlating. If not, you should override the Equal method.
+- The Equal method must be defined in a meaningful way for the elements of the collection you're correlating.
 - The distance between equal elements must be zero.
 - IEnumerableCorrelater doesn't support comparing collections with null elements in them. If you need null elements, consider using the "Null Object Pattern".
 
@@ -127,7 +127,7 @@ class CharDistanceCalculator : IDistanceCalculator<char>
         if (distance.ContainsKey(tuple))
             return distance[tuple];
 
-        // For any distances not in the dictionary, we'll return a default distance.
+        // For any pairs not in the dictionary, we'll return a default distance.
         return DEFAULT_DISTANCE;
     }
 }
@@ -161,11 +161,11 @@ Please note that using SplitToChunksCorrelaterWrapper will reduce your correlati
 int removalCost = 7;
 int insertionCost = 7;
 int missmatchCost = 10;
-int chunkSize = 200; // Bigger chunks will result in a slower, but more acurate correlation
+int chunkSize = 200; // Bigger chunks will result in a slower, albeit more accurate, correlation
 ICorrelater<char> innerCorrelater = 
     new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
 
-// The SplitToChunksCorrelaterWrapper wrappes an inner ICorrelater
+// The SplitToChunksCorrelaterWrapper wraps an inner ICorrelater
 ICorrelater<char> splitToChunksCorrelaterWrapper =
     new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
 
@@ -191,7 +191,7 @@ IContinuousCorrelater<char> continuousCorrelater =
     new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
 continuousCorrelater.OnResultUpdate += (CorrelaterResult<char> partialResult) =>
 {
-    // Do something with the  here.
+    // Do something with the result here.
     // Please note that the OnResultUpdate will only contain the new segment (and not previously sent segments).
 
     myUi.Distance += partialResult.Distance; // Note that the accumulated distance may differ from the actual distance.
@@ -199,7 +199,7 @@ continuousCorrelater.OnResultUpdate += (CorrelaterResult<char> partialResult) =>
     myUi.BestMatch2.AddRange(partialResult.BestMatch2);
 };
 
-// Run the correlate in a new thread so that our UI don't freeze
+// Run the correlate in a new thread so that our UI doesn't freeze
 Task.Run(() => continuousCorrelater.Correlate(collection1, collection2));
 ```
 
