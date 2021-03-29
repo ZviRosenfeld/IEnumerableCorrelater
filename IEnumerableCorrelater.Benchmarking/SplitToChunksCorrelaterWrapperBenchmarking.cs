@@ -9,7 +9,7 @@ namespace IEnumerableCorrelater.Benchmarking
     [TestCategory("Performance Benchmarking")]
     public class SplitToChunksCorrelaterWrapperBenchmarking
     {
-        private const int LENGTH = 100000;
+        private const int LENGTH = 100_000;
         private const int CHUNK_SIZE = 200;
         private readonly ICorrelater<char> correlater = new SplitToChunksCorrelaterWrapper<char>(new LevenshteinCorrelater<char>(10, 7, 7), CHUNK_SIZE);
 
