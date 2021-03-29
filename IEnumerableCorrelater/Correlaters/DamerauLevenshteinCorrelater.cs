@@ -16,7 +16,7 @@ namespace IEnumerableCorrelater.Correlaters
         private readonly IInsertionCalculator<T> insertionCalculator;
         
         public DamerauLevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, ITranspositionCalculator<T> transpositionCalculator, int removalCost, int insertionCost) :
-            this(distanceCalculator, transpositionCalculator, new BasicRemovalCalculator<T>(removalCost) ,new BasicInsertionCalculator<T>(insertionCost))
+            this(distanceCalculator, transpositionCalculator, new BasicRemovalCalculator<T>(removalCost), new BasicInsertionCalculator<T>(insertionCost))
         {
         }
         
@@ -48,8 +48,8 @@ namespace IEnumerableCorrelater.Correlaters
             var collection1Wrapper = collection1.ToCollectionWrapper();
             var collection2Wrapper = collection2.ToCollectionWrapper();
 
-            collection1Wrapper.CheckFullNulls(nameof(collection1));
-            collection2Wrapper.CheckFullNulls(nameof(collection2));
+            collection1Wrapper.CheckForNulls(nameof(collection1));
+            collection2Wrapper.CheckForNulls(nameof(collection2));
 
             return Compare(collection1Wrapper, collection2Wrapper);
         }
