@@ -229,9 +229,9 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         public void NegativeRemovalCosts_ThrowException()
         {
             var removalCalculator = A.Fake<IRemovalCalculator<string>>();
+            A.CallTo(() => removalCalculator.RemovalCost(A<string>._)).Returns(-1);
             var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(1), removalCalculator, new BasicInsertionCalculator<string>(1));
-            A.CallTo(() => removalCalculator.RemovalCost(A<string>._)).ReturnsNextFromSequence(new[] { 1, -1, 1 });
-
+            
             var array1 = new[] { "1", "2", "3" };
             var array2 = new[] { "1", "2", "3" };
 
@@ -243,9 +243,9 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         public void NegativeInsertionCosts_ThrowException()
         {
             var insertionCalculator = A.Fake<IInsertionCalculator<string>>();
+            A.CallTo(() => insertionCalculator.InsertionCost(A<string>._)).Returns(-1);
             var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(1), new BasicRemovalCalculator<string>(1), insertionCalculator);
-            A.CallTo(() => insertionCalculator.InsertionCost(A<string>._)).ReturnsNextFromSequence(new[] { 1, -1, 1 });
-
+            
             var array1 = new[] { "1", "2", "3" };
             var array2 = new[] { "1", "2", "3" };
 

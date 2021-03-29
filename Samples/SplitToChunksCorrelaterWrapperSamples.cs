@@ -15,11 +15,11 @@ namespace Samples
             int removalCost = 7;
             int insertionCost = 7;
             int missmatchCost = 10;
-            int chunkSize = 200; // Bigger chunks will result in a slower, but more acurate correlation
+            int chunkSize = 200; // Bigger chunks will result in a slower, albeit more accurate, correlation
             ICorrelater<char> innerCorrelater = 
                 new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);
 
-            // The SplitToChunksCorrelaterWrapper wrappes an inner ICorrelater
+            // The SplitToChunksCorrelaterWrapper wraps an inner ICorrelater
             ICorrelater<char> splitToChunksCorrelaterWrapper =
                 new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
             

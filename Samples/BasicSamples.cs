@@ -12,7 +12,7 @@ namespace Samples
             int removalCost = 1, insertionCost = 1;
 
             // You'll need to implement your own IDistanceCalculator<T>. 
-            // IDistanceCalculator defines the "distance" between any to elements.
+            // IDistanceCalculator defines the "distance" between any two elements.
             IDistanceCalculator<string> distanceCalculator = new MyDistanceCalculator<string>();
 
             // The library contains a number of ICorrelaters. 
@@ -39,7 +39,7 @@ namespace Samples
             int removalCost = 1, insertionCost = 1;
 
             // You'll need to implement your own IDistanceCalculator<char>. 
-            // IDistanceCalculator defines the "distance" between any to elements.
+            // IDistanceCalculator defines the "distance" between any two elements.
             IDistanceCalculator<char> distanceCalculator = new MyDistanceCalculator<char>();
 
             // The library contains a number of ICorrelaters. 

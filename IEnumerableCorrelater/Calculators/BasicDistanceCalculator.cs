@@ -9,8 +9,8 @@ namespace IEnumerableCorrelater.Calculators
 
         public BasicDistanceCalculator(int value)
         {
-            if (value <= 0)
-                throw new ArgumentException("Distance cost must be greater than 0", nameof(value));
+            if (value < 0)
+                throw new ArgumentException("Distance cost must be at least 0", nameof(value));
 
             this.value = value;
         }

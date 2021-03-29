@@ -9,8 +9,8 @@ namespace IEnumerableCorrelater.Calculators
 
         public BasicTranspositionCalculator(int value)
         {
-            if (value <= 0)
-                throw new ArgumentException("Transposition cost must be greater than 0", nameof(value));
+            if (value < 0)
+                throw new ArgumentException("Transposition cost must be at least 0", nameof(value));
 
             this.value = value;
         }

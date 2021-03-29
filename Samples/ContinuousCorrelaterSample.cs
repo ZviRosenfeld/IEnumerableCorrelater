@@ -20,7 +20,7 @@ namespace Samples
                 new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, chunkSize);
             continuousCorrelater.OnResultUpdate += (CorrelaterResult<char> partialResult) =>
             {
-                // Do something with the  here.
+                // Do something with the results here.
                 // Please note that the OnResultUpdate will only contain the new segment (and not previously sent segments).
 
                 myUi.Distance += partialResult.Distance; // Note that the accumulated distance may differ from the actual distance.
@@ -28,7 +28,7 @@ namespace Samples
                 myUi.BestMatch2.AddRange(partialResult.BestMatch2);
             };
             
-            // Run the correlate in a new thread so that our UI don't freeze
+            // Run the correlate in a new thread so that our UI doesn't freeze
             Task.Run(() => continuousCorrelater.Correlate(collection1, collection2));
         }
     }

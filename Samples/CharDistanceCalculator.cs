@@ -33,7 +33,7 @@ namespace Samples
             if (distance.ContainsKey(tuple))
                 return distance[tuple];
 
-            // For any distances not in the dictionary, we'll return a default distance.
+            // For any pairs not in the dictionary, we'll return a default distance.
             return DEFAULT_DISTANCE;
         }
     }
