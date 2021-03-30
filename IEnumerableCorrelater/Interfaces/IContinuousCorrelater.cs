@@ -11,7 +11,8 @@ namespace IEnumerableCorrelater.Interfaces
     public interface IContinuousCorrelater<T> : ICorrelater<T>
     {
         /// <summary>
-        /// Please note that the OnProgressUpdate will only contain the new segment (and not previously sent segments).
+        /// OnProgressUpdate will only contain the new segment (and not previously sent segments).
+        /// Please note that there's no guarantee that the accumulated distance sent to the OnResultUpdate will equal the actual distance.
         /// </summary>
         event Action<CorrelaterResult<T>> OnResultUpdate;
     }

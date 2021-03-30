@@ -2,6 +2,7 @@
 using IEnumerableCorrelater.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IEnumerableCorrelater.CorrelaterWrappers
 {
@@ -10,7 +11,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
     /// It improves the correlation's performance be removing the beginning and the end of the sequence if they are equal.
     /// This can be useful in cases like source code correlation - where the changes are likely only a few lines in the middle of a file.
     /// </summary>
-    public class IgnoreIdenticalBeginningAndEndCorrelaterWrapper<T> : ICorrelater<T>
+    public class IgnoreIdenticalBeginningAndEndCorrelaterWrapper<T> : IContinuousCorrelater<T>
     {
         private readonly ICorrelater<T> innerCorrelater;
 
@@ -21,6 +22,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         }
 
         public event Action<int, int> OnProgressUpdate;
+        public event Action<CorrelaterResult<T>> OnResultUpdate;
 
         public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
         {
@@ -30,11 +32,17 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             var startIndex = GetFirstNotEqualIndex(collection1Wrapper, collection2Wrapper);
             var endIndexes = GetLastNotEqualIndexes(collection1Wrapper, collection2Wrapper, startIndex);
 
+            OnResultUpdate?.Invoke(new CorrelaterResult<T>(0, collection1Wrapper.Take(startIndex).ToArray(), collection2Wrapper.Take(startIndex).ToArray()));
+
             var innerCorrelaterResult = innerCorrelater.Correlate(
                 new OffsetCollectionWrapper<T>(collection1Wrapper, startIndex, endIndexes.Item1),
                 new OffsetCollectionWrapper<T>(collection2Wrapper, startIndex, endIndexes.Item2));
 
-            return CreateResult(collection1Wrapper, collection2Wrapper, startIndex, endIndexes, innerCorrelaterResult);
+            var result = CreateResult(collection1Wrapper, collection2Wrapper, startIndex, endIndexes, innerCorrelaterResult);
+
+            OnResultUpdate?.Invoke(new CorrelaterResult<T>(result.Distance, result.BestMatch1.Skip(startIndex).ToArray(), result.BestMatch2.Skip(startIndex).ToArray()));
+
+            return result;
         }
 
         private static CorrelaterResult<T> CreateResult(ICollectionWrapper<T> collection1Wrapper, ICollectionWrapper<T> collection2Wrapper, int startIndex, (int, int) endIndexes, CorrelaterResult<T> innerCorrelaterResult)

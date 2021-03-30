@@ -203,7 +203,8 @@ ContinuousCorrelaters solve this problem by providing the caller with updates
 on the correlation of the earlier segments of the collection while they continue working out the correlation of the later ones. 
 
 The ContinuousCorrelaters will raise the OnResultUpdate for every segment it finishes correlating.
-Please note that the OnResultUpdate will only contain the new segment (and no previously sent segments).
+Please note that the OnResultUpdate will only contain the new segment (and no previously sent segments). 
+Also there's no guarantee that the accumulated distance sent to the OnResultUpdate will equal the actual distance.
 
 ```CSharp
 IContinuousCorrelater<char> continuousCorrelater =
