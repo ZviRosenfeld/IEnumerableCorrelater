@@ -29,6 +29,7 @@ BestMatch2 = { "A", "B", "I", "D"}
   - [LongestCommonSubsequenceCorrelater\<T>](#longestcommonsubsequencecorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
+  - [IgnoreIdenticalBeginningAndEndCorrelaterWrapper\<T>](#ignoreidenticalbeginningandendcorrelaterwrapper)
 - [IContinuousCorrelaters](#icontinuouscorrelaters)
 - [OnProgressUpdate Event](#onprogressupdate-event)
 
@@ -154,7 +155,7 @@ Correlation of big collections can take a lot of time.
 To solve this, there are a number of ICorrelater\<T> that can be wrapped around the [base correlaters](#correlaters).
 These wrappers can greatly increase the base correlater's performance.
 
-### SplitToChunksCorrelaterWrapper
+### [SplitToChunksCorrelaterWrapper](IEnumerableCorrelater/CorrelaterWrappers/SplitToChunksCorrelaterWrapper.cs)
 
 This wrapper splits the collection into smaller chunks, and correlates each chunk individually, thus reducing correlation time and memory consumption.
 Since the correlates typically have a time and memory complexity of O(n\*m), where n and m are the size of the collection being correlated,
@@ -180,6 +181,19 @@ CorrelaterResult<char> result = splitToChunksCorrelaterWrapper.Correlate(collect
 SplitToChunksCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
 This means that the OnResultUpdate event will be triggered for each new chunk that is correlated, 
 so you can start displaying the results before the full calculation is completed.
+
+### [IgnoreIdenticalBeginningAndEndCorrelaterWrapper](IEnumerableCorrelater/CorrelaterWrappers/IgnoreIdenticalBeginningAndEndCorrelaterWrapper.cs)
+
+This wrapper improves the correlation's performance be removing the beginning and the end of the sequence if they are equal.
+This can be useful in cases like source code correlation - where the changes are likely only a few lines in the middle of a file.
+
+For instance, if we'd be comparing the following sequences, we'd be able to remove the "A" and "B" from the beginning and the "Y" and "Z" from the end.
+As a result, all we'd need to compare is the "S" to the "T".
+
+```
+Collection1 = { "A", "B", "S", "Y", "Z" }
+Collection2 = { "A", "B", "T", "Y", "Z" }
+```
 
 ## IContinuousCorrelaters
 

@@ -9,7 +9,7 @@ namespace IEnumerableCorrelater.Benchmarking
     [TestCategory("Performance Benchmarking")]
     public class LevenshteinCorrelaterBenchmarking
     {
-        private const int LENGTH = 7500;
+        private const int LENGTH = 7_500;
         private readonly ICorrelater<char> correlater = new LevenshteinCorrelater<char>(10, 7, 7);
 
         [TestMethod]

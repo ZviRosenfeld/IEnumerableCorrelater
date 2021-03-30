@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using FakeItEasy;
-using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Interfaces;
 
 namespace IEnumerableCorrelater.UnitTests.TestUtils
