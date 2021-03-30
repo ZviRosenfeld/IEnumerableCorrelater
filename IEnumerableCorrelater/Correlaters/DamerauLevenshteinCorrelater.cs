@@ -81,11 +81,15 @@ namespace IEnumerableCorrelater.Correlaters
                         continue;
                     }
 
-                    var substitution = dynamicTable[i - 1, j - 1] + distanceCalculator.Distance(collection1[i - 1], collection2[j - 1]);
                     var insertion = dynamicTable[i, j - 1] + insertionCalculator.InsertionCost(collection1[i - 1]);
                     var removal = dynamicTable[i - 1, j] + removalCalculator.RemovalCost(collection2[j - 1]);
-                    
-                    var min = Min(substitution, insertion, removal);
+                    var min = Min(insertion, removal);
+
+                    if (distanceCalculator != null)
+                    {
+                        var substitution = dynamicTable[i - 1, j - 1] + distanceCalculator.Distance(collection1[i - 1], collection2[j - 1]);
+                        min = Math.Min(min, substitution);
+                    }
                     if (CanDoTransposition(collection1, collection2, i, j))
                     {
                         var transposition = transpositionCalculator.TranspositionCost(collection1[i - 1], collection1[i - 2]) + dynamicTable[i - 2, j - 2];
@@ -138,7 +142,7 @@ namespace IEnumerableCorrelater.Correlaters
                     i -= 2;
                     j -= 2;
                 }
-                // In case we substituted the element
+                // In case we substituted the element or if the elements were equal
                 else
                 {
                     bestMatchList1.Add(collection1[i - 1]);
