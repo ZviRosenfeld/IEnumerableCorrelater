@@ -15,12 +15,12 @@ namespace IEnumerableCorrelater.Correlaters
         private readonly IRemovalCalculator<T> removalCalculator;
         private readonly IInsertionCalculator<T> insertionCalculator;
         
-        public DamerauLevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, ITranspositionCalculator<T> transpositionCalculator, int removalCost, int insertionCost) :
+        public DamerauLevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, ITranspositionCalculator<T> transpositionCalculator, uint removalCost, uint insertionCost) :
             this(distanceCalculator, transpositionCalculator, new BasicRemovalCalculator<T>(removalCost), new BasicInsertionCalculator<T>(insertionCost))
         {
         }
         
-        public DamerauLevenshteinCorrelater(int substitutionCost, int transpositionCost, int removalCost, int insertionCost) :
+        public DamerauLevenshteinCorrelater(uint substitutionCost, uint transpositionCost, uint removalCost, uint insertionCost) :
             this (new BasicDistanceCalculator<T>(substitutionCost), new BasicTranspositionCalculator<T>(transpositionCost), removalCost, insertionCost)
         {
         }
@@ -81,24 +81,14 @@ namespace IEnumerableCorrelater.Correlaters
                         continue;
                     }
 
-                    long substitution = distanceCalculator.Distance(collection1[i - 1], collection2[j - 1]);
-                    if (substitution < 0) throw new EnumerableCorrelaterException($"{nameof(distanceCalculator.Distance)} must be positive. Was {substitution}, for elements ({collection1[i - 1]}, {collection1[j - 1]})");
-                    substitution += dynamicTable[i - 1, j - 1];
+                    var substitution = dynamicTable[i - 1, j - 1] + distanceCalculator.Distance(collection1[i - 1], collection2[j - 1]);
+                    var insertion = dynamicTable[i, j - 1] + insertionCalculator.InsertionCost(collection1[i - 1]);
+                    var removal = dynamicTable[i - 1, j] + removalCalculator.RemovalCost(collection2[j - 1]);
                     
-                    long insertion = insertionCalculator.InsertionCost(collection1[i - 1]);
-                    if (insertion < 0) throw new EnumerableCorrelaterException($"{nameof(insertionCalculator.InsertionCost)} must be positive. Was {insertion}, for element ({collection1[i - 1]})");
-                    insertion += dynamicTable[i, j - 1];
-
-                    long removal = removalCalculator.RemovalCost(collection2[j - 1]);
-                    if (removal < 0) throw new EnumerableCorrelaterException($"{nameof(removalCalculator.RemovalCost)} must be positive. Was {removal}, for elements ({collection2[j - 1]})");
-                    removal += dynamicTable[i - 1, j];
-
                     var min = Min(substitution, insertion, removal);
                     if (CanDoTransposition(collection1, collection2, i, j))
                     {
-                        long transposition = transpositionCalculator.TranspositionCost(collection1[i - 1], collection1[i - 2]);
-                        if (transposition < 0) throw new EnumerableCorrelaterException($"{nameof(transpositionCalculator.TranspositionCost)} must be positive. Was {transposition}, for elements ({collection1[i - 1]}, {collection1[i - 2]})");
-                        transposition += dynamicTable[i - 2, j - 2];
+                        var transposition = transpositionCalculator.TranspositionCost(collection1[i - 1], collection1[i - 2]) + dynamicTable[i - 2, j - 2];
                         min = Math.Min(min, transposition);
                     }
                     dynamicTable[i, j] = min;

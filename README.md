@@ -36,7 +36,7 @@ BestMatch2 = { "A", "B", "I", "D"}
 **Exsample1:** Comparing two collections. The example compares arrays of strings, but you can really compare collections of any type as longs as the type is nullable or a char.
 
 ```CSharp
-int removalCost = 1, insertionCost = 1;
+uint removalCost = 1, insertionCost = 1;
 
 // You'll need to implement your own IDistanceCalculator<T>. 
 // IDistanceCalculator defines the "distance" between any two elements.
@@ -62,7 +62,7 @@ Console.WriteLine(result.BestMatch2);
 **Exsample2:** Comparing 2 strings. A string is actually an IEnumerable\<char>, and therefore we must use an ICorrelater\<char>.
 
 ```CSharp
-int removalCost = 1, insertionCost = 1;
+uint removalCost = 1, insertionCost = 1;
 
 // You'll need to implement your own IDistanceCalculator<char>. 
 // IDistanceCalculator defines the "distance" between any two elements.
@@ -104,7 +104,7 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 {
     private const int DEFAULT_DISTANCE = 20;
     // We'll use a dictionary that will hold the distances between different pairs
-    private readonly Dictionary<Tuple<char, char>, int> distance = new Dictionary<Tuple<char, char>, int>()
+    private readonly Dictionary<Tuple<char, char>, uint> distance = new Dictionary<Tuple<char, char>, uint>()
     {
         {new Tuple<char, char>('a', 'e'), 1 },
         {new Tuple<char, char>('a', 'i'), 2 },
@@ -117,7 +117,7 @@ class CharDistanceCalculator : IDistanceCalculator<char>
         ...
     }; 
 
-    public int Distance(char element1, char element2)
+    public uint Distance(char element1, char element2)
     {
 	// If the elements are equal, they should return a distance of 0
 	if (element1.Equals(element2))
@@ -158,9 +158,9 @@ reducing the collections size can have a big impact on performance.
 Please note that using SplitToChunksCorrelaterWrapper will reduce your correlation's accuracy. 
 
 ```CSharp
-int removalCost = 7;
-int insertionCost = 7;
-int missmatchCost = 10;
+uint removalCost = 7;
+uint insertionCost = 7;
+uint missmatchCost = 10;
 int chunkSize = 200; // Bigger chunks will result in a slower, albeit more accurate, correlation
 ICorrelater<char> innerCorrelater = 
     new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);

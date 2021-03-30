@@ -184,8 +184,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         {
             var transpositionCalculator = A.Fake<ITranspositionCalculator<string>>();
             var correlater = new DamerauLevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(20),  transpositionCalculator, 20, 20);
-            A.CallTo(() => transpositionCalculator.TranspositionCost(A<string>._, A<string>._)).Returns(transpositionCost);
-
+            A.CallTo(() => transpositionCalculator.TranspositionCost(A<string>._, A<string>._)).Returns((uint)transpositionCost);
 
             var array1 = new[] { "V", "E" };
             var array2 = new[] { "E", "V" };
@@ -199,20 +198,6 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         {
             var correlater = new DamerauLevenshteinCorrelater<string>(missmatchCost, transpositionCost, removalCost, insertionCost);
             correlater.AssertProgressUpdateWasCalledRightNumberOfTimes();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EnumerableCorrelaterException), "TranspositionCost must be positive")]
-        public void TranspositionInsertionCosts_ThrowException()
-        {
-            var transpositionCalculator = A.Fake<ITranspositionCalculator<string>>();
-            var correlater = new DamerauLevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(1), transpositionCalculator, 1, 1);
-            A.CallTo(() => transpositionCalculator.TranspositionCost(A<string>._, A<string>._)).Returns(-1);
-
-            var array1 = new[] { "4", "5" };
-            var array2 = new[] { "5", "4" };
-
-            correlater.Correlate(array1, array2);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Samples
     {
         private const int DEFAULT_DISTANCE = 20;
         // We'll use a dictionary that will hold the distances between different pairs
-        private readonly Dictionary<Tuple<char, char>, int> distance = new Dictionary<Tuple<char, char>, int>()
+        private readonly Dictionary<Tuple<char, char>, uint> distance = new Dictionary<Tuple<char, char>, uint>()
         {
             {new Tuple<char, char>('a', 'e'), 1 },
             {new Tuple<char, char>('a', 'i'), 2 },
@@ -23,7 +23,7 @@ namespace Samples
             {new Tuple<char, char>('c', 'i'), 3 },
         }; 
 
-        public int Distance(char element1, char element2)
+        public uint Distance(char element1, char element2)
         {
             // If the elements are equal, they should return a distance of 0
             if (element1.Equals(element2))

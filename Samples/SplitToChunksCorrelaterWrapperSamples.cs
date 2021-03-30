@@ -12,9 +12,9 @@ namespace Samples
 
         public CorrelaterResult<char> SplitToChunksCorrelaterWrapper()
         {
-            int removalCost = 7;
-            int insertionCost = 7;
-            int missmatchCost = 10;
+            uint removalCost = 7;
+            uint insertionCost = 7;
+            uint missmatchCost = 10;
             int chunkSize = 200; // Bigger chunks will result in a slower, albeit more accurate, correlation
             ICorrelater<char> innerCorrelater = 
                 new LevenshteinCorrelater<char>(missmatchCost, removalCost, insertionCost);

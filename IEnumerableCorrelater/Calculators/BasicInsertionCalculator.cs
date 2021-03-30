@@ -1,20 +1,16 @@
 ﻿using IEnumerableCorrelater.Interfaces;
-using System;
 
 namespace IEnumerableCorrelater.Calculators
 {
     public class BasicInsertionCalculator<T> : IInsertionCalculator<T>
     {
-        private readonly int value;
+        private readonly uint value;
 
-        public BasicInsertionCalculator(int value)
+        public BasicInsertionCalculator(uint value)
         {
-            if (value < 0)
-                throw new ArgumentException("Insertion cost must be at least 0", nameof(value));
-
             this.value = value;
         }
 
-        public int InsertionCost(T element) => value;
+        public uint InsertionCost(T element) => value;
     }
 }

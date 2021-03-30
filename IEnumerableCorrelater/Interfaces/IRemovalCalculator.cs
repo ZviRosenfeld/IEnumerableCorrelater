@@ -2,6 +2,6 @@
 {
     public interface IRemovalCalculator<T>
     {
-        int RemovalCost(T element);
+        uint RemovalCost(T element);
     }
 }

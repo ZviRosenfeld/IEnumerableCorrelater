@@ -9,7 +9,7 @@ namespace Samples
     {
         public CorrelaterResult<string> IEnumerableCorrelaterExsample()
         {
-            int removalCost = 1, insertionCost = 1;
+            uint removalCost = 1, insertionCost = 1;
 
             // You'll need to implement your own IDistanceCalculator<T>. 
             // IDistanceCalculator defines the "distance" between any two elements.
@@ -36,7 +36,7 @@ namespace Samples
 
         public CorrelaterResult<char> StringCorrelaterExsample()
         {
-            int removalCost = 1, insertionCost = 1;
+            uint removalCost = 1, insertionCost = 1;
 
             // You'll need to implement your own IDistanceCalculator<char>. 
             // IDistanceCalculator defines the "distance" between any two elements.

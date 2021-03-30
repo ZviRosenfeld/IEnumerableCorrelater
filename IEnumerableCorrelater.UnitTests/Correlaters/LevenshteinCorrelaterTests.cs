@@ -101,7 +101,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
                 {
                     if (s1 == s2) return 0;
                     if (s2 == "A" && s1 == "E") return 1;
-                    return 10;
+                    return (uint) 10;
                 });
 
 
@@ -119,7 +119,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var removalCalculator = A.Fake<IRemovalCalculator<string>>();
             var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(10), removalCalculator, new BasicInsertionCalculator<string>(10));
             A.CallTo(() => removalCalculator.RemovalCost(A<string>._)).ReturnsLazily(
-                (string s) => s == "A" ? 1 : 40);
+                (string s) => s == "A" ? (uint) 1 : 40);
 
             var array1 = new[] { "A", "E" };
             var array2 = new[] { "C"};
@@ -138,7 +138,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
                 {
                     if (s == "A") return 1;
                     if (s == "B") return 2;
-                    return 3;
+                    return (uint) 3;
                 });
 
             var array1 = new[] { "A", "B" };
@@ -154,7 +154,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var removalCalculator = A.Fake<IInsertionCalculator<string>>();
             var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(10), new BasicRemovalCalculator<string>(10) ,removalCalculator);
             A.CallTo(() => removalCalculator.InsertionCost(A<string>._)).ReturnsLazily(
-                (string s) => s == "A" ? 1 : 40);
+                (string s) => s == "A" ? (uint) 1 : 40);
 
             var array1 = new[] { "C" };
             var array2 = new[] { "A", "E" };
@@ -173,7 +173,7 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
                 {
                     if (s == "A") return 1;
                     if (s == "B") return 2;
-                    return 3;
+                    return (uint) 3;
                 });
 
             var array1 = new string[0];
@@ -238,48 +238,6 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         {
             var correlater = new LevenshteinCorrelater<string>(missmatchCost, removalCost, insertionCost);
             correlater.AssertProgressUpdateWasCalledRightNumberOfTimes();
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EnumerableCorrelaterException), "Distnace must be positive")]
-        public void NegativeDistnaceCosts_ThrowException()
-        {
-            var distanceCalculator = A.Fake<IDistanceCalculator<string>>();
-            var correlater = new LevenshteinCorrelater<string>(distanceCalculator, 2, 2);
-            A.CallTo(() => distanceCalculator.Distance(A<string>._, A<string>._)).ReturnsNextFromSequence(new[] { 1, -1, 1 });
-
-            var array1 = new[] { "1", "2", "3" };
-            var array2 = new[] { "1", "2", "3" };
-
-            correlater.Correlate(array1, array2);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EnumerableCorrelaterException), "RemovalCost must be positive")]
-        public void NegativeRemovalCosts_ThrowException()
-        {
-            var removalCalculator = A.Fake<IRemovalCalculator<string>>();
-            A.CallTo(() => removalCalculator.RemovalCost(A<string>._)).Returns(-1);
-            var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(1), removalCalculator, new BasicInsertionCalculator<string>(1));
-            
-            var array1 = new[] { "1", "2", "3" };
-            var array2 = new[] { "1", "2", "3" };
-
-            correlater.Correlate(array1, array2);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EnumerableCorrelaterException), "InsertionCost must be positive")]
-        public void NegativeInsertionCosts_ThrowException()
-        {
-            var insertionCalculator = A.Fake<IInsertionCalculator<string>>();
-            A.CallTo(() => insertionCalculator.InsertionCost(A<string>._)).Returns(-1);
-            var correlater = new LevenshteinCorrelater<string>(new BasicDistanceCalculator<string>(1), new BasicRemovalCalculator<string>(1), insertionCalculator);
-            
-            var array1 = new[] { "1", "2", "3" };
-            var array2 = new[] { "1", "2", "3" };
-
-            correlater.Correlate(array1, array2);
         }
     }
 }

@@ -5,6 +5,6 @@
     /// </summary>
     public interface IDistanceCalculator<T>
     {
-        int Distance(T element1, T element2);
+        uint Distance(T element1, T element2);
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface ITranspositionCalculator<T>
     {
-        int TranspositionCost(T element1, T element2);
+        uint TranspositionCost(T element1, T element2);
     }
 }

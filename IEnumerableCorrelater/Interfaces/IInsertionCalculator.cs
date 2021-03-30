@@ -2,6 +2,6 @@
 {
     public interface IInsertionCalculator<T>
     {
-        int InsertionCost(T element);
+        uint InsertionCost(T element);
     }
 }
