@@ -151,6 +151,39 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             var resultFromEvent = new CorrelaterResult<char>(totalDistance, match1.ToArray(), match2.ToArray());
 
             Assertions.AssertResultIsAsExpected(actualResult, resultFromEvent);
+            Assert.AreEqual(2, totalUpdates, $"Got wrong number of {nameof(totalUpdates)}");
+        }
+
+        [TestMethod]
+        public void IContinuousCorrelaterTest_InnerCorrelaterIsContinuous()
+        {
+            var s1 = "abc1234efg";
+            var s2 = "abc5678efg";
+
+            var levenshteinCorrelater = new LevenshteinCorrelater<char>(missmatchCost, removalInsertionCost, removalInsertionCost);
+            var splitToChunksCorrelater = new SplitToChunksCorrelaterWrapper<char>(levenshteinCorrelater, 2);
+            var correlater = new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<char>(splitToChunksCorrelater);
+
+            var match1 = new List<char>();
+            var match2 = new List<char>();
+            var totalDistance = 0L;
+            var totalUpdates = 0;
+            var innerUpdates = 0;
+
+            correlater.OnResultUpdate += result =>
+            {
+                match1.AddRange(result.BestMatch1);
+                match2.AddRange(result.BestMatch2);
+                totalDistance += result.Distance;
+                totalUpdates++;
+            };
+            splitToChunksCorrelater.OnResultUpdate += _ => innerUpdates++;
+
+            var actualResult = correlater.Correlate(s1, s2);
+            var resultFromEvent = new CorrelaterResult<char>(totalDistance, match1.ToArray(), match2.ToArray());
+
+            Assertions.AssertResultIsAsExpected(actualResult, resultFromEvent);
+            Assert.AreEqual(2 + innerUpdates, totalUpdates, $"Got wrong number of {nameof(totalUpdates)}");
         }
     }
 }

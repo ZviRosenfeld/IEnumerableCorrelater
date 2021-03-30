@@ -195,6 +195,10 @@ Collection1 = { "A", "B", "S", "Y", "Z" }
 Collection2 = { "A", "B", "T", "Y", "Z" }
 ```
 
+IgnoreIdenticalBeginningAndEndCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
+If the inner correlater is not continuous the "OnResultUpdate" will be raised twice - once for the equal part of the collection, and a second time for the rest of the result.
+If, on the other hand, the inner correlater is continuous the "OnResultUpdate" will be raised every time the inner correlater raises the event, plus once at the before the inner correlater starts with the beginning part of the collections that's equal, and another time after the inner correlater finishes with the end part that's equal.
+
 ## IContinuousCorrelaters
 
 Correlation of big collections can take a considerable amount of time.
