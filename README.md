@@ -26,6 +26,7 @@ BestMatch2 = { "A", "B", "I", "D"}
 - [Correlaters](#correlaters)
   - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
+  - [LongestCommonSubsequenceCorrelater\<T>](#longestcommonsubsequencecorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
 - [IContinuousCorrelaters](#icontinuouscorrelaters)
@@ -142,6 +143,10 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 ### DamerauLevenshteinCorrelater
 
 [DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections. 
+
+### LongestCommonSubsequenceCorrelater
+
+[LongestCommonSubsequenceCorrelater\<T>](IEnumerableCorrelater/Correlaters/LongestCommonSubsequenceCorrelater.cs) Finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections. 
 
 ## Optimizations
 
