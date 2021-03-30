@@ -126,11 +126,11 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         }
 
         [TestMethod]
-        public void IContinuousCorrelaterTest_InnerCorrelaterNotContinuous()
+        [DataRow("abc1234def", "abc5678def", 2)] // Diff in the middle
+        [DataRow("1234def", "5678def", 1)] // Diff at the beginning
+        [DataRow("abc1234", "abc5678", 2)] // Diff at the end
+        public void IContinuousCorrelaterTest_InnerCorrelaterNotContinuous(string string1, string string2, int timeToCallOrResultUpdate)
         {
-            var s1 = "abc1234efg";
-            var s2 = "abc5678efg";
-
             A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._)).
                 Returns(new CorrelaterResult<char>(10, "123\04".ToArray(), "5678\0".ToArray()));
 
@@ -147,11 +147,11 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
                 totalUpdates++;
             };
 
-            var actualResult = correlater.Correlate(s1, s2);
+            var actualResult = correlater.Correlate(string1, string2);
             var resultFromEvent = new CorrelaterResult<char>(totalDistance, match1.ToArray(), match2.ToArray());
 
             Assertions.AssertResultIsAsExpected(actualResult, resultFromEvent);
-            Assert.AreEqual(2, totalUpdates, $"Got wrong number of {nameof(totalUpdates)}");
+            Assert.AreEqual(timeToCallOrResultUpdate, totalUpdates, $"Got wrong number of {nameof(totalUpdates)}");
         }
 
         [TestMethod]

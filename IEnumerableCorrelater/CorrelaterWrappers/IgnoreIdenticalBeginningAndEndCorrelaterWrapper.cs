@@ -34,7 +34,8 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             var startIndex = GetFirstNotEqualIndex(collection1Wrapper, collection2Wrapper);
             var endIndexes = GetLastNotEqualIndexes(collection1Wrapper, collection2Wrapper, startIndex);
 
-            OnResultUpdate?.Invoke(new CorrelaterResult<T>(0, collection1Wrapper.Take(startIndex).ToArray(), collection2Wrapper.Take(startIndex).ToArray()));
+            if (startIndex > 0)
+                OnResultUpdate?.Invoke(new CorrelaterResult<T>(0, collection1Wrapper.Take(startIndex).ToArray(), collection2Wrapper.Take(startIndex).ToArray()));
 
             var innerCorrelaterResult = innerCorrelater.Correlate(
                 new OffsetCollectionWrapper<T>(collection1Wrapper, startIndex, endIndexes.Item1),
