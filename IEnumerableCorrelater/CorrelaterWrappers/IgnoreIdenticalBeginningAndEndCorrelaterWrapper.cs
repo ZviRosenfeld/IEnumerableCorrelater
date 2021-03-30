@@ -75,8 +75,10 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         private void UpdateEndOfResult(int startIndex, CorrelaterResult<T> result, ICollectionWrapper<T> collection1Wrapper, int endIndex1)
         {
             if (innerCorrelater is IContinuousCorrelater<T>)
-                // We don't want to send results that have already been sent
-                OnResultUpdate?.Invoke(new CorrelaterResult<T>(0, collection1Wrapper.Skip(endIndex1).ToArray(), collection1Wrapper.Skip(endIndex1).ToArray()));
+            {    // We don't want to send results that have already been sent
+                if (endIndex1 < collection1Wrapper.Length)
+                    OnResultUpdate?.Invoke(new CorrelaterResult<T>(0, collection1Wrapper.Skip(endIndex1).ToArray(), collection1Wrapper.Skip(endIndex1).ToArray()));
+            }
             else
                 OnResultUpdate?.Invoke(new CorrelaterResult<T>(result.Distance, result.BestMatch1.Skip(startIndex).ToArray(), result.BestMatch2.Skip(startIndex).ToArray()));
         }

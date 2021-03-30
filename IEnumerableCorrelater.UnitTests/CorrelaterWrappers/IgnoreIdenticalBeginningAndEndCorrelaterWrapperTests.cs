@@ -129,6 +129,7 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         [DataRow("abc1234def", "abc5678def", 2)] // Diff in the middle
         [DataRow("1234def", "5678def", 1)] // Diff at the beginning
         [DataRow("abc1234", "abc5678", 2)] // Diff at the end
+        [DataRow("1234", "5678", 1)] // Diff eveywhere
         public void IContinuousCorrelaterTest_InnerCorrelaterNotContinuous(string string1, string string2, int timeToCallOrResultUpdate)
         {
             A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._)).
@@ -155,11 +156,13 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         }
 
         [TestMethod]
-        public void IContinuousCorrelaterTest_InnerCorrelaterIsContinuous()
+        [DataRow("abc1234def", "abc5678def", 2)] // Diff in the middle
+        [DataRow("abc1234d", "abc5678d", 2)] 
+        [DataRow("1234def", "5678def", 1)] // Diff at the beginning
+        [DataRow("abc1234", "abc5678", 1)] // Diff at the end
+        [DataRow("1234", "5678", 0)] // Diff eveywhere
+        public void IContinuousCorrelaterTest_InnerCorrelaterIsContinuous(string string1, string string2, int extraTimesToCallOrResultUpdate)
         {
-            var s1 = "abc1234efg";
-            var s2 = "abc5678efg";
-
             var levenshteinCorrelater = new LevenshteinCorrelater<char>(missmatchCost, removalInsertionCost, removalInsertionCost);
             var splitToChunksCorrelater = new SplitToChunksCorrelaterWrapper<char>(levenshteinCorrelater, 2);
             var correlater = new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<char>(splitToChunksCorrelater);
@@ -179,11 +182,11 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             };
             splitToChunksCorrelater.OnResultUpdate += _ => innerUpdates++;
 
-            var actualResult = correlater.Correlate(s1, s2);
+            var actualResult = correlater.Correlate(string1, string2);
             var resultFromEvent = new CorrelaterResult<char>(totalDistance, match1.ToArray(), match2.ToArray());
 
             Assertions.AssertResultIsAsExpected(actualResult, resultFromEvent);
-            Assert.AreEqual(2 + innerUpdates, totalUpdates, $"Got wrong number of {nameof(totalUpdates)}");
+            Assert.AreEqual(extraTimesToCallOrResultUpdate + innerUpdates, totalUpdates, $"Got wrong number of {nameof(totalUpdates)}");
         }
     }
 }
