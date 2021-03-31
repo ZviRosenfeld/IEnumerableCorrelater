@@ -26,8 +26,10 @@ BestMatch2 = { "A", "B", "I", "D"}
 - [Correlaters](#correlaters)
   - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
+  - [LongestCommonSubsequenceCorrelater\<T>](#longestcommonsubsequencecorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
+  - [IgnoreIdenticalBeginningAndEndCorrelaterWrapper\<T>](#ignoreidenticalbeginningandendcorrelaterwrapper)
 - [IContinuousCorrelaters](#icontinuouscorrelaters)
 - [OnProgressUpdate Event](#onprogressupdate-event)
 
@@ -143,13 +145,17 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 
 [DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections. 
 
+### LongestCommonSubsequenceCorrelater
+
+[LongestCommonSubsequenceCorrelater\<T>](IEnumerableCorrelater/Correlaters/LongestCommonSubsequenceCorrelater.cs) Finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections. 
+
 ## Optimizations
 
 Correlation of big collections can take a lot of time.
 To solve this, there are a number of ICorrelater\<T> that can be wrapped around the [base correlaters](#correlaters).
 These wrappers can greatly increase the base correlater's performance.
 
-### SplitToChunksCorrelaterWrapper
+### [SplitToChunksCorrelaterWrapper](IEnumerableCorrelater/CorrelaterWrappers/SplitToChunksCorrelaterWrapper.cs)
 
 This wrapper splits the collection into smaller chunks, and correlates each chunk individually, thus reducing correlation time and memory consumption.
 Since the correlates typically have a time and memory complexity of O(n\*m), where n and m are the size of the collection being correlated,
@@ -176,6 +182,23 @@ SplitToChunksCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelat
 This means that the OnResultUpdate event will be triggered for each new chunk that is correlated, 
 so you can start displaying the results before the full calculation is completed.
 
+### [IgnoreIdenticalBeginningAndEndCorrelaterWrapper](IEnumerableCorrelater/CorrelaterWrappers/IgnoreIdenticalBeginningAndEndCorrelaterWrapper.cs)
+
+This wrapper improves the correlation's performance be removing the beginning and the end of the sequence if they are equal.
+This can be useful in cases like source code correlation - where the changes are likely only a few lines in the middle of a file.
+
+For instance, if we'd be comparing the following sequences, we'd be able to remove the "A" and "B" from the beginning and the "Y" and "Z" from the end.
+As a result, all we'd need to compare is the "S" to the "T".
+
+```
+Collection1 = { "A", "B", "S", "Y", "Z" }
+Collection2 = { "A", "B", "T", "Y", "Z" }
+```
+
+IgnoreIdenticalBeginningAndEndCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
+If the inner correlater is not continuous the "OnResultUpdate" will be raised twice - once for the equal part of the collection, and a second time for the rest of the result.
+If, on the other hand, the inner correlater is continuous the "OnResultUpdate" will be raised every time the inner correlater raises the event, plus once at the before the inner correlater starts with the beginning part of the collections that's equal, and another time after the inner correlater finishes with the end part that's equal.
+
 ## IContinuousCorrelaters
 
 Correlation of big collections can take a considerable amount of time.
@@ -184,7 +207,8 @@ ContinuousCorrelaters solve this problem by providing the caller with updates
 on the correlation of the earlier segments of the collection while they continue working out the correlation of the later ones. 
 
 The ContinuousCorrelaters will raise the OnResultUpdate for every segment it finishes correlating.
-Please note that the OnResultUpdate will only contain the new segment (and no previously sent segments).
+Please note that the OnResultUpdate will only contain the new segment (and no previously sent segments). 
+Also there's no guarantee that the accumulated distance sent to the OnResultUpdate will equal the actual distance.
 
 ```CSharp
 IContinuousCorrelater<char> continuousCorrelater =

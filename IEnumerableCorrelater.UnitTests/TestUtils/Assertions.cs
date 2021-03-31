@@ -46,7 +46,7 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
             }
         }
 
-        private static void AssertResultIsAsExpected<T>(CorrelaterResult<T> expectedResult, CorrelaterResult<T> result)
+        public static void AssertResultIsAsExpected<T>(CorrelaterResult<T> expectedResult, CorrelaterResult<T> result)
         {
             if (expectedResult.Distance >= 0)
                 Assert.AreEqual(expectedResult.Distance, result.Distance, "Got wrong distance");
