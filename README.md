@@ -26,7 +26,7 @@ BestMatch2 = { "A", "B", "I", "D"}
 - [Correlaters](#correlaters)
   - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
-  - [LongestCommonSubsequenceCorrelater\<T>](#longestcommonsubsequencecorrelater)
+  - [DynamicLcsCorrelater\<T>](#dynamiclcscorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
   - [IgnoreIdenticalBeginningAndEndCorrelaterWrapper\<T>](#ignoreidenticalbeginningandendcorrelaterwrapper)
@@ -139,15 +139,15 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 
 ### LevenshteinCorrelater
 
-[LevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs) Finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) and best correlation between two collections. 
+[LevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs) Finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) and best correlation between two collections using dynamic programming.
 
 ### DamerauLevenshteinCorrelater
 
-[DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections. 
+[DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections using dynamic programming.
 
-### LongestCommonSubsequenceCorrelater
+### DynamicLcsCorrelater
 
-[LongestCommonSubsequenceCorrelater\<T>](IEnumerableCorrelater/Correlaters/LongestCommonSubsequenceCorrelater.cs) Finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections. 
+[DynamicLcsCorrelater\<T>](IEnumerableCorrelater/Correlaters/DynamicLcsCorrelater.cs) Finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections using dynamic programming. Available since version 1.1.2.
 
 ## Optimizations
 
@@ -183,6 +183,8 @@ This means that the OnResultUpdate event will be triggered for each new chunk th
 so you can start displaying the results before the full calculation is completed.
 
 ### [IgnoreIdenticalBeginningAndEndCorrelaterWrapper](IEnumerableCorrelater/CorrelaterWrappers/IgnoreIdenticalBeginningAndEndCorrelaterWrapper.cs)
+
+Available since version 1.1.2.
 
 This wrapper improves the correlation's performance be removing the beginning and the end of the sequence if they are equal.
 This can be useful in cases like source code correlation - where the changes are likely only a few lines in the middle of a file.

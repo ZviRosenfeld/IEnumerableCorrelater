@@ -1,15 +1,16 @@
 ﻿using IEnumerableCorrelater.Correlaters;
+using IEnumerableCorrelater.Interfaces;
 using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IEnumerableCorrelater.UnitTests.Correlaters
 {
     [TestClass]
-    public class LongestCommonSubsequenceCorrelaterTests
+    public class DynamicLcsCorrelaterTests
     {
         private const int removalCost = 9;
         private const int insertionCost = 10;
-        private static readonly LongestCommonSubsequenceCorrelater<string> correlater = new LongestCommonSubsequenceCorrelater<string>(removalCost, insertionCost);
+        private static readonly ICorrelater<string> correlater = new DynamicLcsCorrelater<string>(removalCost, insertionCost);
 
         [TestMethod]
         public void Correlate_OneElementToInsert()
