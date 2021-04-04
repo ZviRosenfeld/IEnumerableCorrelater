@@ -27,6 +27,7 @@ BestMatch2 = { "A", "B", "I", "D"}
   - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
   - [DynamicLcsCorrelater\<T>](#dynamiclcscorrelater)
+  - [MyersAlgorithmCorrelater\<T>](#myersalgorithmcorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
   - [IgnoreIdenticalBeginningAndEndCorrelaterWrapper\<T>](#ignoreidenticalbeginningandendcorrelaterwrapper)
@@ -141,14 +142,27 @@ class CharDistanceCalculator : IDistanceCalculator<char>
 ### LevenshteinCorrelater
 
 [LevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs) Finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) and best correlation between two collections using dynamic programming.
+The correlater's runtime is O(n \* m), where n and m are the length of the collections being compared.
 
 ### DamerauLevenshteinCorrelater
 
 [DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections using dynamic programming.
+The correlater's runtime is O(n \* m), where n and m are the length of the collections being compared.
 
 ### DynamicLcsCorrelater
 
-[DynamicLcsCorrelater\<T>](IEnumerableCorrelater/Correlaters/DynamicLcsCorrelater.cs) Finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections using dynamic programming. Available since version 1.1.2.
+[DynamicLcsCorrelater\<T>](IEnumerableCorrelater/Correlaters/DynamicLcsCorrelater.cs) Finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections using dynamic programming. 
+The dynamic algorithm for the LCS problem has a runtime of O(n \* m), where n and m are the length of the collections being compared.
+
+This correlater is Available since version 1.2.0.
+
+### MyersAlgorithmCorrelater
+
+[MyersAlgorithmCorrelater<\T>](IEnumerableCorrelater/Correlaters/MyersAlgorithmCorrelater.cs) is another algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
+This algorithm has a runtime of O(n \* d), where n is the size of the bigger collection, and d is the number of changed elements between the collection.
+This makes the algorithm particularity good for cases where we aren't expecting many changes (like diff tools for code changes). Indeed, it is used as the default diff algorithm for git.
+
+This correlater is Available since version 1.2.0.
 
 ## Optimizations
 
@@ -159,7 +173,7 @@ These wrappers can greatly increase the base correlater's performance.
 ### [SplitToChunksCorrelaterWrapper](IEnumerableCorrelater/CorrelaterWrappers/SplitToChunksCorrelaterWrapper.cs)
 
 This wrapper splits the collection into smaller chunks, and correlates each chunk individually, thus reducing correlation time and memory consumption.
-Since the correlates typically have a time and memory complexity of O(n\*m), where n and m are the size of the collection being correlated,
+Since the correlaters typically have a time and memory complexity of O(n\*m), where n and m are the size of the collection being correlated,
 reducing the collections size can have a big impact on performance.
 
 Please note that using SplitToChunksCorrelaterWrapper will reduce your correlation's accuracy. 
@@ -185,7 +199,7 @@ so you can start displaying the results before the full calculation is completed
 
 ### [IgnoreIdenticalBeginningAndEndCorrelaterWrapper](IEnumerableCorrelater/CorrelaterWrappers/IgnoreIdenticalBeginningAndEndCorrelaterWrapper.cs)
 
-Available since version 1.1.2.
+Available since version 1.2.0.
 
 This wrapper improves the correlation's performance be removing the beginning and the end of the sequence if they are equal.
 This can be useful in cases like source code correlation - where the changes are likely only a few lines in the middle of a file.
@@ -199,7 +213,7 @@ Collection2 = { "A", "B", "T", "Y", "Z" }
 ```
 
 IgnoreIdenticalBeginningAndEndCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
-If the inner correlater is not continuous the "OnResultUpdate" will be raised twice - once for the equal part of the collection, and a second time for the rest of the result.
+If the inner correlater is not continuous, the "OnResultUpdate" will be raised twice - once for the equal part of the collection, and a second time for the rest of the result.
 If, on the other hand, the inner correlater is continuous the "OnResultUpdate" will be raised every time the inner correlater raises the event, plus once at the before the inner correlater starts with the beginning part of the collections that's equal, and another time after the inner correlater finishes with the end part that's equal.
 
 ## IContinuousCorrelaters
@@ -234,6 +248,7 @@ Task.Run(() => continuousCorrelater.Correlate(collection1, collection2));
 
 The ICorrelater interface contains the OnProgressUpdate event, which is called to update the correlation's progress.
 The OnProgressUpdate event is called with 2 parameters of type int, where the first is the current progress, and the second is the total progress.
+Please note that not all the correlaters raise the OnProgressUpdate event.
 
 ```CSharp
 ICorrelater<string> correlater = new LevenshteinCorrelater<string>(10, 7, 7);

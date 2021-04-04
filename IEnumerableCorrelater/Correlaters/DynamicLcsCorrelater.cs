@@ -1,4 +1,5 @@
-﻿using IEnumerableCorrelater.Interfaces;
+﻿using IEnumerableCorrelater.Calculators;
+using IEnumerableCorrelater.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -11,10 +12,13 @@ namespace IEnumerableCorrelater.Correlaters
     {
         private readonly DamerauLevenshteinCorrelater<T> correlater;
 
-        public DynamicLcsCorrelater(uint removalCost, uint insertionCost)
+        public DynamicLcsCorrelater() : this(1 ,1)
         {
-            correlater = new DamerauLevenshteinCorrelater<T>(null, null, removalCost, insertionCost);
-            correlater.OnProgressUpdate += (p, t) => OnProgressUpdate?.Invoke(p, t);
+        }
+
+        public DynamicLcsCorrelater(uint removalCost, uint insertionCost) : 
+            this(new BasicRemovalCalculator<T>(removalCost), new BasicInsertionCalculator<T>(insertionCost))
+        {
         }
 
         public DynamicLcsCorrelater(IRemovalCalculator<T> removalCalculator, IInsertionCalculator<T> insertionCalculator)

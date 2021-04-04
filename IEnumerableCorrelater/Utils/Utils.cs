@@ -1,7 +1,7 @@
 ﻿using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 
-namespace IEnumerableCorrelater
+namespace IEnumerableCorrelater.Utils
 {
     static class Utils
     {

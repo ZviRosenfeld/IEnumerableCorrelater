@@ -5,6 +5,7 @@ using IEnumerableCorrelater.Calculators;
 using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
+using IEnumerableCorrelater.Utils;
 
 namespace IEnumerableCorrelater.Correlaters
 {

@@ -56,6 +56,9 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
         
         public static void AssertAreSame<T>(this IEnumerable<T> collection1, IEnumerable<T> collection2, string message)
         {
+            if (collection1 == null && collection2 == null)
+                return;
+
             if (collection1.Count() != collection2.Count())
                 Assert.Fail(message);
 

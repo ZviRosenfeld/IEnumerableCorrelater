@@ -12,16 +12,14 @@ namespace IEnumerableCorrelater.Correlaters
     {
         private readonly DamerauLevenshteinCorrelater<T> correlater;
         
-        public LevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, uint removalCost, uint insertionCost)
+        public LevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, uint removalCost, uint insertionCost) :
+            this(distanceCalculator, new BasicRemovalCalculator<T>(removalCost), new BasicInsertionCalculator<T>(insertionCost))
         {
-            correlater = new DamerauLevenshteinCorrelater<T>(distanceCalculator, null, removalCost, insertionCost);
-            correlater.OnProgressUpdate += (p, t) => OnProgressUpdate?.Invoke(p, t);
         }
 
-        public LevenshteinCorrelater(uint substitutionCost, uint removalCost, uint insertionCost)
+        public LevenshteinCorrelater(uint substitutionCost, uint removalCost, uint insertionCost) : 
+            this (new BasicDistanceCalculator<T>(substitutionCost), removalCost, insertionCost)
         {
-            correlater = new DamerauLevenshteinCorrelater<T>(new BasicDistanceCalculator<T>(substitutionCost), null, removalCost, insertionCost);
-            correlater.OnProgressUpdate += (p, t) => OnProgressUpdate?.Invoke(p, t);
         }
 
         public LevenshteinCorrelater(IDistanceCalculator<T> distanceCalculator, IRemovalCalculator<T> removalCalculator, IInsertionCalculator<T> insertionCalculator)
