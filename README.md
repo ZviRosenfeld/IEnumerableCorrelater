@@ -36,33 +36,30 @@ BestMatch2 = { "A", "B", "I", "D"}
 
 ## Usage
 
-**Exsample1:** Comparing two collections. The example compares arrays of strings, but you can really compare collections of any type as longs as the type is nullable or a char.
+**Exsample1:** Comparing two collections using MyersAlgorithmCorrelater. The example compares arrays of strings, but you can really compare collections of any type as longs as the type is nullable or a char.
+Note that MyersAlgorithmCorrelater is available since version 1.2.0.
 
 ```CSharp
-uint removalCost = 1, insertionCost = 1;
-
-// You'll need to implement your own IDistanceCalculator<T>. 
-// IDistanceCalculator defines the "distance" between any two elements.
-IDistanceCalculator<string> distanceCalculator = new MyDistanceCalculator<string>();
-
 // The library contains a number of ICorrelaters. 
-// LevenshteinCorrelater uses dynamic programing to find the Levenshtein-distance between the two collections.
-ICorrelater<string> correlater = 
-    new LevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
-
+// MyersAlgorithmCorrelater is particularity good for cases where we aren't expecting many changes (like diff tools for code changes). 
+// Indeed, it is used as the default diff algorithm for git.
+ICorrelater<string> correlater = new MyersAlgorithmCorrelater<string>();
+            
 string[] array1 = { "A", "D", "C" };
 string[] array2 = { "A", "B", "C" };
 
-// Compare the collections - you can compare any IEnumerable<T>.
+// Correlate the collections - you can compare any IEnumerable<T>.
 CorrelaterResult<string> result = correlater.Correlate(array1, array2);
 
 // Print some of the result
-Console.WriteLine(result.Distance);
-Console.WriteLine(result.BestMatch1);
-Console.WriteLine(result.BestMatch2);
+Console.WriteLine(result.Distance); // Should be 2
+Console.WriteLine(result.BestMatch1); // Should be { "A", "D", null, "C"}
+Console.WriteLine(result.BestMatch2); // Should be { "A", null, "B", "C"}
+
+return result;
 ```
 
-**Exsample2:** Comparing 2 strings. A string is actually an IEnumerable\<char>, and therefore we must use an ICorrelater\<char>.
+**Exsample2:** Comparing 2 strings using the LevenshteinCorrelater. A string is actually an IEnumerable\<char>, and therefore we must use an ICorrelater\<char>.
 
 ```CSharp
 uint removalCost = 1, insertionCost = 1;
@@ -158,8 +155,8 @@ This correlater is Available since version 1.2.0.
 
 ### MyersAlgorithmCorrelater
 
-[MyersAlgorithmCorrelater<\T>](IEnumerableCorrelater/Correlaters/MyersAlgorithmCorrelater.cs) is another algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
-This algorithm has a runtime of O(n \* d), where n is the size of the bigger collection, and d is the number of changed elements between the collection.
+[MyersAlgorithmCorrelater\<T>](IEnumerableCorrelater/Correlaters/MyersAlgorithmCorrelater.cs) is another algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
+This algorithm has a runtime of O(n \* d), where n is the size of the bigger collection, and d is the number of changed elements between the collections.
 This makes the algorithm particularity good for cases where we aren't expecting many changes (like diff tools for code changes). Indeed, it is used as the default diff algorithm for git.
 
 This correlater is Available since version 1.2.0.

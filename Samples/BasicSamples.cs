@@ -9,16 +9,10 @@ namespace Samples
     {
         public CorrelaterResult<string> IEnumerableCorrelaterExsample()
         {
-            uint removalCost = 1, insertionCost = 1;
-
-            // You'll need to implement your own IDistanceCalculator<T>. 
-            // IDistanceCalculator defines the "distance" between any two elements.
-            IDistanceCalculator<string> distanceCalculator = new MyDistanceCalculator<string>();
-
             // The library contains a number of ICorrelaters. 
-            // LevenshteinCorrelater uses dynamic programing to find the Levenshtein-distance between the two collections.
-            ICorrelater<string> correlater = 
-                new LevenshteinCorrelater<string>(distanceCalculator, removalCost, insertionCost);
+            // MyersAlgorithmCorrelater is particularity good for cases where we aren't expecting many changes (like diff tools for code changes). 
+            // Indeed, it is used as the default diff algorithm for git.
+            ICorrelater<string> correlater = new MyersAlgorithmCorrelater<string>();
             
             string[] array1 = { "A", "D", "C" };
             string[] array2 = { "A", "B", "C" };
@@ -27,9 +21,9 @@ namespace Samples
             CorrelaterResult<string> result = correlater.Correlate(array1, array2);
 
             // Print some of the result
-            Console.WriteLine(result.Distance);
-            Console.WriteLine(result.BestMatch1);
-            Console.WriteLine(result.BestMatch2);
+            Console.WriteLine(result.Distance); // Should be 2
+            Console.WriteLine(result.BestMatch1); // Should be { "A", "D", null, "C"}
+            Console.WriteLine(result.BestMatch2); // Should be { "A", null, "B", "C"}
 
             return result;
         }
