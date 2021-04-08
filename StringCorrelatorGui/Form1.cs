@@ -21,19 +21,19 @@ namespace StringCorrelatorGui
             ICorrelater<char> correlator;
             switch (selectCorrelatorComboBox.Text)
             {
-                case "DamerauLevenshteinCorrelater":
+                case nameof(DamerauLevenshteinCorrelater<char>):
                     correlator = new DamerauLevenshteinCorrelater<char>(10, 12, 7, 7);
                     break;
-                case "DynamicLcsCorrelater":
+                case nameof(DynamicLcsCorrelater<char>):
                     correlator = new DynamicLcsCorrelater<char>();
                     break;
-                case "MyersAlgorithmCorrelater":
+                case nameof(MyersAlgorithmCorrelater<char>):
                     correlator = new MyersAlgorithmCorrelater<char>();
                     break;
-                case "PatienceDiffCorrelater":
+                case nameof(PatienceDiffCorrelater<char>):
                     correlator = new PatienceDiffCorrelater<char>();
                     break;
-                case "LevenshteinCorrelater":
+                case nameof(LevenshteinCorrelater<char>):
                 default:
                     correlator = new LevenshteinCorrelater<char>(10, 7, 7);
                     break;
