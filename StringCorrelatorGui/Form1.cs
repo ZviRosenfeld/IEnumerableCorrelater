@@ -24,6 +24,15 @@ namespace StringCorrelatorGui
                 case "DamerauLevenshteinCorrelater":
                     correlator = new DamerauLevenshteinCorrelater<char>(10, 12, 7, 7);
                     break;
+                case "DynamicLcsCorrelater":
+                    correlator = new DynamicLcsCorrelater<char>();
+                    break;
+                case "MyersAlgorithmCorrelater":
+                    correlator = new MyersAlgorithmCorrelater<char>();
+                    break;
+                case "PatienceDiffCorrelater":
+                    correlator = new PatienceDiffCorrelater<char>();
+                    break;
                 case "LevenshteinCorrelater":
                 default:
                     correlator = new LevenshteinCorrelater<char>(10, 7, 7);

@@ -86,7 +86,10 @@ namespace StringCorrelatorGui
             this.selectCorrelatorComboBox.FormattingEnabled = true;
             this.selectCorrelatorComboBox.Items.AddRange(new object[] {
             "LevenshteinCorrelater",
-            "DamerauLevenshteinCorrelater"});
+            "DamerauLevenshteinCorrelater",
+            "DynamicLcsCorrelater",
+            "MyersAlgorithmCorrelater",
+            "PatienceDiffCorrelater"});
             this.selectCorrelatorComboBox.Location = new System.Drawing.Point(88, 3);
             this.selectCorrelatorComboBox.Name = "selectCorrelatorComboBox";
             this.selectCorrelatorComboBox.Size = new System.Drawing.Size(272, 28);
