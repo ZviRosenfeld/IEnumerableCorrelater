@@ -43,6 +43,7 @@ namespace StringCorrelatorGui
             this.label4 = new System.Windows.Forms.Label();
             this.splitToChunksCheckBox = new System.Windows.Forms.CheckBox();
             this.slowCompareCheclCheckBox = new System.Windows.Forms.CheckBox();
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox = new System.Windows.Forms.CheckBox();
             this.stringCorrelatorUserControl1 = new StringCorrelatorGui.StringCorrelatorUserControl();
             this.controlPanel.SuspendLayout();
             this.selectCorrelatorPanel.SuspendLayout();
@@ -58,25 +59,28 @@ namespace StringCorrelatorGui
             this.controlPanel.Controls.Add(this.optimizationsPanel);
             this.controlPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.controlPanel.Location = new System.Drawing.Point(0, 0);
+            this.controlPanel.Margin = new System.Windows.Forms.Padding(2);
             this.controlPanel.Name = "controlPanel";
-            this.controlPanel.Size = new System.Drawing.Size(1284, 135);
+            this.controlPanel.Size = new System.Drawing.Size(856, 88);
             this.controlPanel.TabIndex = 1;
             // 
             // selectCorrelatorPanel
             // 
             this.selectCorrelatorPanel.Controls.Add(this.label1);
             this.selectCorrelatorPanel.Controls.Add(this.selectCorrelatorComboBox);
-            this.selectCorrelatorPanel.Location = new System.Drawing.Point(3, 3);
+            this.selectCorrelatorPanel.Location = new System.Drawing.Point(2, 2);
+            this.selectCorrelatorPanel.Margin = new System.Windows.Forms.Padding(2);
             this.selectCorrelatorPanel.Name = "selectCorrelatorPanel";
-            this.selectCorrelatorPanel.Size = new System.Drawing.Size(380, 49);
+            this.selectCorrelatorPanel.Size = new System.Drawing.Size(253, 32);
             this.selectCorrelatorPanel.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Location = new System.Drawing.Point(2, 0);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 20);
+            this.label1.Size = new System.Drawing.Size(52, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Correlator";
             // 
@@ -90,9 +94,10 @@ namespace StringCorrelatorGui
             "DynamicLcsCorrelater",
             "MyersAlgorithmCorrelater",
             "PatienceDiffCorrelater"});
-            this.selectCorrelatorComboBox.Location = new System.Drawing.Point(88, 3);
+            this.selectCorrelatorComboBox.Location = new System.Drawing.Point(58, 2);
+            this.selectCorrelatorComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.selectCorrelatorComboBox.Name = "selectCorrelatorComboBox";
-            this.selectCorrelatorComboBox.Size = new System.Drawing.Size(272, 28);
+            this.selectCorrelatorComboBox.Size = new System.Drawing.Size(183, 21);
             this.selectCorrelatorComboBox.TabIndex = 1;
             this.selectCorrelatorComboBox.SelectedIndexChanged += new System.EventHandler(this.SetCorrelator);
             // 
@@ -102,16 +107,18 @@ namespace StringCorrelatorGui
             this.generateRandomStringPanel.Controls.Add(this.randomStringLengthInput);
             this.generateRandomStringPanel.Controls.Add(this.label3);
             this.generateRandomStringPanel.Controls.Add(this.label2);
-            this.generateRandomStringPanel.Location = new System.Drawing.Point(389, 3);
+            this.generateRandomStringPanel.Location = new System.Drawing.Point(259, 2);
+            this.generateRandomStringPanel.Margin = new System.Windows.Forms.Padding(2);
             this.generateRandomStringPanel.Name = "generateRandomStringPanel";
-            this.generateRandomStringPanel.Size = new System.Drawing.Size(200, 117);
+            this.generateRandomStringPanel.Size = new System.Drawing.Size(133, 76);
             this.generateRandomStringPanel.TabIndex = 1;
             // 
             // generateRandomStringButton
             // 
-            this.generateRandomStringButton.Location = new System.Drawing.Point(8, 74);
+            this.generateRandomStringButton.Location = new System.Drawing.Point(5, 48);
+            this.generateRandomStringButton.Margin = new System.Windows.Forms.Padding(2);
             this.generateRandomStringButton.Name = "generateRandomStringButton";
-            this.generateRandomStringButton.Size = new System.Drawing.Size(184, 40);
+            this.generateRandomStringButton.Size = new System.Drawing.Size(123, 26);
             this.generateRandomStringButton.TabIndex = 3;
             this.generateRandomStringButton.Text = "Generate";
             this.generateRandomStringButton.UseVisualStyleBackColor = true;
@@ -119,9 +126,10 @@ namespace StringCorrelatorGui
             // 
             // randomStringLengthInput
             // 
-            this.randomStringLengthInput.Location = new System.Drawing.Point(111, 42);
+            this.randomStringLengthInput.Location = new System.Drawing.Point(74, 27);
+            this.randomStringLengthInput.Margin = new System.Windows.Forms.Padding(2);
             this.randomStringLengthInput.Name = "randomStringLengthInput";
-            this.randomStringLengthInput.Size = new System.Drawing.Size(58, 26);
+            this.randomStringLengthInput.Size = new System.Drawing.Size(39, 20);
             this.randomStringLengthInput.TabIndex = 2;
             this.randomStringLengthInput.Value = new decimal(new int[] {
             60,
@@ -132,18 +140,20 @@ namespace StringCorrelatorGui
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 45);
+            this.label3.Location = new System.Drawing.Point(19, 29);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 20);
+            this.label3.Size = new System.Drawing.Size(40, 13);
             this.label3.TabIndex = 1;
             this.label3.Text = "Length";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(4, 9);
+            this.label2.Location = new System.Drawing.Point(3, 6);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(188, 20);
+            this.label2.Size = new System.Drawing.Size(124, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Generate Random String";
             // 
@@ -152,30 +162,28 @@ namespace StringCorrelatorGui
             this.optimizationsPanel.Controls.Add(this.label4);
             this.optimizationsPanel.Controls.Add(this.splitToChunksCheckBox);
             this.optimizationsPanel.Controls.Add(this.slowCompareCheclCheckBox);
+            this.optimizationsPanel.Controls.Add(this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox);
             this.optimizationsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.optimizationsPanel.Location = new System.Drawing.Point(596, 5);
-            this.optimizationsPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.optimizationsPanel.Location = new System.Drawing.Point(397, 3);
             this.optimizationsPanel.Name = "optimizationsPanel";
-            this.optimizationsPanel.Size = new System.Drawing.Size(260, 112);
+            this.optimizationsPanel.Size = new System.Drawing.Size(286, 81);
             this.optimizationsPanel.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 0);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(3, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(78, 20);
+            this.label4.Size = new System.Drawing.Size(53, 13);
             this.label4.TabIndex = 1;
             this.label4.Text = "Wrappers";
             // 
             // splitToChunksCheckBox
             // 
             this.splitToChunksCheckBox.AutoSize = true;
-            this.splitToChunksCheckBox.Location = new System.Drawing.Point(4, 25);
-            this.splitToChunksCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.splitToChunksCheckBox.Location = new System.Drawing.Point(3, 16);
             this.splitToChunksCheckBox.Name = "splitToChunksCheckBox";
-            this.splitToChunksCheckBox.Size = new System.Drawing.Size(142, 24);
+            this.splitToChunksCheckBox.Size = new System.Drawing.Size(97, 17);
             this.splitToChunksCheckBox.TabIndex = 0;
             this.splitToChunksCheckBox.Text = "Split to Chunks";
             this.splitToChunksCheckBox.UseVisualStyleBackColor = true;
@@ -184,32 +192,44 @@ namespace StringCorrelatorGui
             // slowCompareCheclCheckBox
             // 
             this.slowCompareCheclCheckBox.AutoSize = true;
-            this.slowCompareCheclCheckBox.Location = new System.Drawing.Point(3, 57);
+            this.slowCompareCheclCheckBox.Location = new System.Drawing.Point(2, 38);
+            this.slowCompareCheclCheckBox.Margin = new System.Windows.Forms.Padding(2);
             this.slowCompareCheclCheckBox.Name = "slowCompareCheclCheckBox";
-            this.slowCompareCheclCheckBox.Size = new System.Drawing.Size(243, 24);
+            this.slowCompareCheclCheckBox.Size = new System.Drawing.Size(94, 17);
             this.slowCompareCheclCheckBox.TabIndex = 2;
             this.slowCompareCheclCheckBox.Text = "Slow Correlate";
             this.slowCompareCheclCheckBox.UseVisualStyleBackColor = true;
             this.slowCompareCheclCheckBox.CheckedChanged += new System.EventHandler(this.SetCorrelator);
             // 
+            // IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox
+            // 
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.AutoSize = true;
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.Location = new System.Drawing.Point(3, 60);
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.Name = "IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox";
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.Size = new System.Drawing.Size(181, 17);
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.TabIndex = 3;
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.Text = "IgnoreIdenticalBeginningAndEnd";
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.UseVisualStyleBackColor = true;
+            // 
             // stringCorrelatorUserControl1
             // 
             this.stringCorrelatorUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.stringCorrelatorUserControl1.Location = new System.Drawing.Point(0, 135);
-            this.stringCorrelatorUserControl1.Margin = new System.Windows.Forms.Padding(2);
+            this.stringCorrelatorUserControl1.Location = new System.Drawing.Point(0, 88);
+            this.stringCorrelatorUserControl1.Margin = new System.Windows.Forms.Padding(1);
             this.stringCorrelatorUserControl1.Name = "stringCorrelatorUserControl1";
-            this.stringCorrelatorUserControl1.Size = new System.Drawing.Size(1284, 302);
+            this.stringCorrelatorUserControl1.Size = new System.Drawing.Size(856, 196);
             this.stringCorrelatorUserControl1.String1 = "";
             this.stringCorrelatorUserControl1.String2 = "";
             this.stringCorrelatorUserControl1.TabIndex = 0;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1284, 437);
+            this.ClientSize = new System.Drawing.Size(856, 284);
             this.Controls.Add(this.stringCorrelatorUserControl1);
             this.Controls.Add(this.controlPanel);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "StringCorrelater";
             this.controlPanel.ResumeLayout(false);
@@ -240,6 +260,7 @@ namespace StringCorrelatorGui
         private CheckBox splitToChunksCheckBox;
         private Label label4;
         private CheckBox slowCompareCheclCheckBox;
+        private CheckBox IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox;
     }
 }
 

@@ -43,6 +43,8 @@ namespace StringCorrelatorGui
                 correlator = new SlowCorrelater<char>(correlator, 500);
             if (splitToChunksCheckBox.Checked)
                 correlator = new SplitToChunksCorrelaterWrapper<char>(correlator, 10);
+            if (IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.Checked)
+                correlator = new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<char>(correlator);
 
             stringCorrelatorUserControl1.Correlater = correlator;
         }
