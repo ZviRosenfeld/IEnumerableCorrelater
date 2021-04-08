@@ -1,4 +1,5 @@
 ﻿using IEnumerableCorrelater.Correlaters;
+using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,6 +8,30 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
     [TestClass]
     public class MyersAlgorithmCorrelaterTests
     {
+        [TestMethod]
+        [ExpectedException(typeof(EnumerableCorrelaterException))]
+        public void CorrelateNonNullibleTypes_ThrowException() =>
+            new MyersAlgorithmCorrelater<int>();
+
+        [TestMethod]
+        public void CorrelateNullibleTypes_DontThrowException() =>
+            new MyersAlgorithmCorrelater<int?>();
+
+        [TestMethod]
+        [DataRow(true)]
+        [DataRow(false)]
+        public void CorrelateStrings_NullElementInCollection_ThrowException(bool nullInCollection1)
+        {
+            var collectionWithNull = new[] { "A", "B", "C", null };
+            var collectionWithoutNull = new[] { "A", "B", "C" };
+
+            var correlater = new MyersAlgorithmCorrelater<string>();
+            if (nullInCollection1)
+                correlater.AssetThrowsNullElementException(collectionWithNull, collectionWithoutNull, "collection1", 3);
+            else
+                correlater.AssetThrowsNullElementException(collectionWithoutNull, collectionWithNull, "collection2", 3);
+        }
+
         [TestMethod]
         public void SameStringTest()
         {

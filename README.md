@@ -28,6 +28,7 @@ BestMatch2 = { "A", "B", "I", "D"}
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
   - [DynamicLcsCorrelater\<T>](#dynamiclcscorrelater)
   - [MyersAlgorithmCorrelater\<T>](#myersalgorithmcorrelater)
+  - [PatienceDiffCorrelater\<T>](#patiencediffcorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
   - [IgnoreIdenticalBeginningAndEndCorrelaterWrapper\<T>](#ignoreidenticalbeginningandendcorrelaterwrapper)
@@ -160,6 +161,12 @@ This algorithm has a runtime of O(n \* d), where n is the size of the bigger col
 This makes the algorithm particularity good for cases where we aren't expecting many changes (like diff tools for code changes). Indeed, it is used as the default diff algorithm for git.
 
 This correlater is Available since version 1.2.0.
+
+### PatienceDiffCorrelater
+
+[PatienceDiffCorrelater\<T>](IEnumerableCorrelater/Correlaters/PatienceDiffCorrelater.cs) is an algrithum that was developed spisificly for comaring diffs in code. 
+
+This correlater is Available since version 1.2.1.
 
 ## Optimizations
 

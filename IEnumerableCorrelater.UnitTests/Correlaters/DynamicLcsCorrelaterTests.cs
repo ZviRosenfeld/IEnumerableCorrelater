@@ -1,4 +1,5 @@
 ﻿using IEnumerableCorrelater.Correlaters;
+using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,6 +12,15 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         private const int removalCost = 9;
         private const int insertionCost = 10;
         private static readonly ICorrelater<string> correlater = new DynamicLcsCorrelater<string>(removalCost, insertionCost);
+
+        [TestMethod]
+        [ExpectedException(typeof(EnumerableCorrelaterException))]
+        public void CorrelateNonNullibleTypes_ThrowException() =>
+            new DynamicLcsCorrelater<int>();
+
+        [TestMethod]
+        public void CorrelateNullibleTypes_DontThrowException() =>
+            new DynamicLcsCorrelater<int?>();
 
         [TestMethod]
         public void Correlate_OneElementToInsert()

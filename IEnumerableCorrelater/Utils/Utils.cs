@@ -1,5 +1,6 @@
 ﻿using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
+using System.Collections.Generic;
 
 namespace IEnumerableCorrelater.Utils
 {
@@ -13,6 +14,12 @@ namespace IEnumerableCorrelater.Utils
             for (int i = 0; i < collection.Length; i++)
                 if (collection[i] == null || collection[i].Equals(default(T)))
                     throw new NullElementException(collectionName, i);
+        }
+
+        public static IEnumerable<T> GetNNullElemenets<T>(this int n)
+        {
+            for (var i = 0; i < n; i++)
+                yield return default(T);
         }
     }
 }

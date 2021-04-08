@@ -14,6 +14,12 @@ namespace IEnumerableCorrelater.Correlaters
     /// </summary>
     public class MyersAlgorithmCorrelater<T> : ICorrelater<T>
     {
+        public MyersAlgorithmCorrelater()
+        {
+            if (default(T) != null && typeof(T) != typeof(char))
+                throw new EnumerableCorrelaterException($"{nameof(T)} must be nullable or a char");
+        }
+
         public event Action<int, int> OnProgressUpdate;
 
         public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
