@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using IEnumerableCorrelater.Calculators;
-using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
-using IEnumerableCorrelater.Utils;
 
 namespace IEnumerableCorrelater.Correlaters
 {
-    public class DamerauLevenshteinCorrelater<T> : ICorrelater<T>
+    public class DamerauLevenshteinCorrelater<T> : AbstractCorrelater<T>
     {
         private readonly IDistanceCalculator<T> distanceCalculator;
         private readonly ITranspositionCalculator<T> transpositionCalculator;
@@ -37,31 +36,20 @@ namespace IEnumerableCorrelater.Correlaters
             this.insertionCalculator = insertionCalculator;
         }
 
-        private CorrelaterResult<T> Compare(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        protected override CorrelaterResult<T> InternalCorrelate(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, CancellationToken cancellationToken = default)
         {
-            var dynamicTable = CreateDynamicTable(collection1, collection2);
+            var dynamicTable = CreateDynamicTable(collection1, collection2, cancellationToken);
             var matchingArrays = GetMatchingArrays(dynamicTable, collection1, collection2);
             return new CorrelaterResult<T>(dynamicTable[collection1.Length, collection2.Length], matchingArrays.Item1, matchingArrays.Item2);
         }
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
-        {
-            var collection1Wrapper = collection1.ToCollectionWrapper();
-            var collection2Wrapper = collection2.ToCollectionWrapper();
-
-            collection1Wrapper.CheckForNulls(nameof(collection1));
-            collection2Wrapper.CheckForNulls(nameof(collection2));
-
-            return Compare(collection1Wrapper, collection2Wrapper);
-        }
-
-        public event Action<int, int> OnProgressUpdate;
+        public override event Action<int, int> OnProgressUpdate;
 
         /// <summary>
         /// Creates the dynamic table. 
         /// Cell[i, j] defines the best match in which array1 contains all elements up to i (including), and array2 contains all elements up to j (including)
         /// </summary>
-        private long[,] CreateDynamicTable(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        private long[,] CreateDynamicTable(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, CancellationToken cancellationToken)
         {
             var dynamicTable = new long[collection1.Length + 1, collection2.Length + 1];
 
@@ -74,6 +62,8 @@ namespace IEnumerableCorrelater.Correlaters
             OnProgressUpdate?.Invoke(1, collection1.Length + 1);
             for (int i = 1; i < collection1.Length + 1; i++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 for (int j = 1; j < collection2.Length + 1; j++)
                 {
                     if (collection1[i - 1].Equals(collection2[j - 1]))

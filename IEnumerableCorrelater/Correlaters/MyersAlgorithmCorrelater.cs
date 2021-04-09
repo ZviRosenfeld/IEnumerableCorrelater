@@ -1,10 +1,10 @@
-﻿using IEnumerableCorrelater.CollectionWrappers;
-using IEnumerableCorrelater.Exceptions;
+﻿using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 using IEnumerableCorrelater.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace IEnumerableCorrelater.Correlaters
 {
@@ -12,36 +12,25 @@ namespace IEnumerableCorrelater.Correlaters
     /// Uses Myer's algorithm to find the diffs between 2 IEnumerables.
     /// This is a greedy algorithm that’s fast and produces diffs that tend to be of good quality most of the time.
     /// </summary>
-    public class MyersAlgorithmCorrelater<T> : ICorrelater<T>
+    public class MyersAlgorithmCorrelater<T> : AbstractCorrelater<T>
     {
-        public MyersAlgorithmCorrelater()
+        public override event Action<int, int> OnProgressUpdate;
+
+        protected override CorrelaterResult<T> InternalCorrelate(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, CancellationToken cancellationToken = default)
         {
-            if (default(T) != null && typeof(T) != typeof(char))
-                throw new EnumerableCorrelaterException($"{nameof(T)} must be nullable or a char");
+            var trace = CreateTraceTable(collection1, collection2, cancellationToken);
+            return CreateResult(trace, collection1, collection2);
         }
 
-        public event Action<int, int> OnProgressUpdate;
-
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
-        {
-            var collection1Wrapper = collection1.ToCollectionWrapper();
-            var collection2Wrapper = collection2.ToCollectionWrapper();
-
-            collection1Wrapper.CheckForNulls(nameof(collection1));
-            collection2Wrapper.CheckForNulls(nameof(collection2));
-
-            var trace = CreateTraceTable(collection1Wrapper, collection2Wrapper);
-
-            return CreateResult(trace, collection1Wrapper, collection2Wrapper);
-        }
-
-        private List<NegativeArray<int>> CreateTraceTable(ICollectionWrapper<T> collection1Wrapper, ICollectionWrapper<T> collection2Wrapper)
+        private List<NegativeArray<int>> CreateTraceTable(ICollectionWrapper<T> collection1Wrapper, ICollectionWrapper<T> collection2Wrapper, CancellationToken cancellationToken)
         {
             var maxDistance = collection1Wrapper.Length + collection2Wrapper.Length;
             var trace = new List<NegativeArray<int>>();
 
             for (var d = 0; d <= maxDistance; d++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 trace.Add(new NegativeArray<int>(maxDistance * 2));
                 for (var k = -1 * d; k <= d; k += 2)
                 {

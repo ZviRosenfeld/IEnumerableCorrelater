@@ -6,6 +6,7 @@ using IEnumerableCorrelater.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace IEnumerableCorrelater.Correlaters
 {
@@ -13,7 +14,7 @@ namespace IEnumerableCorrelater.Correlaters
     /// PatienceDiffCorrelater is an algorithm that was developed specifically for comparing diffs in code. 
     /// It tends to do very well when comparing two files that started the same, but will perform poorly for almost every other case.
     /// </summary>
-    public class PatienceDiffCorrelater<T> : IContinuousCorrelater<T>
+    public class PatienceDiffCorrelater<T> : AbstractCorrelater<T>, IContinuousCorrelater<T>
     {
         private readonly IContinuousCorrelater<T> innerCorrelater = 
             new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<T>(new LazyFitMatchingElementsCorrelater());
@@ -27,18 +28,12 @@ namespace IEnumerableCorrelater.Correlaters
             innerCorrelater.OnResultUpdate += r => OnResultUpdate?.Invoke(r);
         }
 
-        public event Action<int, int> OnProgressUpdate;
+        public override event Action<int, int> OnProgressUpdate;
         public event Action<CorrelaterResult<T>> OnResultUpdate;
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
+        protected override CorrelaterResult<T> InternalCorrelate(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, CancellationToken cancellationToken = default)
         {
-            var collection1Wrapper = collection1.ToCollectionWrapper();
-            var collection2Wrapper = collection2.ToCollectionWrapper();
-
-            collection1Wrapper.CheckForNulls(nameof(collection1));
-            collection2Wrapper.CheckForNulls(nameof(collection2));
-
-            return innerCorrelater.Correlate(collection1Wrapper, collection2Wrapper);
+            return innerCorrelater.Correlate(collection1, collection2, cancellationToken);
         }
 
         private class LazyFitMatchingElementsCorrelater : ICorrelater<T>
@@ -48,7 +43,7 @@ namespace IEnumerableCorrelater.Correlaters
 
             public event Action<int, int> OnProgressUpdate;
 
-            public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
+            public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default)
             {
                 var collection1Wrapper = collection1.ToCollectionWrapper();
                 var collection2Wrapper = collection2.ToCollectionWrapper();
@@ -74,14 +69,16 @@ namespace IEnumerableCorrelater.Correlaters
                         var locationInCollection1 = indexOfElementsInCollection1[matchingElement].Location;
                         allResults.Add(innerCorrelater.Correlate(
                             new OffsetCollectionWrapper<T>(collection1Wrapper, previousLocationInCollection1 + 1, locationInCollection1),
-                            new OffsetCollectionWrapper<T>(collection2Wrapper, previousLocationInCollection2 + 1, locationInCollection2)));
+                            new OffsetCollectionWrapper<T>(collection2Wrapper, previousLocationInCollection2 + 1, locationInCollection2),
+                            cancellationToken));
                         allResults.Add(new CorrelaterResult<T>(0, new[] { matchingElement }, new[] { matchingElement }));
                         previousLocationInCollection1 = locationInCollection1;
                         previousLocationInCollection2 = locationInCollection2;
                     }
                     allResults.Add(innerCorrelater.Correlate(
                             new OffsetCollectionWrapper<T>(collection1Wrapper, previousLocationInCollection1 + 1, collection1Wrapper.Length),
-                            new OffsetCollectionWrapper<T>(collection2Wrapper, previousLocationInCollection2 + 1, collection2Wrapper.Length)));
+                            new OffsetCollectionWrapper<T>(collection2Wrapper, previousLocationInCollection2 + 1, collection2Wrapper.Length),
+                            cancellationToken));
                 }
 
                 return Merge(allResults);

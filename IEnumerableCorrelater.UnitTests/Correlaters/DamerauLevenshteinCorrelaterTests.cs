@@ -199,5 +199,11 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             var correlater = new DamerauLevenshteinCorrelater<string>(missmatchCost, transpositionCost, removalCost, insertionCost);
             correlater.AssertProgressUpdateWasCalledRightNumberOfTimes();
         }
+
+        [TestMethod]
+        public void CancellationToeknWorks()
+        {
+            stringCorrelater.AsseertCancellationTokenWorks();
+        }
     }
 }

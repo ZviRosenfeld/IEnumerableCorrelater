@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using IEnumerableCorrelater.CollectionWrappers;
 using IEnumerableCorrelater.Interfaces;
@@ -47,29 +48,29 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             this.maxDistance = maxDistance;
         }
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default)
         {
-            var results = Map(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper());
-            return Reduce(results);
+            var results = Map(collection1.ToCollectionWrapper(), collection2.ToCollectionWrapper(), cancellationToken);
+            return Reduce(results, cancellationToken);
         }
 
         public event Action<int, int> OnProgressUpdate;
         
-        private List<Task<CorrelaterResult<T>>> Map(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        private List<Task<CorrelaterResult<T>>> Map(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, CancellationToken cancellationToken)
         {
             var resultTasks = new List<Task<CorrelaterResult<T>>>();
             for (int i = 0; i < Math.Max(collection1.Length, collection2.Length); i = i + chunkSize)
             {
                 var wrappedCollection1 = new OffsetCollectionWrapper<T>(collection1, Math.Min(collection1.Length, i), Math.Min(collection1.Length, i + chunkSize));
                 var wrappedCollection2 = new OffsetCollectionWrapper<T>(collection2, Math.Min(collection2.Length, i), Math.Min(collection2.Length, i + chunkSize));
-                resultTasks.Add(Task.Run(() => innerCorrelater.Correlate(wrappedCollection1, wrappedCollection2)));
+                resultTasks.Add(Task.Run(() => innerCorrelater.Correlate(wrappedCollection1, wrappedCollection2, cancellationToken)));
             }
             
             return resultTasks;
         }
         
         // When connecting section A with section B, the Reduce method tries to better connect the "edges" of A and B.
-        private CorrelaterResult<T> Reduce(List<Task<CorrelaterResult<T>>> resultTasks)
+        private CorrelaterResult<T> Reduce(List<Task<CorrelaterResult<T>>> resultTasks, CancellationToken cancellationToken)
         {
             var list1 = new List<T>();
             var list2 = new List<T>();
@@ -81,7 +82,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
                 var result = resultTasks[i].Result;
                 var startEdgeIndex = i > 0 ? GetStartEdgeIndex(resultTasks[i].Result) : 0;
                 if (i > 0)
-                    AddEdge(endEdgeIndex, startEdgeIndex, result, resultTasks[i - 1].Result, list1, list2);
+                    AddEdge(endEdgeIndex, startEdgeIndex, result, resultTasks[i - 1].Result, list1, list2, cancellationToken);
                 endEdgeIndex = GetEndEdgeIndex(result);
 
                 distance += result.Distance;
@@ -129,14 +130,14 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         /// A certain stretch of the two chunks - which includes the end of the previous chunk, and the beginning of the current chunk, is considered the chunks "edge".
         /// We'll correlate this edge separately, to prevent loosing matches between chunks.  
         /// </summary>
-        private void AddEdge(int startFromIndexOnPreviousResult , int goUpToIndexOnCurrentResult, CorrelaterResult<T> currentResult, CorrelaterResult<T> previousResult, List<T> list1, List<T> list2)
+        private void AddEdge(int startFromIndexOnPreviousResult , int goUpToIndexOnCurrentResult, CorrelaterResult<T> currentResult, CorrelaterResult<T> previousResult, List<T> list1, List<T> list2, CancellationToken cancellationToken)
         {
             var collection1 = GetEdgeCollection(previousResult.BestMatch1, currentResult.BestMatch1,
                 startFromIndexOnPreviousResult, goUpToIndexOnCurrentResult);
             var collection2 = GetEdgeCollection(previousResult.BestMatch2, currentResult.BestMatch2,
                 startFromIndexOnPreviousResult, goUpToIndexOnCurrentResult);
 
-            var result = innerCorrelater.Correlate(collection1, collection2);
+            var result = innerCorrelater.Correlate(collection1, collection2, cancellationToken);
 
             AddRange(result.BestMatch1, list1, 0, result.BestMatch1.Length);
             AddRange(result.BestMatch2, list2, 0, result.BestMatch2.Length);

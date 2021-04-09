@@ -6,6 +6,7 @@ using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
 {
@@ -24,7 +25,8 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         public void SameString_CallInnderCorrelaterWithEmptyCollection()
         {
             var s = "abcdefg";
-            A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._)).Invokes((IEnumerable<char> collection1, IEnumerable<char> collection2) => 
+            A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._, A<CancellationToken>._)).
+                Invokes((IEnumerable<char> collection1, IEnumerable<char> collection2, CancellationToken ct) => 
             {
                 Assert.IsTrue(!collection1.Any(), $"{nameof(collection1)} was not empty");
                 Assert.IsTrue(!collection2.Any(), $"{nameof(collection2)} was not empty");
@@ -38,7 +40,8 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             var s1 = "abc1234efg";
             var s2 = "abc5678efg";
 
-            A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._)).Invokes((IEnumerable<char> collection1, IEnumerable<char> collection2) =>
+            A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._, A<CancellationToken>._)).
+                Invokes((IEnumerable<char> collection1, IEnumerable<char> collection2, CancellationToken ct) =>
             {
                 collection1.AssertAreSame("1234", nameof(collection1));
                 collection2.AssertAreSame("5678", nameof(collection2));
@@ -132,7 +135,7 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
         [DataRow("1234", "5678", 1)] // Diff eveywhere
         public void IContinuousCorrelaterTest_InnerCorrelaterNotContinuous(string string1, string string2, int timeToCallOrResultUpdate)
         {
-            A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._)).
+            A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._, A<CancellationToken>._)).
                 Returns(new CorrelaterResult<char>(10, "123\04".ToArray(), "5678\0".ToArray()));
 
             var match1 = new List<char>();
@@ -187,6 +190,30 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
 
             Assertions.AssertResultIsAsExpected(actualResult, resultFromEvent);
             Assert.AreEqual(extraTimesToCallOrResultUpdate + innerUpdates, totalUpdates, $"Got wrong number of {nameof(totalUpdates)}");
+        }
+
+        [TestMethod]
+        public void CancellationToeknForInnerCorrelater()
+        {
+            var correlater = new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<char>(new NeverEndingCorrelater<char>());
+            correlater.AsseertCancellationTokenWorks();
+        }
+
+        [TestMethod]
+        public void CancellationToeknForComparingStartElements()
+        {
+            var collection = SlowCompareElement.ToArrayOfSlowCompareElement("abcdefghijklmnop");
+            var correlater = new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<SlowCompareElement>(new NullCorrelator<SlowCompareElement>());
+            correlater.AsseertCancellationTokenWorks(collection, collection);
+        }
+
+        [TestMethod]
+        public void CancellationToeknForComparingEndElements()
+        {
+            var collection1 = SlowCompareElement.ToArrayOfSlowCompareElement("1abcdefghijklmnop");
+            var collection2 = SlowCompareElement.ToArrayOfSlowCompareElement("2abcdefghijklmnop");
+            var correlater = new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<SlowCompareElement>(new NullCorrelator<SlowCompareElement>());
+            correlater.AsseertCancellationTokenWorks(collection1, collection2);
         }
     }
 }

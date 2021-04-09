@@ -3,6 +3,7 @@ using IEnumerableCorrelater.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace IEnumerableCorrelater.CorrelaterWrappers
 {
@@ -26,20 +27,21 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         public event Action<int, int> OnProgressUpdate;
         public event Action<CorrelaterResult<T>> OnResultUpdate;
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default)
         {
             var collection1Wrapper = collection1.ToCollectionWrapper();
             var collection2Wrapper = collection2.ToCollectionWrapper();
 
-            var startIndex = GetFirstNotEqualIndex(collection1Wrapper, collection2Wrapper);
-            var endIndexes = GetLastNotEqualIndexes(collection1Wrapper, collection2Wrapper, startIndex);
+            var startIndex = GetFirstNotEqualIndex(collection1Wrapper, collection2Wrapper, cancellationToken);
+            var endIndexes = GetLastNotEqualIndexes(collection1Wrapper, collection2Wrapper, startIndex, cancellationToken);
 
             if (startIndex > 0)
                 OnResultUpdate?.Invoke(new CorrelaterResult<T>(0, collection1Wrapper.Take(startIndex).ToArray(), collection2Wrapper.Take(startIndex).ToArray()));
 
             var innerCorrelaterResult = innerCorrelater.Correlate(
                 new OffsetCollectionWrapper<T>(collection1Wrapper, startIndex, endIndexes.Item1),
-                new OffsetCollectionWrapper<T>(collection2Wrapper, startIndex, endIndexes.Item2));
+                new OffsetCollectionWrapper<T>(collection2Wrapper, startIndex, endIndexes.Item2),
+                cancellationToken);
 
             var result = CreateResult(collection1Wrapper, collection2Wrapper, startIndex, endIndexes, innerCorrelaterResult);
             UpdateEndOfResult(startIndex, result, collection1Wrapper, endIndexes.Item1);
@@ -83,19 +85,21 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
                 OnResultUpdate?.Invoke(new CorrelaterResult<T>(result.Distance, result.BestMatch1.Skip(startIndex).ToArray(), result.BestMatch2.Skip(startIndex).ToArray()));
         }
 
-        private int GetFirstNotEqualIndex(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2)
+        private int GetFirstNotEqualIndex(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, CancellationToken cancellationToken)
         {
             int startIndex = 0;
             int maxLength = Math.Min(collection1.Length, collection2.Length);
-            for (; startIndex < maxLength && collection1[startIndex].Equals(collection2[startIndex]); startIndex++) ;
+            for (; startIndex < maxLength && collection1[startIndex].Equals(collection2[startIndex]); startIndex++) 
+                cancellationToken.ThrowIfCancellationRequested();
             return startIndex;
         }
 
-        private (int, int) GetLastNotEqualIndexes(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, int startIndex)
+        private (int, int) GetLastNotEqualIndexes(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, int startIndex, CancellationToken cancellationToken)
         {
             var endIndex1 = collection1.Length;
             var endIndex2 = collection2.Length;
-            for (; endIndex1 > startIndex && endIndex2 > startIndex && collection1[endIndex1 - 1].Equals(collection2[endIndex2 - 1]); endIndex1--, endIndex2--) ;
+            for (; endIndex1 > startIndex && endIndex2 > startIndex && collection1[endIndex1 - 1].Equals(collection2[endIndex2 - 1]); endIndex1--, endIndex2--) 
+                cancellationToken.ThrowIfCancellationRequested();
             return (endIndex1, endIndex2);
         }
     }

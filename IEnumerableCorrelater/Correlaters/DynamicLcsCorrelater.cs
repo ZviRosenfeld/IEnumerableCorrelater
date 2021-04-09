@@ -2,6 +2,7 @@
 using IEnumerableCorrelater.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace IEnumerableCorrelater.Correlaters
 {
@@ -27,8 +28,8 @@ namespace IEnumerableCorrelater.Correlaters
             correlater.OnProgressUpdate += (p, t) => OnProgressUpdate?.Invoke(p, t);
         }
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2) =>
-            correlater.Correlate(collection1, collection2);
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default) =>
+            correlater.Correlate(collection1, collection2, cancellationToken);
 
         public event Action<int, int> OnProgressUpdate;
     }

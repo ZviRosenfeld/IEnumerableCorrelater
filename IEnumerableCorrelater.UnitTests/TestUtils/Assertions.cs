@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using IEnumerableCorrelater.Exceptions;
 using IEnumerableCorrelater.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -92,6 +94,33 @@ namespace IEnumerableCorrelater.UnitTests.TestUtils
             correlater.Correlate(array1, array2);
 
             Assert.AreEqual(expectedProgress, progressUpdates);
+        }
+
+        public static void AsseertCancellationTokenWorks(this ICorrelater<char> correlater)
+        {
+            var string1 = Utils.GetLongString(10_000);
+            var string2 = Utils.GetLongString(10_000);
+
+            correlater.AsseertCancellationTokenWorks(string1, string2);
+        }
+
+        public static void AsseertCancellationTokenWorks<T>(this ICorrelater<T> correlater, IEnumerable<T> collection1, IEnumerable<T> collection2)
+        {
+            try
+            {
+                var cancellationTokenSource = new CancellationTokenSource();
+                var task = Task.Run(() => correlater.Correlate(collection1, collection2, cancellationTokenSource.Token));
+                cancellationTokenSource.Cancel();
+                task.Wait(TimeSpan.FromSeconds(1));
+                Assert.Fail("The task doesn't seem to have stopped");
+            }
+            catch (Exception e) when (e is AggregateException)
+            {
+                var innerException = e.InnerException;
+                while (innerException is AggregateException aggregateException)
+                    innerException = aggregateException.InnerException;
+                Assert.AreEqual(typeof(OperationCanceledException), innerException.GetType());
+            }
         }
     }
 }

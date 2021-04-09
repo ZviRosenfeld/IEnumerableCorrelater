@@ -18,7 +18,7 @@ namespace StringCorrelatorGui
             this.sleepTime = sleepTime;
         }
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default)
         {
             Thread.Sleep(sleepTime);
             return innerCorrelater.Correlate(collection1, collection2);

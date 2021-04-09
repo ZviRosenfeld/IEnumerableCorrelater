@@ -3,6 +3,7 @@ using IEnumerableCorrelater.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace IEnumerableCorrelater.Correlaters
 {
@@ -13,7 +14,7 @@ namespace IEnumerableCorrelater.Correlaters
     {
         public event Action<int, int> OnProgressUpdate;
 
-        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2)
+        public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default)
         {
             return new CorrelaterResult<T>(collection1.Count() + collection2.Count(),
                 collection1.Concat(collection2.Count().GetNNullElemenets<T>()).ToArray(),

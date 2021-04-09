@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using FakeItEasy;
 using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.CorrelaterWrappers;
@@ -214,6 +215,31 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
 
             var result = correlater.Correlate(LONG_STRING, LONG_STRING);
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void CancellationToeknForInnerCorrelater()
+        {
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(new NeverEndingCorrelater<char>(), 2);
+            correlater.AsseertCancellationTokenWorks();
+        }
+
+        [TestMethod]
+        public void CancellationToeknAlwaysPassedToInnerCorrelater()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.Cancel();
+            var innerCorrelater = A.Fake<ICorrelater<char>>();
+            A.CallTo(() => innerCorrelater.Correlate(A<IEnumerable<char>>._, A<IEnumerable<char>>._, A<CancellationToken>._)).
+                ReturnsLazily((IEnumerable<char> collection1, IEnumerable<char> collection2, CancellationToken ct) => 
+                {
+                    Assert.IsTrue(ct.IsCancellationRequested);
+                    return new CorrelaterResult<char>(0, new char[0], new char[0]);
+                });
+            var correlater = new SplitToChunksCorrelaterWrapper<char>(innerCorrelater, 2);
+
+            var s = "abcdefghijklmnop";
+            correlater.Correlate(s, s, cancellationTokenSource.Token);
         }
 
         private string RemoveAtIndex(string s, int index)

@@ -107,5 +107,12 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
 
             correlater.AssertComparision(s1, s2, expectedResult);
         }
+
+        [TestMethod]
+        public void CancellationToeknWorks()
+        {
+            var correlater = new MyersAlgorithmCorrelater<char>();
+            correlater.AsseertCancellationTokenWorks();
+        }
     }
 }
