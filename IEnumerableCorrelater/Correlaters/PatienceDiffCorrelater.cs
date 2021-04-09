@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace IEnumerableCorrelater.Correlaters
 {
@@ -50,14 +51,14 @@ namespace IEnumerableCorrelater.Correlaters
 
                 var (elementsUniqueInBothCollections, indexOfElementsInCollection1) = GetElementsUniqueInBothCollections(collection1Wrapper, collection2Wrapper);
                 var longestSubsequence = patienceSortingAlgorithm.GetRisingIndexes(elementsUniqueInBothCollections.Select(v => v.LocationInCollection2).ToArray());
-                var allResults = new List<CorrelaterResult<T>>();
-                
+                var allResults = new List<Task<CorrelaterResult<T>>>();
+
                 if (!longestSubsequence.Any())
                 {
                     var bestMatch1 = collection1Wrapper.Concat(collection2Wrapper.Length.GetNNullElemenets<T>());
                     var bestMatch2 = collection1Wrapper.Length.GetNNullElemenets<T>().Concat(collection2Wrapper);
 
-                    allResults.Add(new CorrelaterResult<T>(bestMatch1.Count(), bestMatch1.ToArray(), bestMatch2.ToArray()));
+                    allResults.Add(Task.FromResult(new CorrelaterResult<T>(bestMatch1.Count(), bestMatch1.ToArray(), bestMatch2.ToArray())));
                 }
                 else
                 {
@@ -67,30 +68,30 @@ namespace IEnumerableCorrelater.Correlaters
                         var locationInCollection2 = longestSubsequence[i];
                         var matchingElement = collection2Wrapper[locationInCollection2];
                         var locationInCollection1 = indexOfElementsInCollection1[matchingElement].Location;
-                        allResults.Add(innerCorrelater.Correlate(
-                            new OffsetCollectionWrapper<T>(collection1Wrapper, previousLocationInCollection1 + 1, locationInCollection1),
-                            new OffsetCollectionWrapper<T>(collection2Wrapper, previousLocationInCollection2 + 1, locationInCollection2),
-                            cancellationToken));
-                        allResults.Add(new CorrelaterResult<T>(0, new[] { matchingElement }, new[] { matchingElement }));
+                        var relevantCollection1 = new OffsetCollectionWrapper<T>(collection1Wrapper, previousLocationInCollection1 + 1, locationInCollection1);
+                        var relevantCollection2 = new OffsetCollectionWrapper<T>(collection2Wrapper, previousLocationInCollection2 + 1, locationInCollection2);
+                        allResults.Add(Task.Run(() => innerCorrelater.Correlate(relevantCollection1, relevantCollection2, cancellationToken)));
+                        allResults.Add(Task.FromResult(new CorrelaterResult<T>(0, new[] { matchingElement }, new[] { matchingElement })));
                         previousLocationInCollection1 = locationInCollection1;
                         previousLocationInCollection2 = locationInCollection2;
                     }
-                    allResults.Add(innerCorrelater.Correlate(
+                    allResults.Add(Task.Run(() => 
+                        innerCorrelater.Correlate(
                             new OffsetCollectionWrapper<T>(collection1Wrapper, previousLocationInCollection1 + 1, collection1Wrapper.Length),
                             new OffsetCollectionWrapper<T>(collection2Wrapper, previousLocationInCollection2 + 1, collection2Wrapper.Length),
-                            cancellationToken));
+                            cancellationToken)));
                 }
 
                 return Merge(allResults);
             }
 
-            public CorrelaterResult<T> Merge(List<CorrelaterResult<T>> results)
+            public CorrelaterResult<T> Merge(List<Task<CorrelaterResult<T>>> results)
             {
                 var bestMatch1 = new List<T>();
                 var bestMatch2 = new List<T>();
                 var distance = 0L;
 
-                foreach (var result in results)
+                foreach (var result in results.Select(t => t.Result))
                 {
                     bestMatch1.AddRange(result.BestMatch1);
                     bestMatch2.AddRange(result.BestMatch2);
