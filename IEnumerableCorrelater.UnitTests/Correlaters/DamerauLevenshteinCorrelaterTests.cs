@@ -194,6 +194,24 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
+        public void SecondStringEmptyTest()
+        {
+            var s = "12345678";
+            var expectedResult = new CorrelaterResult<char>(s.Length * removalCost, s.ToCharArray(), "\0\0\0\0\0\0\0\0".ToCharArray());
+
+            stringCorrelater.AssertComparision(s, string.Empty, expectedResult);
+        }
+
+        [TestMethod]
+        public void FirstStringEmptyTest()
+        {
+            var s = "12345678";
+            var expectedResult = new CorrelaterResult<char>(s.Length * insertionCost, "\0\0\0\0\0\0\0\0".ToCharArray(), s.ToCharArray());
+
+            stringCorrelater.AssertComparision(string.Empty, s, expectedResult);
+        }
+
+        [TestMethod]
         public void OnProgressUpdatesHappensRightNumberOfTimes()
         {
             var correlater = new DamerauLevenshteinCorrelater<string>(missmatchCost, transpositionCost, removalCost, insertionCost);

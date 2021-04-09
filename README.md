@@ -32,6 +32,7 @@ BestMatch2 = { "A", "B", "I", "D"}
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
   - [IgnoreIdenticalBeginningAndEndCorrelaterWrapper\<T>](#ignoreidenticalbeginningandendcorrelaterwrapper)
+  - [SplitByPatienceAlgorithmWrapper\<T>](#splitbypatiencealgorithmwrapper)
 - [IContinuousCorrelaters](#icontinuouscorrelaters)
 - [OnProgressUpdate Event](#onprogressupdate-event)
 
@@ -164,7 +165,8 @@ This correlater is Available since version 1.2.0.
 
 ### PatienceDiffCorrelater
 
-[PatienceDiffCorrelater\<T>](IEnumerableCorrelater/Correlaters/PatienceDiffCorrelater.cs) is an algrithum that was developed spisificly for comaring diffs in code. 
+[PatienceDiffCorrelater\<T>](IEnumerableCorrelater/Correlaters/PatienceDiffCorrelater.cs) is an algorithm that was developed specifically for comparing diffs in code. It does a very good job at creating human-readable diffs.
+You can read more about it [here](https://bramcohen.livejournal.com/73318.html). 
 
 This correlater is Available since version 1.2.1.
 
@@ -219,6 +221,25 @@ Collection2 = { "A", "B", "T", "Y", "Z" }
 IgnoreIdenticalBeginningAndEndCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
 If the inner correlater is not continuous, the "OnResultUpdate" will be raised twice - once for the equal part of the collection, and a second time for the rest of the result.
 If, on the other hand, the inner correlater is continuous the "OnResultUpdate" will be raised every time the inner correlater raises the event, plus once at the before the inner correlater starts with the beginning part of the collections that's equal, and another time after the inner correlater finishes with the end part that's equal.
+
+### [SplitByPatienceAlgorithmWrapper](IEnumerableCorrelater/CorrelaterWrappers/SplitByPatienceAlgorithmWrapper.cs)
+
+Available since version 1.2.1.
+
+This wrapper splits the correlation problems into smaller problems by finding items that are appear exactly once in both collections.
+We then set as many of these as we can in place, and use an inner correlater to correlate the collections in between.
+
+For instance, say we have the following 2 collections:
+
+```
+Collection1 = { "1", "A", "2", "3", "4" "B", "5" }
+Collection2 = { "6", "A", "7", "8", "B", "9" }
+```
+
+We'd first set "A" and "B" in both collections as matching.
+Then we'd used the inner correlater to correlate the collection before "A" (e.g. { "1" } and { "6" }), the collections between "A" to "B" (e.g. { "2", "3" , "4" } and { "7", "8" }), and the collections after "B" e.g. { "5" } and { "9" }).
+
+Note that this is the tactic used in [PatienceDiffCorrelater\<T>](#patiencediffcorrelater). Indeed, out implementation of the PatienceDiffCorrelater utilizes this wrapper. 
 
 ## IContinuousCorrelaters
 

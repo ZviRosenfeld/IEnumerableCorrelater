@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace IEnumerableCorrelater.Utils
 {
-    static class Utils
+    public static class Utils
     {
         /// <summary>
         /// Throws an exception if the collection contains a null element

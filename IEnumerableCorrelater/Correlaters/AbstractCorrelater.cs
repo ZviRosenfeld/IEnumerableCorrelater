@@ -4,6 +4,7 @@ using IEnumerableCorrelater.Interfaces;
 using IEnumerableCorrelater.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace IEnumerableCorrelater.Correlaters
@@ -20,6 +21,9 @@ namespace IEnumerableCorrelater.Correlaters
 
         public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default)
         {
+            if (!collection1.Any() && !collection2.Any())
+               return new CorrelaterResult<T>(0, new T[0], new T[0]);
+            
             var collection1Wrapper = collection1.ToCollectionWrapper();
             var collection2Wrapper = collection2.ToCollectionWrapper();
 

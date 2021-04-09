@@ -109,6 +109,26 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
+        public void SecondStringEmptyTest()
+        {
+            var s = "12345678";
+            var correlater = new MyersAlgorithmCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(s.Length, s.ToCharArray(), "\0\0\0\0\0\0\0\0".ToCharArray());
+
+            correlater.AssertComparision(s, string.Empty, expectedResult);
+        }
+
+        [TestMethod]
+        public void FirstStringEmptyTest()
+        {
+            var s = "12345678";
+            var correlater = new MyersAlgorithmCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(s.Length, "\0\0\0\0\0\0\0\0".ToCharArray(), s.ToCharArray());
+
+            correlater.AssertComparision(string.Empty, s, expectedResult);
+        }
+
+        [TestMethod]
         public void CancellationToeknWorks()
         {
             var correlater = new MyersAlgorithmCorrelater<char>();
