@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.CorrelaterWrappers;
 using IEnumerableCorrelater.UnitTests.TestUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -114,5 +115,16 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             CollectionAssert.AreEqual("89".ToCharArray(), innerCorrelater.CorrelatedCollections[2].Item1);
             CollectionAssert.AreEqual("g".ToCharArray(), innerCorrelater.CorrelatedCollections[2].Item2);
         }
+
+        [TestMethod]
+        public void OnProgressUpdatesHappensRightNumberOfTimes()
+        {
+            var s1 = "123456789";
+            var s2 = "a2cdef7gh";
+
+            var correlater = new SplitByPatienceAlgorithmWrapper<char>(new NullCorrelator<char>());
+            correlater.AssertProgressUpdateWasCalledRightNumberOfTimes(s1.ToCharArray(), s2.ToCharArray(), 5);
+        }
+
     }
 }

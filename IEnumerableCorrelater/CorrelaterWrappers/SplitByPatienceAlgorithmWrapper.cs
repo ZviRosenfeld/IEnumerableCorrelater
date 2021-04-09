@@ -75,8 +75,10 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             var bestMatch2 = new List<T>();
             var distance = 0L;
 
+            var i = 0;
             foreach (var result in results.Select(t => t.Result))
             {
+                OnProgressUpdate?.Invoke(++i, results.Count);
                 bestMatch1.AddRange(result.BestMatch1);
                 bestMatch2.AddRange(result.BestMatch2);
                 distance += result.Distance;
