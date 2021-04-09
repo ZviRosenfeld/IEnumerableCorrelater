@@ -126,5 +126,15 @@ namespace IEnumerableCorrelater.UnitTests.CorrelaterWrappers
             correlater.AssertProgressUpdateWasCalledRightNumberOfTimes(s1.ToCharArray(), s2.ToCharArray(), 5);
         }
 
+
+        [TestMethod]
+        public void OnResultUpdate_NoOffset_DontMissPartOfMatch()
+        {
+            var s1 = "123456789";
+            var s2 = "a2cdef7gh";
+
+            var correlater = new SplitByPatienceAlgorithmWrapper<char>(new NullCorrelator<char>());
+            correlater.AssertOnResultUpdateWorks(s1, s2);
+        }
     }
 }

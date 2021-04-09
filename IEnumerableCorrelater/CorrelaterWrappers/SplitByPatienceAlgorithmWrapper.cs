@@ -13,7 +13,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
     /// This wrapper splits the correlation problems into smaller problems by finding items that are appear exactly once in both collections.
     /// We then set as many of these as we can in place, and use an inner correlater to correlate the items in between.
     /// </summary>
-    public class SplitByPatienceAlgorithmWrapper<T> : ICorrelater<T>
+    public class SplitByPatienceAlgorithmWrapper<T> : IContinuousCorrelater<T>
     {
         private readonly PatienceSortingAlgorithm patienceSortingAlgorithm = new PatienceSortingAlgorithm();
         private readonly ICorrelater<T> innerCorrelater;
@@ -26,6 +26,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
         }
 
         public event Action<int, int> OnProgressUpdate;
+        public event Action<CorrelaterResult<T>> OnResultUpdate;
 
         public CorrelaterResult<T> Correlate(IEnumerable<T> collection1, IEnumerable<T> collection2, CancellationToken cancellationToken = default)
         {
@@ -79,6 +80,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
             foreach (var result in results.Select(t => t.Result))
             {
                 OnProgressUpdate?.Invoke(++i, results.Count);
+                OnResultUpdate?.Invoke(result);
                 bestMatch1.AddRange(result.BestMatch1);
                 bestMatch2.AddRange(result.BestMatch2);
                 distance += result.Distance;
