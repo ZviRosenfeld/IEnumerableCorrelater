@@ -39,10 +39,7 @@ namespace IEnumerableCorrelater.CorrelaterWrappers
 
             if (!longestSubsequence.Any())
             {
-                var bestMatch1 = collection1Wrapper.Concat(collection2Wrapper.Length.GetNNullElemenets<T>());
-                var bestMatch2 = collection1Wrapper.Length.GetNNullElemenets<T>().Concat(collection2Wrapper);
-
-                allResults.Add(Task.FromResult(new CorrelaterResult<T>(bestMatch1.Count(), bestMatch1.ToArray(), bestMatch2.ToArray())));
+                return innerCorrelater.Correlate(collection1Wrapper, collection2Wrapper, cancellationToken);
             }
             else
             {
