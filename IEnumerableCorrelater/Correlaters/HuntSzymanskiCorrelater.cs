@@ -2,7 +2,6 @@
 using IEnumerableCorrelater.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace IEnumerableCorrelater.Correlaters
@@ -26,6 +25,12 @@ namespace IEnumerableCorrelater.Correlaters
                 thresholds[i] = thresholds.Length + 1;
 
             for (var i = 0; i < collection1.Length; i++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                OnProgressUpdate?.Invoke(i + 1, collection1.Length);
+                if (!elementToLocationsInCollection2.ContainsKey(collection1[i]))
+                    continue;
+
                 foreach (var j in elementToLocationsInCollection2[collection1[i]])
                 {
                     var k = FindK(j, thresholds);
@@ -35,6 +40,7 @@ namespace IEnumerableCorrelater.Correlaters
                         traceList[k] = new TraceNode(i, j, k > 0 ? traceList[k - 1] : null);
                     }
                 }
+            }
 
             return GetResult(collection1, collection2, thresholds, traceList);
         }
@@ -69,6 +75,21 @@ namespace IEnumerableCorrelater.Correlaters
             var longestSubsequentSize = GetLongestSubsequentSize(thresholds);
             var distance = Math.Max(collection1.Length, collection2.Length) - longestSubsequentSize;
 
+            var (bestMatch1, bestMatch2) = GetBestMatches(collection1, collection2, longestSubsequentSize, traceList);
+            return new CorrelaterResult<T>(distance, bestMatch1, bestMatch2);
+        }
+
+        private int GetLongestSubsequentSize(int[] thresholds)
+        {
+            for (var k = thresholds.Length - 1; k >= 0; k--)
+                if (thresholds[k] < thresholds.Length + 1)
+                    return k;
+
+            throw new InternalException($"Code 1004 (reached the end of {nameof(HuntSzymanskiCorrelater<T>)}.{nameof(GetLongestSubsequentSize)})");
+        }
+
+        private (T[], T[]) GetBestMatches(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, int longestSubsequentSize, TraceNode[] traceList)
+        {
             var bestMatch1 = new List<T>();
             var bestMatch2 = new List<T>();
 
@@ -101,16 +122,7 @@ namespace IEnumerableCorrelater.Correlaters
             bestMatch1.Reverse();
             bestMatch2.Reverse();
 
-            return new CorrelaterResult<T>(distance, bestMatch1.ToArray(), bestMatch2.ToArray());
-        }
-
-        private int GetLongestSubsequentSize(int[] thresholds)
-        {
-            for (var k = thresholds.Length - 1; k >= 0; k--)
-                if (thresholds[k] < thresholds.Length + 1)
-                    return k;
-
-            throw new InternalException($"Code 1004 (reached the end of {nameof(HuntSzymanskiCorrelater<T>)}.{nameof(GetLongestSubsequentSize)})");
+            return (bestMatch1.ToArray(), bestMatch2.ToArray());
         }
 
         private class TraceNode
