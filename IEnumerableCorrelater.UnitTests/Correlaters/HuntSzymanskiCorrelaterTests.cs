@@ -54,12 +54,24 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
+        public void DifferentStartCharTest()
+        {
+            var s1 = "12ab";
+            var s2 = "34ab";
+
+            var correlater = new HuntSzymanskiCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(4, "\0\012ab".ToCharArray(), "34\0\0ab".ToCharArray());
+
+            correlater.AssertComparision(s1, s2, expectedResult);
+        }
+
+        [TestMethod]
         public void TotallyDifferentStringsTest()
         {
             var s1 = "abcdefghij";
             var s2 = "12345678";
             var correlater = new HuntSzymanskiCorrelater<char>();
-            var expectedResult = new CorrelaterResult<char>(s1.Length + s2.Length, "abcdefghij\0\0\0\0\0\0\0\0".ToCharArray(), "\0\0\0\0\0\0\0\0\0\012345678".ToCharArray());
+            var expectedResult = new CorrelaterResult<char>(s1.Length + s2.Length, "\0\0\0\0\0\0\0\0abcdefghij".ToCharArray(), "12345678\0\0\0\0\0\0\0\0\0\0".ToCharArray());
 
             correlater.AssertComparision(s1, s2, expectedResult);
         }

@@ -98,31 +98,36 @@ namespace IEnumerableCorrelater.Correlaters
             var locationInCollection2 = collection2.Length - 1;
             while (traceNode != null)
             {
-                while (locationInCollection1 > traceNode.IndexInCollection1)
-                {
-                    bestMatch1.Add(collection1[locationInCollection1]);
-                    bestMatch2.Add(default);
-                    locationInCollection1--;
-                }
-                while (locationInCollection2 > traceNode.IndexInCollection2)
-                {
-                    bestMatch1.Add(default);
-                    bestMatch2.Add(collection2[locationInCollection2]);
-                    locationInCollection2--;
-                }
+                AddElementsFromCollection(collection1, bestMatch1, bestMatch2, locationInCollection1, traceNode.IndexInCollection1);
+                AddElementsFromCollection(collection2, bestMatch2, bestMatch1, locationInCollection2, traceNode.IndexInCollection2);
 
-                bestMatch1.Add(collection1[locationInCollection1]);
-                bestMatch2.Add(collection2[locationInCollection2]);
+                bestMatch1.Add(collection1[traceNode.IndexInCollection1]);
+                bestMatch2.Add(collection2[traceNode.IndexInCollection2]);
 
-                locationInCollection1--;
-                locationInCollection2--;
+                locationInCollection1 = traceNode.IndexInCollection1 - 1;
+                locationInCollection2 = traceNode.IndexInCollection2 - 1;
                 traceNode = traceNode.Previous;
             }
+            AddElementsFromCollection(collection1, bestMatch1, bestMatch2, locationInCollection1, -1);
+            AddElementsFromCollection(collection2, bestMatch2, bestMatch1, locationInCollection2, -1);
+
 
             bestMatch1.Reverse();
             bestMatch2.Reverse();
 
             return (bestMatch1.ToArray(), bestMatch2.ToArray());
+        }
+
+        /// <summary>
+        /// Adds the elements from "collection" between the startIndex to the endIndex (descending) into bestMatch1 list. bestMatch2 gets nulls.
+        /// </summary>
+        private void AddElementsFromCollection(ICollectionWrapper<T> collection, List<T> bestMatch1, List<T> bestMatch2, int startIndex, int endIndex)
+        {
+            for (; startIndex > endIndex; startIndex--)
+            {
+                bestMatch1.Add(collection[startIndex]);
+                bestMatch2.Add(default);
+            }
         }
 
         private class TraceNode
