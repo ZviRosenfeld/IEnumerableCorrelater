@@ -73,7 +73,7 @@ namespace IEnumerableCorrelater.Correlaters
         private CorrelaterResult<T> GetResult(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, int[] thresholds, TraceNode[] traceList)
         {
             var longestSubsequentSize = GetLongestSubsequentSize(thresholds);
-            var distance = Math.Max(collection1.Length, collection2.Length) - longestSubsequentSize;
+            var distance = collection1.Length + collection2.Length - 2 * longestSubsequentSize;
 
             var (bestMatch1, bestMatch2) = GetBestMatches(collection1, collection2, longestSubsequentSize, traceList);
             return new CorrelaterResult<T>(distance, bestMatch1, bestMatch2);

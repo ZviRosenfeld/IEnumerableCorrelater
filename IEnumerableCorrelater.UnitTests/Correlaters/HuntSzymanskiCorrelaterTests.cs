@@ -42,6 +42,49 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
+        public void OneDifferentCharTest()
+        {
+            var s1 = "abc1efg";
+            var s2 = "abc2efg";
+
+            var correlater = new HuntSzymanskiCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(2, "abc\01efg".ToCharArray(), "abc2\0efg".ToCharArray());
+
+            correlater.AssertComparision(s1, s2, expectedResult);
+        }
+
+        [TestMethod]
+        public void TotallyDifferentStringsTest()
+        {
+            var s1 = "abcdefghij";
+            var s2 = "12345678";
+            var correlater = new HuntSzymanskiCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(s1.Length + s2.Length, "abcdefghij\0\0\0\0\0\0\0\0".ToCharArray(), "\0\0\0\0\0\0\0\0\0\012345678".ToCharArray());
+
+            correlater.AssertComparision(s1, s2, expectedResult);
+        }
+
+        [TestMethod]
+        public void SecondStringEmptyTest()
+        {
+            var s = "12345678";
+            var correlater = new HuntSzymanskiCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(s.Length, s.ToCharArray(), "\0\0\0\0\0\0\0\0".ToCharArray());
+
+            correlater.AssertComparision(s, string.Empty, expectedResult);
+        }
+
+        [TestMethod]
+        public void FirstStringEmptyTest()
+        {
+            var s = "12345678";
+            var correlater = new HuntSzymanskiCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(s.Length, "\0\0\0\0\0\0\0\0".ToCharArray(), s.ToCharArray());
+
+            correlater.AssertComparision(string.Empty, s, expectedResult);
+        }
+
+        [TestMethod]
         public void CancellationToeknWorks()
         {
             var correlater = new HuntSzymanskiCorrelater<char>();
