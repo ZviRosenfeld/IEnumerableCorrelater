@@ -20,15 +20,5 @@ namespace IEnumerableCorrelater.Benchmarking
 
             correlater.Correlate(string1, string2);
         }
-
-        [TestMethod]
-        public void MyersAlgorithmCorrelater_BenchmarkTwoVeryBigAlomostSameCollections()
-        {
-            var collection1 = Utils.GetBigCollection(LENGTH);
-            var collection2 = collection1.ToList();
-            collection2[500] = collection1.ElementAt(500) == 'a' ? 'b' : 'a';
-
-            correlater.Correlate(collection1, collection2);
-        }
     }
 }
