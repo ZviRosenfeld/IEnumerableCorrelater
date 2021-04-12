@@ -104,10 +104,10 @@ namespace IEnumerableCorrelater.Correlaters
                     bestMatch2.Add(default);
                     locationInCollection1--;
                 }
-                while (locationInCollection1 > traceNode.IndexInCollection1)
+                while (locationInCollection2 > traceNode.IndexInCollection2)
                 {
                     bestMatch1.Add(default);
-                    bestMatch2.Add(collection1[locationInCollection2]);
+                    bestMatch2.Add(collection2[locationInCollection2]);
                     locationInCollection2--;
                 }
 
