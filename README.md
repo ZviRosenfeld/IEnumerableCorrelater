@@ -92,11 +92,13 @@ Console.WriteLine(result.BestMatch2);
 ### Impotent Notes
 
 - Correlaters are not thread safe.
-- All costs must not be negative.
 - The Equal method must be defined in a meaningful way for the elements of the collection you're correlating.
-- The distance between equal elements must be zero.
 - IEnumerableCorrelater doesn't support comparing collections with null elements in them. If you need null elements, consider using the "Null Object Pattern".
 - By default, the correlaters will copy the collection to an array (unless the collection is a string, array or list). If you don't want this to happen, you'll need to implements the [ICollectionWrapper](IEnumerableCorrelater/Interfaces/ICollectionWrapper.cs) interface to wrap you're collection, and call the correlate method with that.
+
+For LevenshteinCorrelater, DamerauLevenshteinCorrelater and DynamicLcsCorrelater:
+- All costs must not be negative.
+- The distance between equal elements must be zero.
 
 ## Correlaters
 
