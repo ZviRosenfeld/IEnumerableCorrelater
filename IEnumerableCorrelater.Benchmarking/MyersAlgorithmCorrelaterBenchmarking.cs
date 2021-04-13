@@ -1,7 +1,6 @@
 ﻿using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace IEnumerableCorrelater.Benchmarking
 {

@@ -33,7 +33,7 @@ namespace IEnumerableCorrelater.Correlaters
 
                 foreach (var j in elementToLocationsInCollection2[collection1[i]])
                 {
-                    var k = FindK(j, thresholds);
+                    var k = BinarySearchFindK(j, thresholds);
                     if (j < thresholds[k])
                     {
                         thresholds[k] = j;
@@ -48,7 +48,7 @@ namespace IEnumerableCorrelater.Correlaters
         private Dictionary<T, List<int>> GetDictionaryFromElementToLocationsInCollection(ICollectionWrapper<T> collection)
         {
             var elementToLocationsInCollection = new Dictionary<T, List<int>>();
-            for (var i = 0; i < collection.Length; i++)
+            for (var i = collection.Length - 1; i >= 0; i--)
             {
                 if (!elementToLocationsInCollection.ContainsKey(collection[i]))
                     elementToLocationsInCollection[collection[i]] = new List<int>();
@@ -61,13 +61,23 @@ namespace IEnumerableCorrelater.Correlaters
         /// <summary>
         /// Finds a number, k, in array thresholds so that (thresholds[i - 1] < j && j <= thresholds[i])
         /// </summary>
-        private int FindK(int j, int[] thresholds)
+        private int BinarySearchFindK(int j, int[] thresholds)
         {
-            for (var i = 1; i < thresholds.Length; i++)
-                if (thresholds[i - 1] < j && j <= thresholds[i])
-                    return i;
+            int start = 0, end = thresholds.Length - 1;
+            while (start < end)
+            {
+                var middle = (start + end) / 2;
+                if (thresholds[middle - 1] < j && j <= thresholds[middle])
+                    return middle;
+                if (start + 1 == end)
+                    return end;
+                if (j > thresholds[middle])
+                    start = middle;
+                else
+                    end = middle;
+            }
 
-            throw new InternalException($"Code 1005 (reached the end of {nameof(HuntSzymanskiCorrelater<T>)}.{nameof(FindK)})");
+            throw new InternalException($"Code 1005 (reached the end of {nameof(HuntSzymanskiCorrelater<T>)}.{nameof(BinarySearchFindK)})");
         }
 
         private CorrelaterResult<T> GetResult(ICollectionWrapper<T> collection1, ICollectionWrapper<T> collection2, int[] thresholds, TraceNode[] traceList)

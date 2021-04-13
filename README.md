@@ -24,11 +24,12 @@ BestMatch2 = { "A", "B", "I", "D"}
 - [Usage](#usage)
   - [Impotent Notes](#impotent-notes)
 - [Correlaters](#correlaters)
+  - [MyersAlgorithmCorrelater\<T>](#myersalgorithmcorrelater)
+  - [PatienceDiffCorrelater\<T>](#patiencediffcorrelater)
+  - [HuntSzymanskiCorrelater\<T>](#HuntSzymanskiCorrelater)
   - [LevenshteinCorrelater\<T>](#levenshteincorrelater)
   - [DamerauLevenshteinCorrelater\<T>](#dameraulevenshteincorrelater)
   - [DynamicLcsCorrelater\<T>](#dynamiclcscorrelater)
-  - [MyersAlgorithmCorrelater\<T>](#myersalgorithmcorrelater)
-  - [PatienceDiffCorrelater\<T>](#patiencediffcorrelater)
 - [Optimizations](#optimizations)
   - [SplitToChunksCorrelaterWrapper\<T>](#splittochunkscorrelaterwrapper)
   - [IgnoreIdenticalBeginningAndEndCorrelaterWrapper\<T>](#ignoreidenticalbeginningandendcorrelaterwrapper)
@@ -97,46 +98,30 @@ Console.WriteLine(result.BestMatch2);
 - IEnumerableCorrelater doesn't support comparing collections with null elements in them. If you need null elements, consider using the "Null Object Pattern".
 - By default, the correlaters will copy the collection to an array (unless the collection is a string, array or list). If you don't want this to happen, you'll need to implements the [ICollectionWrapper](IEnumerableCorrelater/Interfaces/ICollectionWrapper.cs) interface to wrap you're collection, and call the correlate method with that.
 
-### A Sample Implementation of an IDistanceCalculator\<char>
-
-```CSharp
-/// <summary>
-/// An implantation of an IDistanceCalculator&lt;char&gt;
-/// </summary>
-class CharDistanceCalculator : IDistanceCalculator<char>
-{
-    private const int DEFAULT_DISTANCE = 20;
-    // We'll use a dictionary that will hold the distances between different pairs
-    private readonly Dictionary<Tuple<char, char>, uint> distance = new Dictionary<Tuple<char, char>, uint>()
-    {
-        {new Tuple<char, char>('a', 'e'), 1 },
-        {new Tuple<char, char>('a', 'i'), 2 },
-        {new Tuple<char, char>('a', 'o'), 2 },
-        {new Tuple<char, char>('a', 'u'), 3 },
-        {new Tuple<char, char>('b', 'd'), 1 },
-        {new Tuple<char, char>('c', 'e'), 2 },
-        {new Tuple<char, char>('c', 's'), 2 },
-        {new Tuple<char, char>('c', 'i'), 3 },
-        ...
-    }; 
-
-    public uint Distance(char element1, char element2)
-    {
-	// If the elements are equal, they should return a distance of 0
-	if (element1.Equals(element2))
-            return 0;
-	
-        var tuple = new Tuple<char, char>(element1, element2);
-        if (distance.ContainsKey(tuple))
-            return distance[tuple];
-
-        // For any pairs not in the dictionary, we'll return a default distance.
-        return DEFAULT_DISTANCE;
-    }
-}
-```
-
 ## Correlaters
+
+### MyersAlgorithmCorrelater
+
+[MyersAlgorithmCorrelater\<T>](IEnumerableCorrelater/Correlaters/MyersAlgorithmCorrelater.cs) is an algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
+This algorithm has a runtime of O(n \* d), where n is the size of the bigger collection, and d is the number of changed elements between the collections.
+This makes the algorithm particularity good for cases where we aren't expecting many changes (like diff tools for code changes). Indeed, it is used as the default diff algorithm for git.
+
+This correlater is Available since version 1.2.0.
+
+### PatienceDiffCorrelater
+
+[PatienceDiffCorrelater\<T>](IEnumerableCorrelater/Correlaters/PatienceDiffCorrelater.cs) is an algorithm that was developed specifically for comparing diffs in code. It does a very good job at creating human-readable diffs.
+You can read more about it [here](https://bramcohen.livejournal.com/73318.html). 
+
+This correlater is Available since version 1.2.1.
+
+### HuntSzymanskiCorrelater
+
+[HuntSzymanskiCorrelater\<T>](IEnumerableCorrelater/Correlaters/HuntSzymanskiCorrelater.cs) is another algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
+This algorithm has a runtime of O((r + n) log n), where n is the size of the bigger collection, and r is the total number of matching pairs.
+In the wost case r = n \* n, which would mean a runtime of O((n \* n) long n), but in practice O(n log n) is rather expected.
+
+This correlater is Available since version 1.2.1.
 
 ### LevenshteinCorrelater
 
@@ -154,21 +139,6 @@ The correlater's runtime is O(n \* m), where n and m are the length of the colle
 The dynamic algorithm for the LCS problem has a runtime of O(n \* m), where n and m are the length of the collections being compared.
 
 This correlater is Available since version 1.2.0.
-
-### MyersAlgorithmCorrelater
-
-[MyersAlgorithmCorrelater\<T>](IEnumerableCorrelater/Correlaters/MyersAlgorithmCorrelater.cs) is another algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
-This algorithm has a runtime of O(n \* d), where n is the size of the bigger collection, and d is the number of changed elements between the collections.
-This makes the algorithm particularity good for cases where we aren't expecting many changes (like diff tools for code changes). Indeed, it is used as the default diff algorithm for git.
-
-This correlater is Available since version 1.2.0.
-
-### PatienceDiffCorrelater
-
-[PatienceDiffCorrelater\<T>](IEnumerableCorrelater/Correlaters/PatienceDiffCorrelater.cs) is an algorithm that was developed specifically for comparing diffs in code. It does a very good job at creating human-readable diffs.
-You can read more about it [here](https://bramcohen.livejournal.com/73318.html). 
-
-This correlater is Available since version 1.2.1.
 
 ## Optimizations
 

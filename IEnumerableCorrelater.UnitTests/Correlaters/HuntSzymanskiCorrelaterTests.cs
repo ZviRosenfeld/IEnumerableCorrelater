@@ -66,6 +66,28 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
         }
 
         [TestMethod]
+        public void DoubleCharTest()
+        {
+            var s = "22ab";
+
+            var correlater = new HuntSzymanskiCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(0, s.ToCharArray(), s.ToCharArray());
+
+            correlater.AssertComparision(s, s, expectedResult);
+        }
+
+        [TestMethod]
+        public void DoubleCharTest2()
+        {
+            var s = "123421";
+
+            var correlater = new HuntSzymanskiCorrelater<char>();
+            var expectedResult = new CorrelaterResult<char>(0, s.ToCharArray(), s.ToCharArray());
+
+            correlater.AssertComparision(s, s, expectedResult);
+        }
+
+        [TestMethod]
         public void TotallyDifferentStringsTest()
         {
             var s1 = "abcdefghij";
