@@ -19,7 +19,7 @@ namespace IEnumerableCorrelater.Benchmarking
             var collection2 = collection1.ToList();
             collection2[500] = collection1.ElementAt(500) == 'a' ? 'b' : 'a';
 
-            var t = correlater.Correlate(collection1, collection2);
+            correlater.Correlate(collection1, collection2);
         }
     }
 }
