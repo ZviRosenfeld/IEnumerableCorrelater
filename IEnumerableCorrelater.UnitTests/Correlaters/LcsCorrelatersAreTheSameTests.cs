@@ -1,5 +1,6 @@
 ﻿using IEnumerableCorrelater.Correlaters;
 using IEnumerableCorrelater.Interfaces;
+using IEnumerableCorrelater.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,32 +55,36 @@ namespace IEnumerableCorrelater.UnitTests.Correlaters
             AssertThatDistanceIsTheSame(nameof(dynamicResult), nameof(huntResult), dynamicResult, huntResult, string.Join("", collection1), string.Join("", collection2));
             AssertThatDistanceIsTheSame(nameof(dynamicResult), nameof(myersResult), dynamicResult, myersResult, string.Join("", collection1), string.Join("", collection2));
 
-            AssertThatLcsIsTheSame(nameof(dynamicResult), nameof(huntResult), dynamicResult, huntResult, string.Join("", collection1), string.Join("", collection2));
-            AssertThatLcsIsTheSame(nameof(dynamicResult), nameof(myersResult), dynamicResult, myersResult, string.Join("", collection1), string.Join("", collection2));
+            AssertThatLcsIsTheSameLength(nameof(dynamicResult), nameof(huntResult), dynamicResult, huntResult, string.Join("", collection1), string.Join("", collection2));
+            AssertThatLcsIsTheSameLength(nameof(dynamicResult), nameof(myersResult), dynamicResult, myersResult, string.Join("", collection1), string.Join("", collection2));
         }
 
         private void AssertThatDistanceIsTheSame(string correlater1Name, string correlater2Name, CorrelaterResult<char> result1, CorrelaterResult<char> result2, string collection1, string collection2)
         {
             var stringForBadResult = new StringBuilder();
-            stringForBadResult.AppendLine($"Got diffrent distance: {correlater1Name} = {result1.Distance}; {correlater1Name} = {result2.Distance}");
+            stringForBadResult.AppendLine($"Got diffrent distance: {correlater1Name} = {result1.Distance}; {correlater2Name} = {result2.Distance}");
             stringForBadResult.AppendLine($"Collection1: {collection1}");
             stringForBadResult.AppendLine($"Collection2: {collection2}");
             Assert.AreEqual(result1.Distance, result2.Distance, stringForBadResult.ToString());
         }
 
-        private void AssertThatLcsIsTheSame(string correlater1Name, string correlater2Name, CorrelaterResult<char> result1, CorrelaterResult<char> result2, string collection1, string collection2)
+        /// <summary>
+        /// While there's no guarantee that the LCS are the same, they should at least be the same length
+        /// </summary>
+        private void AssertThatLcsIsTheSameLength(string correlater1Name, string correlater2Name, CorrelaterResult<char> result1, CorrelaterResult<char> result2, string collection1, string collection2)
         {
-            var result1Lcs = string.Join("", result1.BestMatch1.Where(n => n != '\0'));
-            var result2Lcs = string.Join("", result2.BestMatch1.Where(n => n != '\0'));
+            var result1Lcs = result1.GetLcsFromResult();
+            var result2Lcs = result2.GetLcsFromResult();
 
             var stringForBadResult = new StringBuilder();
-            stringForBadResult.AppendLine($"Got diffrent LCS:");
-            stringForBadResult.AppendLine($"Result1 LCS: {result1Lcs}");
-            stringForBadResult.AppendLine($"Result1 LCS: {result2Lcs}");
+            stringForBadResult.AppendLine($"Got diffrent LCS lengths:");
+            stringForBadResult.AppendLine($"{correlater1Name} LCS: {string.Join(",", result1Lcs)}");
+            stringForBadResult.AppendLine($"{correlater2Name} LCS: {string.Join(",", result2Lcs)}");
             stringForBadResult.AppendLine();
             stringForBadResult.AppendLine($"Collection1: {collection1}");
             stringForBadResult.AppendLine($"Collection2: {collection2}");
-            CollectionAssert.AreEqual(result1Lcs.ToCharArray(), result2Lcs.ToCharArray(), stringForBadResult.ToString());
+
+            Assert.AreEqual(result1Lcs.Count(), result2Lcs.Count(), stringForBadResult.ToString());
         }
     }
 }

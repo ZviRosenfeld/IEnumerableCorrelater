@@ -11,7 +11,7 @@
 	<license type="expression">MIT</license>
 	<projectUrl>https://github.com/ZviRosenfeld/IEnumerableCorrelater</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <tags>diff-tool edit-distance PatienceDiff MyersAlgorithm Levenshtein-distance Damerau–Levenshtein-distance</tags>
+    <tags>diff-tool edit-distance PatienceDiff MyersAlgorithm Hunt-Szymanski Levenshtein-distance Damerau–Levenshtein-distance</tags>
 	<copyright>Zvi Rosenfeld</copyright>
   </metadata>
   <files>
