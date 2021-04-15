@@ -102,42 +102,44 @@ For LevenshteinCorrelater, DamerauLevenshteinCorrelater and DynamicLcsCorrelater
 
 ## Correlaters
 
-### MyersAlgorithmCorrelater
+### [MyersAlgorithmCorrelater](IEnumerableCorrelater/Correlaters/MyersAlgorithmCorrelater.cs)
 
-[MyersAlgorithmCorrelater\<T>](IEnumerableCorrelater/Correlaters/MyersAlgorithmCorrelater.cs) is an algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
+Myer's Algorithm is an algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) between 2 collections.
+The MyersAlgorithmCorrelater\<T> uses this algorithm to find best correlation between two collections.
 This algorithm has a runtime of O(n \* d), where n is the size of the bigger collection, and d is the number of changed elements between the collections.
 This makes the algorithm particularity good for cases where we aren't expecting many changes (like diff tools for code changes). Indeed, it is used as the default diff algorithm for git.
 
 This correlater is Available since version 1.2.0.
 
-### PatienceDiffCorrelater
+### [PatienceDiffCorrelater](IEnumerableCorrelater/Correlaters/PatienceDiffCorrelater.cs)
 
-[PatienceDiffCorrelater\<T>](IEnumerableCorrelater/Correlaters/PatienceDiffCorrelater.cs) is an algorithm that was developed specifically for comparing diffs in code. It does a very good job at creating human-readable diffs.
+PatienceDiffCorrelater\<T> is an algorithm that was developed specifically for comparing diffs in code. It does a very good job at creating human-readable diffs.
 You can read more about it [here](https://bramcohen.livejournal.com/73318.html). 
 
 This correlater is Available since version 1.2.1.
 
-### HuntSzymanskiCorrelater
+### [HuntSzymanskiCorrelater](IEnumerableCorrelater/Correlaters/HuntSzymanskiCorrelater.cs)
 
-[HuntSzymanskiCorrelater\<T>](IEnumerableCorrelater/Correlaters/HuntSzymanskiCorrelater.cs) is another algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections.
-This algorithm has a runtime of O((r + n) log n), where n is the size of the bigger collection, and r is the total number of matching pairs.
+The Hunt-Szymanski Algorithm is another algorithm for calculating the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem).
+The HuntSzymanskiCorrelater\<T> uses this algorithm to find best correlation between two collections.
+The algorithm has a runtime of O((r + n) log n), where n is the size of the bigger collection, and r is the total number of matching pairs.
 In the wost case r = n \* n, which would mean a runtime of O((n \* n) long n), but in practice O(n log n) is rather expected.
 
 This correlater is Available since version 1.2.1.
 
-### LevenshteinCorrelater
+### [LevenshteinCorrelater](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs)
 
-[LevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/LevenshteinCorrelater.cs) Finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) and best correlation between two collections using dynamic programming.
+LevenshteinCorrelater\<T> finds the [LevenshteinDistance](https://en.wikipedia.org/wiki/Levenshtein_distance) and best correlation between two collections using dynamic programming.
 The correlater's runtime is O(n \* m), where n and m are the length of the collections being compared.
 
-### DamerauLevenshteinCorrelater
+### [DamerauLevenshteinCorrelater](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs)
 
-[DamerauLevenshteinCorrelater\<T>](IEnumerableCorrelater/Correlaters/DamerauLevenshteinCorrelater.cs) Finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections using dynamic programming.
+DamerauLevenshteinCorrelater\<T> finds the [DamerauLevenshteinDistance](https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance) and best correlation between two collections using dynamic programming.
 The correlater's runtime is O(n \* m), where n and m are the length of the collections being compared.
 
-### DynamicLcsCorrelater
+### [DynamicLcsCorrelater](IEnumerableCorrelater/Correlaters/DynamicLcsCorrelater.cs)
 
-[DynamicLcsCorrelater\<T>](IEnumerableCorrelater/Correlaters/DynamicLcsCorrelater.cs) Finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections using dynamic programming. 
+DynamicLcsCorrelater\<T> finds the [LongestCommonSubsequence](https://en.wikipedia.org/wiki/Longest_common_subsequence_problem) and best correlation between two collections using dynamic programming. 
 The dynamic algorithm for the LCS problem has a runtime of O(n \* m), where n and m are the length of the collections being compared.
 
 This correlater is Available since version 1.2.0.
@@ -191,7 +193,7 @@ Collection2 = { "A", "B", "T", "Y", "Z" }
 ```
 
 IgnoreIdenticalBeginningAndEndCorrelaterWrapper is a [IContinuousCorrelater](#icontinuouscorrelaters).
-If the inner correlater is not continuous, the "OnResultUpdate" will be raised twice - once for the equal part of the collection, and a second time for the rest of the result.
+If the inner correlater is not continuous, the "OnResultUpdate" will be raised twice - once for the equal part of the collection, and a second time for the rest of the result (or only once if the beginning of the collection is the same).
 If, on the other hand, the inner correlater is continuous the "OnResultUpdate" will be raised every time the inner correlater raises the event, plus once at the before the inner correlater starts with the beginning part of the collections that's equal, and another time after the inner correlater finishes with the end part that's equal.
 
 ### [SplitByPatienceAlgorithmWrapper](IEnumerableCorrelater/CorrelaterWrappers/SplitByPatienceAlgorithmWrapper.cs)
