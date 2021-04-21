@@ -33,6 +33,12 @@ namespace StringCorrelatorGui
                 case nameof(PatienceDiffCorrelater<char>):
                     correlator = new PatienceDiffCorrelater<char>();
                     break;
+                case nameof(HuntSzymanskiCorrelater<char>):
+                    correlator = new HuntSzymanskiCorrelater<char>();
+                    break;
+                case nameof(NullCorrelator<char>):
+                    correlator = new NullCorrelator<char>();
+                    break;
                 case nameof(LevenshteinCorrelater<char>):
                 default:
                     correlator = new LevenshteinCorrelater<char>(10, 7, 7);

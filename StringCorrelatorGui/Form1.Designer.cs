@@ -93,7 +93,9 @@ namespace StringCorrelatorGui
             "DamerauLevenshteinCorrelater",
             "DynamicLcsCorrelater",
             "MyersAlgorithmCorrelater",
-            "PatienceDiffCorrelater"});
+            "PatienceDiffCorrelater",
+            "HuntSzymanskiCorrelater",
+            "NullCorrelator"});
             this.selectCorrelatorComboBox.Location = new System.Drawing.Point(58, 2);
             this.selectCorrelatorComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.selectCorrelatorComboBox.Name = "selectCorrelatorComboBox";
@@ -210,6 +212,7 @@ namespace StringCorrelatorGui
             this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.TabIndex = 3;
             this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.Text = "IgnoreIdenticalBeginningAndEnd";
             this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.UseVisualStyleBackColor = true;
+            this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.CheckedChanged += new System.EventHandler(this.SetCorrelator);
             // 
             // stringCorrelatorUserControl1
             // 
