@@ -44,7 +44,9 @@ namespace StringCorrelatorGui
             this.splitToChunksCheckBox = new System.Windows.Forms.CheckBox();
             this.slowCompareCheclCheckBox = new System.Windows.Forms.CheckBox();
             this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox = new System.Windows.Forms.CheckBox();
+            this.SplitByPatienceWrapperCheckBox = new System.Windows.Forms.CheckBox();
             this.stringCorrelatorUserControl1 = new StringCorrelatorGui.StringCorrelatorUserControl();
+            this.label5 = new System.Windows.Forms.Label();
             this.controlPanel.SuspendLayout();
             this.selectCorrelatorPanel.SuspendLayout();
             this.generateRandomStringPanel.SuspendLayout();
@@ -105,6 +107,7 @@ namespace StringCorrelatorGui
             // 
             // generateRandomStringPanel
             // 
+            this.generateRandomStringPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.generateRandomStringPanel.Controls.Add(this.generateRandomStringButton);
             this.generateRandomStringPanel.Controls.Add(this.randomStringLengthInput);
             this.generateRandomStringPanel.Controls.Add(this.label3);
@@ -112,15 +115,15 @@ namespace StringCorrelatorGui
             this.generateRandomStringPanel.Location = new System.Drawing.Point(259, 2);
             this.generateRandomStringPanel.Margin = new System.Windows.Forms.Padding(2);
             this.generateRandomStringPanel.Name = "generateRandomStringPanel";
-            this.generateRandomStringPanel.Size = new System.Drawing.Size(133, 76);
+            this.generateRandomStringPanel.Size = new System.Drawing.Size(152, 76);
             this.generateRandomStringPanel.TabIndex = 1;
             // 
             // generateRandomStringButton
             // 
-            this.generateRandomStringButton.Location = new System.Drawing.Point(5, 48);
+            this.generateRandomStringButton.Location = new System.Drawing.Point(2, 48);
             this.generateRandomStringButton.Margin = new System.Windows.Forms.Padding(2);
             this.generateRandomStringButton.Name = "generateRandomStringButton";
-            this.generateRandomStringButton.Size = new System.Drawing.Size(123, 26);
+            this.generateRandomStringButton.Size = new System.Drawing.Size(146, 26);
             this.generateRandomStringButton.TabIndex = 3;
             this.generateRandomStringButton.Text = "Generate";
             this.generateRandomStringButton.UseVisualStyleBackColor = true;
@@ -152,23 +155,27 @@ namespace StringCorrelatorGui
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(3, 6);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(124, 13);
+            this.label2.Size = new System.Drawing.Size(146, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Generate Random String";
             // 
             // optimizationsPanel
             // 
+            this.optimizationsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.optimizationsPanel.Controls.Add(this.label4);
             this.optimizationsPanel.Controls.Add(this.splitToChunksCheckBox);
             this.optimizationsPanel.Controls.Add(this.slowCompareCheclCheckBox);
             this.optimizationsPanel.Controls.Add(this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox);
+            this.optimizationsPanel.Controls.Add(this.label5);
+            this.optimizationsPanel.Controls.Add(this.SplitByPatienceWrapperCheckBox);
             this.optimizationsPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.optimizationsPanel.Location = new System.Drawing.Point(397, 3);
+            this.optimizationsPanel.Location = new System.Drawing.Point(416, 3);
             this.optimizationsPanel.Name = "optimizationsPanel";
-            this.optimizationsPanel.Size = new System.Drawing.Size(286, 81);
+            this.optimizationsPanel.Size = new System.Drawing.Size(333, 85);
             this.optimizationsPanel.TabIndex = 2;
             // 
             // label4
@@ -176,9 +183,9 @@ namespace StringCorrelatorGui
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(3, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(53, 13);
+            this.label4.Size = new System.Drawing.Size(56, 13);
             this.label4.TabIndex = 1;
-            this.label4.Text = "Wrappers";
+            this.label4.Text = "Wrappers:";
             // 
             // splitToChunksCheckBox
             // 
@@ -214,6 +221,17 @@ namespace StringCorrelatorGui
             this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.UseVisualStyleBackColor = true;
             this.IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.CheckedChanged += new System.EventHandler(this.SetCorrelator);
             // 
+            // checkBox1
+            // 
+            this.SplitByPatienceWrapperCheckBox.AutoSize = true;
+            this.SplitByPatienceWrapperCheckBox.Location = new System.Drawing.Point(190, 16);
+            this.SplitByPatienceWrapperCheckBox.Name = "checkBox1";
+            this.SplitByPatienceWrapperCheckBox.Size = new System.Drawing.Size(141, 17);
+            this.SplitByPatienceWrapperCheckBox.TabIndex = 4;
+            this.SplitByPatienceWrapperCheckBox.Text = "SplitByPatienceWrapper";
+            this.SplitByPatienceWrapperCheckBox.UseVisualStyleBackColor = true;
+            this.SplitByPatienceWrapperCheckBox.CheckedChanged += new System.EventHandler(this.SetCorrelator);
+            // 
             // stringCorrelatorUserControl1
             // 
             this.stringCorrelatorUserControl1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -224,6 +242,14 @@ namespace StringCorrelatorGui
             this.stringCorrelatorUserControl1.String1 = "";
             this.stringCorrelatorUserControl1.String2 = "";
             this.stringCorrelatorUserControl1.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(190, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(0, 13);
+            this.label5.TabIndex = 5;
             // 
             // Form1
             // 
@@ -264,6 +290,8 @@ namespace StringCorrelatorGui
         private Label label4;
         private CheckBox slowCompareCheclCheckBox;
         private CheckBox IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox;
+        private CheckBox SplitByPatienceWrapperCheckBox;
+        private Label label5;
     }
 }
 

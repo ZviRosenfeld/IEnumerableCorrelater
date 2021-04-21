@@ -51,6 +51,8 @@ namespace StringCorrelatorGui
                 correlator = new SplitToChunksCorrelaterWrapper<char>(correlator, 10);
             if (IgnoreIdenticalBeginningAndEndCorrelaterWrapperCheckBox.Checked)
                 correlator = new IgnoreIdenticalBeginningAndEndCorrelaterWrapper<char>(correlator);
+            if (SplitByPatienceWrapperCheckBox.Checked)
+                correlator = new SplitByPatienceAlgorithmWrapper<char>(correlator);
 
             stringCorrelatorUserControl1.Correlater = correlator;
         }
