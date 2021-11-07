@@ -211,9 +211,9 @@ Collection2 = { "6", "A", "7", "8", "B", "9" }
 ```
 
 We'd first set "A" and "B" in both collections as matching.
-Then we'd used the inner correlater to correlate the collection before "A" (e.g. { "1" } and { "6" }), the collections between "A" to "B" (e.g. { "2", "3" , "4" } and { "7", "8" }), and the collections after "B" e.g. { "5" } and { "9" }).
+Then we'd used the inner correlater to correlate the collection before "A" (i.e. { "1" } and { "6" }), the collections between "A" to "B" (i.e. { "2", "3" , "4" } and { "7", "8" }), and the collections after "B" i.e.. { "5" } and { "9" }).
 
-Note that this is the tactic used in [PatienceDiffCorrelater\<T>](#patiencediffcorrelater). Indeed, out implementation of the PatienceDiffCorrelater utilizes this wrapper. 
+Note that this is the tactic used in [PatienceDiffCorrelater\<T>](#patiencediffcorrelater). Indeed, our implementation of the PatienceDiffCorrelater utilizes this wrapper. 
 
 ## IContinuousCorrelaters
 
